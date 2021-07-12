@@ -1,0 +1,4 @@
+Vivado Simulator 2018.3
+Time resolution is 1 ps
+WARNING: Too many words specified in data file ../../../../../../RTL/1.Single Cycle/mem/memory_data.dat
+WARNING: Too many words specified in data file ../../../../../../RTL/1.Single Cycle/mem/memory_instr.dat

@@ -1,0 +1,24 @@
+# compile verilog/system verilog design source files
+verilog xil_defaultlib  \
+"../../../../../../RTL/1.Single Cycle/ex/alu.v" \
+"../../../../../../RTL/1.Single Cycle/ex/alu_jmp.v" \
+"../../../../../../RTL/1.Single Cycle/ex/alu_mem.v" \
+"../../../../../../RTL/1.Single Cycle/ctrl/branch_ctrl.v" \
+"../../../../../../RTL/1.Single Cycle/core/core.v" \
+"../../../../../../RTL/1.Single Cycle/ctrl/ctrl.v" \
+"../../../../../../RTL/1.Single Cycle/ex/data_pre.v" \
+"../../../../../../RTL/1.Single Cycle/ex/ex.v" \
+"../../../../../../RTL/1.Single Cycle/id/id.v" \
+"../../../../../../RTL/1.Single Cycle/if/instr_fetch.v" \
+"../../../../../../RTL/1.Single Cycle/mem/mem_data.v" \
+"../../../../../../RTL/1.Single Cycle/mem/mem_instr.v" \
+"../../../../../../RTL/1.Single Cycle/if/pc.v" \
+"../../../../../../RTL/1.Single Cycle/reg/register.v" \
+"../../../../../../RTL/1.Single Cycle/wb/wb.v" \
+"../../../../RVCORE_TEST.srcs/sim_1/new/core_testbench.v" \
+
+# compile glbl module
+verilog xil_defaultlib "glbl.v"
+
+# Do not sort compile order
+nosort

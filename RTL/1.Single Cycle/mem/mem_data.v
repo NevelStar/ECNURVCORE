@@ -21,10 +21,10 @@ module mem_data(
 	reg		[7:0]	data[0:255];
 
 	initial begin
-		$readmemh(".../1.Single Cycle/mem/memory_data.dat",data);
+		$readmemh("../../../../../../RTL/1.Single Cycle/mem/memory_data.dat",data);
 	end
 
-	always@(load_code) begin
+	always@(*) begin
 		case(load_code)
 			3'b000:		data_out <= {{24{data[addr][7]}},data[addr]};							//LB
 			3'b001:		data_out <= {{16{data[addr+1][7]}},data[addr+1],data[addr]};			//LH		
@@ -35,7 +35,7 @@ module mem_data(
 		endcase
 	end
 
-	always@(store_code) begin
+	always@(*) begin
 		case(store_code)
 			2'b00:		data[addr] <= data_in[7:0];				//SB
 			2'b01:		begin									//SH

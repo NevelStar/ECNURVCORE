@@ -17,10 +17,10 @@ module mem_instr(
 	reg [7:0] instr_mem[0:255];
 
 	initial begin
-		$readmemh(".../1.Single Cycle/mem/memory_instr.dat",instr_mem);
+		$readmemh("../../../../../../RTL/1.Single Cycle/mem/memory_instr.dat",instr_mem);
 	end
 
 	always@(addr) begin
-		instr_out <= {instr_mem[addr+3],instr_mem[addr+2],instr_mem[addr+1],instr_mem[addr]};
+		instr_out <= {instr_mem[addr],instr_mem[addr+1],instr_mem[addr+2],instr_mem[addr+3]};
 	end
 endmodule

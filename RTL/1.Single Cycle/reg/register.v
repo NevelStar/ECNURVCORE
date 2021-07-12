@@ -12,9 +12,9 @@ module register(
 	input				wr_en,
 	//	read is always enable
 
-	input	[5:0]		addr_wr,
-	input	[5:0]		addr_rd1,
-	input	[5:0]		addr_rd2,
+	input	[4:0]		addr_wr,
+	input	[4:0]		addr_rd1,
+	input	[4:0]		addr_rd2,
 	input	[31:0]		data_wr,
 
 
