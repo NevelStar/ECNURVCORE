@@ -3,6 +3,7 @@
 //Created by Chesed
 //2021.07.09
 //Edited in 2021.07.11
+//Edited in 2021.07.12
 
 module core(
 	input	clk		,
@@ -43,7 +44,7 @@ wire 			wr_en;
 wire			shift_ctrl;
 wire			sub_ctrl;
 
-if cpu_if(
+instr_fetch cpu_if(
 
 	.clk		(clk),
 	.rst_n		(rst_n),
@@ -71,7 +72,7 @@ id cpu_id(
 
 );
 
-reg general_reg(
+register general_reg(
 	.clk		(clk),
 	.rst_n		(rst_n),
 
@@ -130,7 +131,7 @@ ctrl cpu_ctrl(
 
 );
 
-module wb(
+wb cpu_wb(
 	.data_out	(data_out),
 	.data_addr	(addr_instr),
 	.data_mem	(data_mem),

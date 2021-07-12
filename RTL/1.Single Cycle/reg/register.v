@@ -5,7 +5,7 @@
 //Edited in 2021.07.12
 
 
-module reg(
+module register(
 	input				clk,
 	input				rst_n,
 

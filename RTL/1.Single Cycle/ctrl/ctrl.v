@@ -2,6 +2,7 @@
 //Single Cycle CPU
 //Created by Chesed
 //2021.07.09
+//Edited in 2021.07.12
 
 module ctrl(
 
@@ -38,14 +39,14 @@ module ctrl(
 	wire 	jmpb;
 
 
-	assign type_R		= (operation==7'b0110011) ? 1'b1 ： 1'b0;
-	assign type_S		= (operation==7'b0100011) ? 1'b1 ： 1'b0;
-	assign type_B		= (operation==7'b1100011) ? 1'b1 ： 1'b0;
-	assign type_I_cal	= (operation==7'b0010011) ? 1'b1 ： 1'b0;
-	assign type_I_load	= (operation==7'b0000011) ? 1'b1 ： 1'b0;
-
-	assign J_jal		= (operation==7'b1101111) ? 1'b1 ： 1'b0;
-	assign I_jalr		= (operation==7'b1100111) ? 1'b1 ： 1'b0;
+	assign type_R		= (operation==7'b0110011) ? 1'b1 : 1'b0;
+	assign type_S		= (operation==7'b0100011) ? 1'b1 : 1'b0;
+	assign type_B		= (operation==7'b1100011) ? 1'b1 : 1'b0;
+	assign type_I_cal	= (operation==7'b0010011) ? 1'b1 : 1'b0;
+	assign type_I_load	= (operation==7'b0000011) ? 1'b1 : 1'b0;
+ 
+	assign J_jal		= (operation==7'b1101111) ? 1'b1 : 1'b0;
+	assign I_jalr		= (operation==7'b1100111) ? 1'b1 : 1'b0;
 
 
 

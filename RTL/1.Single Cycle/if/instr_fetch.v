@@ -5,7 +5,7 @@
 //Edited in 2021.07.11
 
 
-module if(
+module instr_fetch(
 
 	input 				clk,
 	input				rst_n,

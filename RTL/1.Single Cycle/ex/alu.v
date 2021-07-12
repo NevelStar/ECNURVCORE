@@ -2,7 +2,8 @@
 //Single Cycle CPU
 //Created by Chesed
 //2021.07.09
-//2021.07.11
+//Edited in 2021.07.11
+//Edited in 2021.07.12
 
 module alu(
 
@@ -19,7 +20,7 @@ module alu(
 	wire 	[4:0] shamt;
 	assign shamt = data_in2[4:0];
 
-	always(*) begin
+	always@(*) begin
 		case(funct3)
 			3'b000:		begin																//ADDI,ADD,SUB
 							case(sub_ctrl)
