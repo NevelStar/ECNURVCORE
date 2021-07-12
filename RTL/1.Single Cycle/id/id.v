@@ -36,7 +36,7 @@ module id(
 	assign imm			= 	(operation == 7'b0110011) ? 12'h0									:	(				//type R
 							(operation == 7'b0010011) ? {funct7,rs2}							:	(				//type I
 							(operation == 7'b0100011) ? {funct7,rd}								:	(				//type S
-							(operation == 7'b1100011) ? {funct7[6],rd[0],funct[5:0],rd[4:1]}	:   (				//type B
+							(operation == 7'b1100011) ? {funct7[6],rd[0],funct7[5:0],rd[4:1]}	:   (				//type B
 							(operation == 7'b1100111) ? {funct7,rs2}							:	(				//I jalr
 							12'h0)))));
 endmodule

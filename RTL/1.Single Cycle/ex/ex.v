@@ -53,7 +53,6 @@ module ex(
 
 	alu_jmp ex_alu_jmp(
 
-		.operation	(operation),
 		.data_reg	(data_rs1),
 		.jmp 		(jmp),
 
@@ -66,9 +65,7 @@ module ex(
 
 	alu_mem ex_alu_mem(
 	
-		.operation	(operation),
-		.data_rs1	(data_rs1),
-		.data_rs2	(data_rs2),
+		.data_reg	(data_rs1),
 		.offset		(imm_ext),
 
 		.addr_mem	(addr_mem)

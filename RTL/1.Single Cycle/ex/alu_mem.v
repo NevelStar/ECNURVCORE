@@ -14,6 +14,6 @@ module alu_mem(
 );
 
 
-	assign addr_mem = data_rs1 + offset;
+	assign addr_mem = data_reg + offset;
 
 endmodule
