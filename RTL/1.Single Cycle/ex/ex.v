@@ -24,6 +24,7 @@ module ex(
 
 	wire [31:0] data_in1;
 	wire [31:0] data_in2;
+	wire [31:0] imm_ext;
 
 	alu ex_alu(
 
@@ -42,13 +43,34 @@ module ex(
 		.operation	(operation),
 		.data_rs1	(data_rs1),
 		.data_rs2	(data_rs2),
-		.jmp 		(jmp),
 		.imm		(imm),
 
 		.data_alu1	(data_in1),
 		.data_alu2	(data_in2),
-		.addr_mem	(addr_mem),
-		.jmp_to		(jmp_to)
+		.imm_ext	(imm_ext)
 
 	);
+
+	alu_jmp ex_alu_jmp(
+
+		.operation	(operation),
+		.data_reg	(data_rs1),
+		.jmp 		(jmp),
+
+		.imm_ext	(imm_ext),
+
+
+		.jmp_to 	(jmp_to)
+
+	);
+
+	alu_mem ex_alu_jmp(
+
+		.data_reg	(data_rs2),
+		.offset		(imm_ext),
+
+		.addr_mem	(addr_mem)
+
+	);
+
 endmodule
