@@ -2,6 +2,7 @@
 //Single Cycle CPU
 //Created by Chesed
 //2021.07.09
+//Edited in 2021.07.12
 
 
 module reg(
@@ -134,7 +135,7 @@ module reg(
 
 	always @(addr_rd1)begin
 		case(addr_rd1)
-			5'd0	:	data_rd1 <=  ((addr_rd1==addr_wr) & wr_en) ? data_wr : 32'h0  	  ;
+			5'd0	:	data_rd1 <=  32'h0  	  ;
 			5'd1  	:	data_rd1 <=  ((addr_rd1==addr_wr) & wr_en) ? data_wr : register_x1  ;
 			5'd2  	:	data_rd1 <=  ((addr_rd1==addr_wr) & wr_en) ? data_wr : register_x2  ;
 			5'd3  	:	data_rd1 <=  ((addr_rd1==addr_wr) & wr_en) ? data_wr : register_x3  ;
@@ -172,7 +173,7 @@ module reg(
 
 	always @(addr_rd2)begin
 		case(addr_rd2)
-			5'd0	:	data_rd2 <=  ((addr_rd2==addr_wr) & wr_en) ? data_wr : 32'h0  	  ;
+			5'd0	:	data_rd2 <=  32'h0  	  ;
 			5'd1  	:	data_rd2 <=  ((addr_rd2==addr_wr) & wr_en) ? data_wr : register_x1  ;
 			5'd2  	:	data_rd2 <=  ((addr_rd2==addr_wr) & wr_en) ? data_wr : register_x2  ;
 			5'd3  	:	data_rd2 <=  ((addr_rd2==addr_wr) & wr_en) ? data_wr : register_x3  ;
