@@ -5,7 +5,9 @@
 
 module alu_mem(
 
-	input 	[31:0]		data_reg	,
+	input 	[6:0]		operation	,
+	input 	[31:0]		data_rs1	,
+	input 	[31:0]		data_rs2	,
 	input	[31:0]		offset		,
 
 
@@ -14,6 +16,6 @@ module alu_mem(
 );
 
 
-	assign addr_mem = data_reg + offset;
+	assign addr_mem = operation[5] ? (data_rs2 + offset) : (data_rs1 + offset);
 
 endmodule
