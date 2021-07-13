@@ -21,7 +21,7 @@ module mem_data(
 	reg		[7:0]	data[0:255];
 
 	initial begin
-		$readmemh("../../../../../../RTL/1.Single Cycle/mem/memory_data.dat",data);
+		$readmemh("../../../../../../RTL/1.SingleCycle/mem/memory_data.dat",data);
 	end
 
 	always@(*) begin
