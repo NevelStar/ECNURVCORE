@@ -2,6 +2,7 @@
 //Single Cycle CPU
 //Created by Chesed
 //2021.07.12
+//Edited in 2021.07.13
 
 module alu_mem(
 
@@ -12,8 +13,8 @@ module alu_mem(
 	output 	[31:0]		addr_mem
 
 );
-
-
-	assign addr_mem = data_reg + offset;
+	wire [31:0] offset_addr;
+	assign offset_addr = offset << 2;
+	assign addr_mem = data_reg + offset_addr;
 
 endmodule

@@ -59,7 +59,7 @@ module register(
 
 	//x0 is always zero
 
-	always@(posedge clk or negedge rst_n)begin
+	always@(negedge clk or negedge rst_n)begin
 		if(!rst_n)begin	
 			register_x1  <= 32'h0 ;
 			register_x2  <= 32'h0 ;

@@ -33,7 +33,7 @@ module id(
 
 	//type U imm:{funct7,rs2,rs1,funct3}
 
-	assign imm			= 	(operation == 7'b0110011) ? 12'h0									:	(				//type R
+	assign imm			= 	(operation == 7'b0000011) ? {funct7,rs2}							:	(				//I:load
 							(operation == 7'b0010011) ? {funct7,rs2}							:	(				//type I
 							(operation == 7'b0100011) ? {funct7,rd}								:	(				//type S
 							(operation == 7'b1100011) ? {funct7[6],rd[0],funct7[5:0],rd[4:1]}	:   (				//type B

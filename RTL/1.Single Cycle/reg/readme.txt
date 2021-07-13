@@ -6,3 +6,7 @@ ver 1.0:
 ·x0 is always zero
 ·2 read ports (for rs1&rs2)
 ·1 write port (for rd)
+
+
+ver 1.2:
+·registers update at the negedge of clk

@@ -48,7 +48,7 @@ module pc(
 						addr_next <= addr + jmp_to;
 					end
 					else begin
-						addr_next <= addr + 32'd4;
+						addr_next <= addr_next + 32'd4;
 					end
 				end
 			end
