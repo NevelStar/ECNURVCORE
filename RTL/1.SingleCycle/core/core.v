@@ -50,7 +50,7 @@ instr_fetch cpu_if(
 	.rst_n		(rst_n),
 	.jmp_en		(jmp_en	),
 	.jmpr_en	(jmpr_en),
-	.jmpj_en	(jmpb_en),
+	.jmpb_en	(jmpb_en),
 	.jmp_to		(jmp_to	),
 
 	.addr_instr	(addr_instr)
