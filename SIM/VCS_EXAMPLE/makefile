@@ -30,4 +30,4 @@ debug:
 	verdi -f rtl.f -ssf wave.fsdb &
 
 clean:
-	rm -rf  *.daidir simv* *.log *.fsdb *.fsdb.* csrc novas.* verdiLog ucli.key
+	rm -rf  *.daidir simv* *.log *.fsdb *.fsdb.* csrc novas.* verdiLog ucli.key profileReport* simprofile_dir

@@ -1,9 +1,0 @@
-<instances>
-  <total>30</total>
-  <totalv>1</totalv>
-  <instance id='0' value='0' incl_value='0'>
-    <child>2</child>
-  </instance>
-  <instance id='2' value='1' incl_value='1'/>
-  <if v='0'/>
-</instances>
