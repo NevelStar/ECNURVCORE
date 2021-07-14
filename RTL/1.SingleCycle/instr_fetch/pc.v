@@ -4,6 +4,7 @@
 //2021.07.08
 //Edited in 2021.07.09
 //Edited in 2021.07.12
+//Edited in 2021.07.14
 
 
 
@@ -30,22 +31,13 @@ module pc(
 			addr <= 32'h0;
 		end
 		else begin
-			if(jmp_en) begin
-				addr <= addr + jmp_to;
-			end
-			else begin
-				if(jmpr_en) begin
-					addr <= jmp_to;
-				end
-				else begin
-					if(jmpb_en) begin
-						addr <= addr + jmp_to;
-					end
-					else begin
-						addr <= addr + 32'd4;
-					end
-				end
-			end
+			case({jmp_en,jmpr_en,jmpb_en})
+				3'b100:		addr <= addr + jmp_to;
+				3'b010:		addr <= jmp_to;
+				3'b001:		addr <= addr + jmp_to;
+				3'b000:		addr <= addr + 32'd4;
+				default:	addr <= addr;
+			endcase
 		end
 	end
 
