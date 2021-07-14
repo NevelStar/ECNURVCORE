@@ -52,7 +52,7 @@ module ex(
 	);
 
 	alu_jmp ex_alu_jmp(
-
+		.operation	(operation),
 		.data_reg	(data_rs1),
 		.jmp 		(jmp),
 

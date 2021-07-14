@@ -20,9 +20,9 @@ module alu_jmp(
 
 	always@(*) begin
 		case(operation[3:2])
-			2'b11:		jmp_to <= jmp;					//J jal
-			2'b01:		jmp_to <= data_reg + imm_ext;	//I jalr
-			2'b00:		jmp_to <= imm_ext;				//Type-B
+			2'b11:		jmp_to <= jmp << 2;						//J jal
+			2'b01:		jmp_to <= data_reg + (imm_ext << 2);	//I jalr
+			2'b00:		jmp_to <= imm_ext << 2;					//Type-B
 			default:	jmp_to <= 32'd0;
 		endcase
 	end

@@ -24,43 +24,28 @@ module pc(
 );
 
 
-	reg [31:0] addr_next;
-
-	initial begin 
-		addr_next <= 31'b0;
-		addr <= 31'b0;
-	end
-
-	always @(posedge clk or negedge rst_n)begin
-		if(!rst_n) begin
-			addr_next <= 32'h0;
-		end
-		else begin
-			if(jmp_en) begin
-				addr_next <= addr + jmp_to;
-			end
-			else begin
-				if(jmpr_en) begin
-					addr_next <= jmp_to;
-				end
-				else begin
-					if(jmpb_en) begin
-						addr_next <= addr + jmp_to;
-					end
-					else begin
-						addr_next <= addr_next + 32'd4;
-					end
-				end
-			end
-		end
-	end
 
 	always @(posedge clk or negedge rst_n)begin
 		if(!rst_n) begin
 			addr <= 32'h0;
 		end
 		else begin
-			addr <= addr_next;
+			if(jmp_en) begin
+				addr <= addr + jmp_to;
+			end
+			else begin
+				if(jmpr_en) begin
+					addr <= jmp_to;
+				end
+				else begin
+					if(jmpb_en) begin
+						addr <= addr + jmp_to;
+					end
+					else begin
+						addr <= addr + 32'd4;
+					end
+				end
+			end
 		end
 	end
 

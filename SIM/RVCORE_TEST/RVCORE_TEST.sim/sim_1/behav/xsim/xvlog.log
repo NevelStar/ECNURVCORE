@@ -1,33 +1,30 @@
-INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.Single Cycle/ex/alu.v" into library xil_defaultlib
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.SingleCycle/ex/alu.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module alu
-INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.Single Cycle/ex/alu_jmp.v" into library xil_defaultlib
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.SingleCycle/ex/alu_jmp.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module alu_jmp
-INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.Single Cycle/ex/alu_mem.v" into library xil_defaultlib
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.SingleCycle/ex/alu_mem.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module alu_mem
-INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.Single Cycle/ctrl/branch_ctrl.v" into library xil_defaultlib
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.SingleCycle/ctrl/branch_ctrl.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module branch_ctrl
-INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.Single Cycle/core/core.v" into library xil_defaultlib
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.SingleCycle/core/core.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module core
-INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.Single Cycle/ctrl/ctrl.v" into library xil_defaultlib
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.SingleCycle/ctrl/ctrl.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module ctrl
-INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.Single Cycle/ex/data_pre.v" into library xil_defaultlib
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.SingleCycle/ex/data_pre.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module data_pre
-INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.Single Cycle/ex/ex.v" into library xil_defaultlib
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.SingleCycle/ex/ex.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module ex
-INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.Single Cycle/id/id.v" into library xil_defaultlib
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.SingleCycle/id/id.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module id
-INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.Single Cycle/if/instr_fetch.v" into library xil_defaultlib
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.SingleCycle/instr_fetch/instr_fetch.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module instr_fetch
-INFO: [VRFC 10-2458] undeclared symbol jmpb_en, assumed default net type wire [E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.Single Cycle/if/instr_fetch.v:28]
-INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.Single Cycle/mem/mem_data.v" into library xil_defaultlib
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.SingleCycle/mem/mem_data.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module mem_data
-INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.Single Cycle/mem/mem_instr.v" into library xil_defaultlib
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.SingleCycle/mem/mem_instr.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module mem_instr
-INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.Single Cycle/if/pc.v" into library xil_defaultlib
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.SingleCycle/instr_fetch/pc.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module pc
-INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.Single Cycle/reg/register.v" into library xil_defaultlib
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.SingleCycle/register/register.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module register
-INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.Single Cycle/wb/wb.v" into library xil_defaultlib
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.SingleCycle/wb/wb.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module wb
-INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Git/code/ECNURVCORE/ECNURVCORE/SIM/RVCORE_TEST/RVCORE_TEST.srcs/sim_1/new/core_testbench.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module core_testbench

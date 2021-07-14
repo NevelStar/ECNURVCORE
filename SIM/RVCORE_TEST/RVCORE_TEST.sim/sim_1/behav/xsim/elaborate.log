@@ -5,21 +5,21 @@ Using 2 slave threads.
 Starting static elaboration
 Completed static elaboration
 Starting simulation data flow analysis
-WARNING: [XSIM 43-4099] "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.Single Cycle/core/core.v" Line 8. Module core doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.Single Cycle/if/instr_fetch.v" Line 8. Module instr_fetch doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.Single Cycle/if/pc.v" Line 11. Module pc doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.Single Cycle/id/id.v" Line 7. Module id doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.Single Cycle/reg/register.v" Line 8. Module register doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.Single Cycle/ex/ex.v" Line 6. Module ex doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.Single Cycle/ex/alu.v" Line 8. Module alu doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.Single Cycle/ex/data_pre.v" Line 7. Module data_pre doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.Single Cycle/ex/alu_jmp.v" Line 6. Module alu_jmp doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.Single Cycle/ex/alu_mem.v" Line 7. Module alu_mem doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.Single Cycle/ctrl/ctrl.v" Line 7. Module ctrl doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.Single Cycle/ctrl/branch_ctrl.v" Line 6. Module branch_ctrl doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.Single Cycle/wb/wb.v" Line 7. Module wb doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.Single Cycle/mem/mem_data.v" Line 8. Module mem_data doesn't have a timescale but at least one module in design has a timescale.
-WARNING: [XSIM 43-4099] "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.Single Cycle/mem/mem_instr.v" Line 10. Module mem_instr doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.SingleCycle/core/core.v" Line 8. Module core doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.SingleCycle/instr_fetch/instr_fetch.v" Line 8. Module instr_fetch doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.SingleCycle/instr_fetch/pc.v" Line 11. Module pc doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.SingleCycle/id/id.v" Line 7. Module id doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.SingleCycle/register/register.v" Line 8. Module register doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.SingleCycle/ex/ex.v" Line 6. Module ex doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.SingleCycle/ex/alu.v" Line 8. Module alu doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.SingleCycle/ex/data_pre.v" Line 7. Module data_pre doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.SingleCycle/ex/alu_jmp.v" Line 6. Module alu_jmp doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.SingleCycle/ex/alu_mem.v" Line 7. Module alu_mem doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.SingleCycle/ctrl/ctrl.v" Line 7. Module ctrl doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.SingleCycle/ctrl/branch_ctrl.v" Line 6. Module branch_ctrl doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.SingleCycle/wb/wb.v" Line 7. Module wb doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.SingleCycle/mem/mem_data.v" Line 8. Module mem_data doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "E:/Git/code/ECNURVCORE/ECNURVCORE/RTL/1.SingleCycle/mem/mem_instr.v" Line 10. Module mem_instr doesn't have a timescale but at least one module in design has a timescale.
 Completed simulation data flow analysis
 Time Resolution for simulation is 1ps
 Compiling module xil_defaultlib.pc
