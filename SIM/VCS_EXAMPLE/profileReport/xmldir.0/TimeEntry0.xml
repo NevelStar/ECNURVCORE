@@ -1,0 +1,10 @@
+<entries>
+  <total>30</total>
+  <totalv>1</totalv>
+  <entry name='KERNEL' value='23'/>
+  <entry name='HSIM' value='5'/>
+  <entry name='VERILOG' value='1'>
+    <entry name='Module' value='1'/>
+  </entry>
+  <entry name='PLI/DPI/DirectC' value='1'/>
+</entries>

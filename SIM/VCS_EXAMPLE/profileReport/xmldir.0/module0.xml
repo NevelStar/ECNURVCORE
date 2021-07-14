@@ -1,0 +1,9 @@
+<modules>
+  <module id='4' name='tb' type='Module' instno='1' cinstno='1' fileid='1' startline='3' endline='31' read='2' read_write='1' callback='1' callback_all='1' force='1' static='0'>
+    <constr id='1' name='Hsim {Module:tb}' type='Hsim' fileid='1' line='31' end='31'/>
+    <constr id='2' name='NoName {line:9}' type='Initial' fileid='1' line='9' end='14'/>
+    <constr id='3' name='NoName {line:16}' type='Initial' fileid='1' line='16' end='23'/>
+    <constr id='4' name='NoName {line:25}' type='Always' fileid='1' line='25' end='28'/>
+    <constr id='5' name='PortConnect {Instance:count1}' type='PortConnections' fileid='1' line='29' end='29'/>
+  </module>
+</modules>

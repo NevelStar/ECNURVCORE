@@ -1,0 +1,10 @@
+<slots>
+  <totalv>1</totalv>
+  <total>30</total>
+  <slot name='PLI' value='1'>
+    <slot name='$fsdbDumpfile' value='1'>
+      <slot name='$fsdbDumpfile    /home/ic/tang/ECNURVCORE/SIM/VCS_TEST/tb.v:11' value='1'/>
+    </slot>
+  </slot>
+  <sf v='0'/>
+</slots>

@@ -1,0 +1,33 @@
+##############################################################################################################
+     VCS build date:                                   Feb 28 2019 22:34:30                                   
+   Compiler version:                                   O-2018.09-SP2_Full64                                   
+    Runtime version:                                   O-2018.09-SP2_Full64                                   
+       Machine Name:                                   localhost.localdomain                                  
+     Profile runner:                                   ic                                                     
+       Profile data:                                   /home/ic/tang/ECNURVCORE/SIM/VCS_TEST/simprofile_dir   
+      Creation date:                                   Wed Jul 14 15:46:44 2021                               
+      Profile start:                                   0                                                      
+       Profile stop:                                   500020000                                              
+     Total CPU Time:                                   0.29                                                   
+    Compile Command:                                   /EDA/synopsys/VCS/vcs-mx/O-2018.09-SP2/bin/vcs -full64 
+                                                       +vcs+lic+wait -simprofile -sverilog +v2k -debug_all -ti
+                                                       mescale=1ns/1ns -P /EDA/synopsys/VERDI/verdi/Verdi_O-20
+                                                       18.09-SP2/share/PLI/VCS/LINUX64/novas.tab /EDA/synopsys
+                                                       /VERDI/verdi/Verdi_O-2018.09-SP2/share/PLI/VCS/LINUX64/
+                                                       pli.a -l compile.log -f rtl.f                          
+ Simulation Command:                                   ./simv -l simv.log                                     
+##############################################################################################################
+==============================================================================================================
+                                          Time PLI/DPI/DirectC View
+==============================================================================================================
+   Name                                                             Percentage
+--------------------------------------------------------------------------------------------------------------
+  PLI                                                                   3.33 %
+    $fsdbDumpfile                                                       3.33 %
+      $fsdbDumpfile    /home/ic/tang/ECNURVCO                           3.33 %
+      RE/SIM/VCS_TEST/tb.v:11                                                 
+--------------------------------------------------------------------------------------------------------------
+  Total:                                                                3.33 %
+______________________________________________________________________________________________________________
+
+

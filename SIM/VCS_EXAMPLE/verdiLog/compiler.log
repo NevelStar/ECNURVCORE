@@ -1,0 +1,11 @@
+*design* DebussyLib (btIdent Verdi_O-2018.09-SP2)
+Command arguments:
+    +define+verilog
+    -f rtl.f
+        ./cnt_16.v
+        ./tb.v
+
+Highest level modules:
+tb
+
+Total	0 error(s),   0 warning(s)
