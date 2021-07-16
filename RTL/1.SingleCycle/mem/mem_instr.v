@@ -17,7 +17,7 @@ module mem_instr(
 	reg [7:0] instr_mem[0:255];
 
 	initial begin
-		$readmemh("../../../../../../RTL/1.SingleCycle/mem/memory_instr.dat",instr_mem);
+		$readmemh("memory_instr.dat",instr_mem);
 	end
 
 	always@(addr) begin
