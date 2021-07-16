@@ -2,6 +2,8 @@
 //Single Cycle CPU
 //Created by Chesed
 //2021.07.09
+//Edited in 2021.07.12
+//Edited in 2021.07.14
 
 module ex(
 	
@@ -11,6 +13,7 @@ module ex(
 	input 	[31:0]		jmp			,
 
 	input	[11:0]		imm			,
+	input	[19:0]		imm_u		,
 
 	input	[2:0]		funct3		,
 	input				shift_ctrl	,
@@ -25,6 +28,7 @@ module ex(
 	wire [31:0] data_in1;
 	wire [31:0] data_in2;
 	wire [31:0] imm_ext;
+	wire [31:0] imm_u_ext;
 
 	alu ex_alu(
 
@@ -44,10 +48,12 @@ module ex(
 		.data_rs1	(data_rs1),
 		.data_rs2	(data_rs2),
 		.imm		(imm),
+		.imm_u		(imm_u),
 
 		.data_alu1	(data_in1),
 		.data_alu2	(data_in2),
-		.imm_ext	(imm_ext)
+		.imm_ext	(imm_ext),
+		.imm_u_ext	(imm_u_ext)
 
 	);
 
@@ -57,6 +63,7 @@ module ex(
 		.jmp 		(jmp),
 
 		.imm_ext	(imm_ext),
+		.imm_u_ext	(imm_u_ext),
 
 
 		.jmp_to 	(jmp_to)

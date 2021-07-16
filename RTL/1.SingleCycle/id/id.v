@@ -2,6 +2,7 @@
 //Single Cycle CPU
 //Created by Chesed
 //2021.07.09
+//Edited in 2021.07.14
 
 
 module id(
@@ -15,6 +16,7 @@ module id(
 	output 	[6:0]		funct7		,
 
 	output  [11:0]		imm			,
+	output  [19:0]		imm_u		,
 	output	[31:0]		jmp			
 
 
@@ -31,7 +33,7 @@ module id(
 
 	assign jmp			=  {{13{funct7[6]}},rs1,funct3,rs2[0],funct7[5:0],rs2[4:1]}	;								//type J imm
 
-	//type U imm:{funct7,rs2,rs1,funct3}
+	assign imm_u		= instr_in[31:12]	;
 
 	assign imm			= 	(operation == 7'b0000011) ? {funct7,rs2}							:	(				//I:load
 							(operation == 7'b0010011) ? {funct7,rs2}							:	(				//type I

@@ -22,3 +22,7 @@ ver 1.0:
 ver 1.1:
 ·improve the structure of memory
 ·use $readmemh to initialize memory
+
+
+ver 1.3:
+·type-U operations supported

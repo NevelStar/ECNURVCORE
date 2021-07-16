@@ -4,6 +4,7 @@
 //2021.07.09
 //Edited in 2021.07.11
 //Edited in 2021.07.12
+//Edited in 2021.07.14
 
 module core(
 	input	clk		,
@@ -21,6 +22,7 @@ wire [2:0]		funct3;
 wire [6:0]		funct7;
 
 wire [11:0]		imm;
+wire [19:0]		imm_u;
 wire [31:0]		jmp;
 wire [31:0]		jmp_to;
 
@@ -68,6 +70,7 @@ id cpu_id(
 	.funct7		(funct7),
 
 	.imm		(imm),
+	.imm_u		(imm_u),
 	.jmp		(jmp)
 
 );
