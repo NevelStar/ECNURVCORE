@@ -13,7 +13,7 @@ module wb(
 	input	[19:0]	data_imm_u	,
 	input	[6:0]	operation	,
 
-	output	[31:0]	reg data_wr
+	output reg	[31:0]	 data_wr
 );
 	
 	wire [31:0]	data_addr_next;

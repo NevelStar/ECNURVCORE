@@ -47,8 +47,8 @@ module ctrl(
 	assign type_B		= (operation==7'b1100011) ? 1'b1 : 1'b0;
 	assign type_I_cal	= (operation==7'b0010011) ? 1'b1 : 1'b0;
 	assign type_I_load	= (operation==7'b0000011) ? 1'b1 : 1'b0;
-	assign type_U_LUI	= (operation==7'b0110111) ? 1'b1 ： 1'b0;
-	assign type_U_AUIPC	= (operation==7'b0010111) ? 1'b1 ： 1'b0;
+	assign type_U_LUI	= (operation==7'b0110111) ? 1'b1 : 1'b0;
+	assign type_U_AUIPC	= (operation==7'b0010111) ? 1'b1 : 1'b0;
  
 	assign J_jal		= (operation==7'b1101111) ? 1'b1 : 1'b0;
 	assign I_jalr		= (operation==7'b1100111) ? 1'b1 : 1'b0;
