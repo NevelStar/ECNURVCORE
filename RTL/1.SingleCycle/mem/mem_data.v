@@ -48,6 +48,7 @@ module mem_data(
 							data[addr+2] <= data_in[23:16];	
 							data[addr+3] <= data_in[31:24];		
 						end
+			default:	data[addr] <= data[addr];
 		endcase
 	end
 
