@@ -25,7 +25,7 @@ module alu_jmp(
 			3'b101:		jmp_to <= imm_u_ext;				//U auipc
 			3'b011:		jmp_to <= jmp;						//J jal 
 			3'b001:		jmp_to <= data_reg + imm_ext;		//I jalr
-			3'b000:		jmp_to <= imm_ext ;					//Type-B
+			3'b000:		jmp_to <= imm_ext << 1;				//Type-B
 			default:	jmp_to <= 32'd0;
 		endcase
 	end
