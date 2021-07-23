@@ -21,8 +21,8 @@ module if_id(
 
 	gnrl_dff # (.DW(32)) dff_addr_instr(
 		.clk		(clk),
-		.rst_n		(hold_n),
-		.wr_en		(hold_en),
+		.rst_n		(rst_n),
+		.wr_en		(hold_n),
 		.data_in	(addr_instr_i),
 		.data_r_ini	(`ZERO_WORD),
 

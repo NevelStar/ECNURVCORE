@@ -2,6 +2,10 @@
 //Pipline CPU
 //Created by Chesed
 //2021.07.19
+//Edited in 2021.07.20
+//Edited in 2021.07.21
+//Edited in 2021.07.22
+//Edited in 2021.07.23
 
 
 //the initial data
@@ -24,6 +28,7 @@
 `define BUS_ALU_OP			2:0
 `define BUS_L_CODE			2:0
 `define BUS_S_CODE			2:0
+`define BUS_JMP_FLAG		2:0
 
 //decode the instrument
 `define OPERATION_CODE		6:0
@@ -94,6 +99,10 @@
 `define FUNCT7_SRL			7'b0000000
 `define FUNCT7_SRA			7'b0100000
 
+//jmp flag code
+`define JMP_NOPE			2'b00
+`define JMP_B				2'b01
+`define JMP_J				2'b10
 
 
 //alu operation
@@ -107,7 +116,7 @@
 `define ALU_AND				3'b111
 
 
-//enable/disable flag
+//enable/disable
 `define REG_WR_EN			1'b1
 `define REG_WR_DIS			1'b0
 `define JMP_EN				1'b1

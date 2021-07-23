@@ -2,6 +2,8 @@
 //Pipeline CPU
 //Created by Chesed
 //2021.07.20
+//Edited in 2021.07.21
+//Edited in 2021.07.23
 
 `include "define.v"
 
@@ -11,6 +13,8 @@ module id_ex(
 
 	input	[`BUS_DATA_REG]		data_rs1_i		,
 	input	[`BUS_DATA_REG]		data_rs2_i		,
+	input	[`BUS_ADDR_REG]		addr_rd_i		,
+	input						reg_wr_en_i		,
 
 	input	[`BUS_DATA_MEM]		instr_i			,
 	input 	[`BUS_L_CODE]		load_code_i		,
@@ -21,12 +25,14 @@ module id_ex(
 	input	[`BUS_DATA_REG]		alu_op_num2_i	,
 	input	[`BUS_DATA_REG]		jmp_op_num1_i	,
 	input	[`BUS_DATA_REG]		jmp_op_num2_i	,
-	input						jmp_flag_i		,
+	input	[`BUS_JMP_FLAG]		jmp_flag_i		,
 
 	input						hold_n			,
 
 	output	[`BUS_DATA_REG]		data_rs1_o		,
 	output	[`BUS_DATA_REG]		data_rs2_o		,
+	output	[`BUS_ADDR_REG]		addr_rd_o		,
+	output						reg_wr_en_o		,
 
 	output	[`BUS_DATA_MEM]		instr_o			,
 	output 	[`BUS_L_CODE]		load_code_o		,
@@ -37,7 +43,7 @@ module id_ex(
 	output	[`BUS_DATA_REG]		alu_op_num2_o	,
 	output	[`BUS_DATA_REG]		jmp_op_num1_o	,
 	output	[`BUS_DATA_REG]		jmp_op_num2_o	,
-	output						jmp_flag_o		
+	output	[`BUS_JMP_FLAG]		jmp_flag_o		
 	
 );
 	gnrl_dff # (.DW(32)) dff_data_rs1(
@@ -58,6 +64,25 @@ module id_ex(
 		.data_r_ini	(`ZERO_WORD),
 
 		.data_out	(data_rs2_o),
+	);	
+
+	gnrl_dff # (.DW(5)) dff_addr_rd(
+		.clk		(clk),
+		.rst_n		(rst_n),
+		.wr_en		(hold_n),
+		.data_in	(data_rd_i),
+		.data_r_ini	(`REG_ADDR_ZERO),
+
+		.data_out	(data_rd_o),
+	);	
+	gnrl_dff # (.DW(1)) dff_wr_en(
+		.clk		(clk),
+		.rst_n		(rst_n),
+		.wr_en		(hold_n),
+		.data_in	(reg_wr_en_i),
+		.data_r_ini	(`REG_WR_DIS),
+
+		.data_out	(reg_wr_en_o),
 	);	
 
 	gnrl_dff # (.DW(32)) dff_instr(
@@ -139,12 +164,12 @@ module id_ex(
 		.data_out	(jmp_op_num2_o),
 	);
 
-	gnrl_dff # (.DW(1)) dff_jmp_flag(
+	gnrl_dff # (.DW(2)) dff_jmp_flag(
 		.clk		(clk),
 		.rst_n		(rst_n),
 		.wr_en		(hold_n),
 		.data_in	(jmp_flag),
-		.data_r_ini	(`ZERO_WORD),
+		.data_r_ini	(`JMP_NOPE),
 
 		.data_out	(jmp_flag),
 	);

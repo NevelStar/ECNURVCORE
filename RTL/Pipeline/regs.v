@@ -4,7 +4,7 @@
 //2021.07.22
 
 
-module register(
+module regs(
 	input						clk			,
 	input						rst_n		,
 

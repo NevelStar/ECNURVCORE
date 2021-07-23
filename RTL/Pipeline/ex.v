@@ -2,6 +2,7 @@
 //Pipeline CPU
 //Created by Chesed
 //2021.07.21
+//Edited in 2021.07.23
 
 `include "define.v"
 
@@ -11,10 +12,10 @@ module ex(
 	input	[`BUS_DATA_REG]		data_rs2		,
 
 	input	[`BUS_DATA_MEM]		instr			,
-	input	[`BUS_DATA_MEM]		data_mem		,
 
 	input 	[`BUS_L_CODE]		load_code		,
 	input 	[`BUS_S_CODE]		store_code		,
+	input 	[`BUS_JMP_FLAG]		jmp_flag		,
 
 	input	[`BUS_ALU_OP]		alu_operation	,
 	input	[`BUS_DATA_REG]		alu_op_num1		,
@@ -24,11 +25,12 @@ module ex(
 
 
 
-	output reg 	[`BUS_DATA_REG]	data_reg_wr		,
+	output reg 	[`BUS_DATA_REG]	alu_result		,
 	output reg 	[`BUS_DATA_MEM]	data_mem_wr		,
-	output reg 	[`BUS_ADDR_MEM]	data_addr_wr	,
-	output reg 	[`BUS_ADDR_MEM]	data_addr_rd	,
-	output reg 					mem_wr_state	,
+	output reg 	[`BUS_ADDR_MEM]	addr_mem_wr		,
+	output reg 	[`BUS_ADDR_MEM]	addr_mem_rd		,
+	output reg 					mem_state		,
+	output reg					jmp_en			,
 	output	[`BUS_ADDR_MEM]		jmp_to
 	
 );
@@ -50,7 +52,8 @@ module ex(
 	wire [`BUS_DATA_REG] alu_or;
 	wire [`BUS_DATA_REG] alu_and;
 
-	reg [`BUS_DATA_REG] alu_result;
+
+
 
 	assign shamt = alu_op_num2[4:0];
 	assign funct7 = instr[`FUNCT7];
@@ -69,6 +72,7 @@ module ex(
 	assign alu_sra = (alu_op_num1 >> shamt) + sra_sign;
 	assign alu_or = alu_op_num1 | alu_op_num2;
 	assign alu_and = alu_op_num1 & alu_op_num2;
+
 
 
 
@@ -103,29 +107,11 @@ module ex(
 
 	always@(*) begin
 		case(load_code)
-			`INSTR_LB: begin
-				data_reg_wr <= {{24{data_mem[7]}},data_mem[7:0]};
-				data_addr_rd <= alu_result;
-			end
-			`INSTR_LH: begin
-				data_reg_wr <= {{16{data_mem[15]}},data_mem[15:0]};
-				data_addr_rd <= alu_result;
-			end
-			`INSTR_LW: begin
-				data_reg_wr <= data_mem;
-				data_addr_rd <= alu_result;
-			end
-			`INSTR_LBU: begin
-				data_reg_wr <= {24'd0,data_mem[7:0]};
-				data_addr_rd <= alu_result;
-			end
-			`INSTR_LHU: begin
-				data_reg_wr <= {16'd0,data_mem[15:0]};
-				data_addr_rd <= alu_result;
+			`INSTR_LB,`INSTR_LH,`INSTR_LW,`INSTR_LBU,`INSTR_LHU: begin
+				addr_mem_rd <= alu_result;
 			end
 			default: begin
-				data_reg_wr <= alu_result;
-				data_addr_rd <= `MEM_ADDR_ZERO;
+				addr_mem_rd <= `MEM_ADDR_ZERO;
 			end
 		endcase
 	end
@@ -134,24 +120,41 @@ module ex(
 		case(store_code)
 			`INSTR_SB: begin
 				data_mem_wr <= {24'd0,data_rs2[7:0]};
-				data_addr_wr <= alu_result;
-				mem_wr_state <= `MEM_WR_EN;
+				addr_mem_wr <= alu_result;
+				mem_state <= `MEM_WR_EN;
 			end
 			`INSTR_SH: begin
 				data_mem_wr <= {16'd0,data_rs2[15:0]};
-				data_addr_wr <= alu_result;
-				mem_wr_state <= `MEM_WR_EN;
+				addr_mem_wr <= alu_result;
+				mem_state <= `MEM_WR_EN;
 			end
 			`INSTR_SW: begin
 				data_mem_wr <= data_rs2;
-				data_addr_wr <= alu_result;
-				mem_wr_state <= `MEM_WR_EN;
+				addr_mem_wr <= alu_result;
+				mem_state <= `MEM_WR_EN;
 			end
 			default: begin
 				data_mem_wr <= `ZERO_WORD;
-				data_addr_wr <= `MEM_ADDR_ZERO;
-				mem_wr_state <= `MEM_RD_EN;
+				addr_mem_wr <= `MEM_ADDR_ZERO;
+				mem_state <= `MEM_RD_EN;
 			end
+		endcase
+	end
+
+	always@(*) begin
+		case(jmp_flag)
+			`JMP_B: begin
+				case(funct3)
+					`INSTR_BEQ:		jmp_en <= (data_rs1 == data_rs2) ? `JMP_EN : `JMP_DIS;
+					`INSTR_BNE:		jmp_en <= (data_rs1 != data_rs2) ? `JMP_EN : `JMP_DIS;
+					`INSTR_BLT:		jmp_en <= alu_slt[0] ? `JMP_EN : `JMP_DIS;
+					`INSTR_BGE:		jmp_en <= alu_slt[0] ? `JMP_DIS : `JMP_EN;
+					`INSTR_BLTU:	jmp_en <= alu_sltu[0] ? `JMP_EN : `JMP_DIS;
+					`INSTR_BGEU:	jmp_en <= alu_sltu[0] ? `JMP_DIS : `JMP_EN;
+				endcase
+			end
+			`JMP_J: 	jmp_en <= `JMP_EN;
+			default:	jmp_en <= `JMP_DIS;
 		endcase
 	end
 

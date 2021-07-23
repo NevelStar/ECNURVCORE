@@ -2,10 +2,12 @@
 //Pipeline CPU
 //Created by Chesed
 //2021.07.20
+//Edited in 2021.07.21
+//Edited in 2021.07.23
 
 `include "define.v"
 
-module id(
+module decoder(
 	input	[`BUS_DATA_REG]		data_rs1		,
 	input	[`BUS_DATA_REG]		data_rs2		,
 	input	[`BUS_DATA_MEM]		instr			,
@@ -17,7 +19,7 @@ module id(
 	output	reg [`BUS_DATA_REG]	alu_op_num2		,
 	output	reg [`BUS_DATA_REG]	jmp_op_num1		,
 	output	reg [`BUS_DATA_REG]	jmp_op_num2		,
-	output	reg 				jmp_flag		,
+	output	reg [`BUS_JMP_FLAG]	jmp_flag		,
 
 	output 	reg [`BUS_L_CODE]	load_code		,
 	output 	reg [`BUS_S_CODE]	store_code		,
@@ -52,7 +54,7 @@ module id(
 				reg_rs2_addr <= addr_rs2;
 				reg_wr_addr <= addr_rd;
 				
-				jmp_flag <= `JMP_DIS;
+				jmp_flag <= `JMP_NOPE;
 				load_code <= `LOAD_NOPE;
 				store_code <= `STORE_NOPE;
 				
@@ -67,7 +69,7 @@ module id(
 				reg_rs2_addr <= `REG_ADDR_ZERO;
 				reg_wr_addr <= addr_rd;
 				
-				jmp_flag <= `JMP_DIS;
+				jmp_flag <= `JMP_NOPE;
 				load_code <= `LOAD_NOPE;
 				store_code <= `STORE_NOPE;
 
@@ -82,7 +84,7 @@ module id(
 				reg_rs2_addr <= `REG_ADDR_ZERO;
 				reg_wr_addr <= addr_rd;
 
-				jmp_flag <= `JMP_DIS;
+				jmp_flag <= `JMP_NOPE;
 				load_code <= `LOAD_NOPE;
 				store_code <= `STORE_NOPE;
 				
@@ -99,7 +101,7 @@ module id(
 						reg_rs2_addr <= `REG_ADDR_ZERO;
 						reg_wr_addr <= addr_rd;
 
-						jmp_flag <= `JMP_DIS;
+						jmp_flag <= `JMP_NOPE;
 						load_code <= funct3;
 						store_code <= `STORE_NOPE;
 						
@@ -112,7 +114,7 @@ module id(
 						reg_rs1_addr <= `REG_ADDR_ZERO;
 						reg_rs2_addr <= `REG_ADDR_ZERO;
 						reg_wr_addr <= `REG_ADDR_ZERO;
-						jmp_flag <= `JMP_DIS;
+						jmp_flag <= `JMP_NOPE;
 						load_code <= `LOAD_NOPE;
 						store_code <= `STORE_NOPE;
 					end
@@ -127,7 +129,7 @@ module id(
 						reg_rs2_addr <= addr_rs2;
 						reg_wr_addr <= `REG_ADDR_ZERO;
 
-						jmp_flag <= `JMP_DIS;
+						jmp_flag <= `JMP_NOPE;
 						load_code <= `LOAD_NOPE;
 						store_code <= funct3;
 						
@@ -140,7 +142,7 @@ module id(
 						reg_rs1_addr <= `REG_ADDR_ZERO;
 						reg_rs2_addr <= `REG_ADDR_ZERO;
 						reg_wr_addr <= `REG_ADDR_ZERO;
-						jmp_flag <= `JMP_DIS;
+						jmp_flag <= `JMP_NOPE;
 						load_code <= `LOAD_NOPE;
 						store_code <= `STORE_NOPE;
 					end
@@ -155,20 +157,22 @@ module id(
 						reg_rs2_addr <= addr_rs2;
 						reg_wr_addr <= `REG_ADDR_ZERO;
 
-						jmp_flag <= `JMP_EN;
+						jmp_flag <= `JMP_B;
 						load_code <= `LOAD_NOPE;
 						store_code <= `STORE_NOPE;
 						
 						alu_operation <= `ALU_ADD;
-						alu_op_num1	<= addr_instr;
-						alu_op_num2	<= {{20{instr[31]}},instr[7],instr[30:25], instr[11:8],1'b0};
+						alu_op_num1 <= data_rs1;
+						alu_op_num2 <= data_rs2;
+						jmp_op_num1	<= addr_instr;
+						jmp_op_num2	<= {{20{instr[31]}},instr[7],instr[30:25], instr[11:8],1'b0};
 					end
 					default: begin
 						reg_wr_en <= `REG_WR_DIS;
 						reg_rs1_addr <= `REG_ADDR_ZERO;
 						reg_rs2_addr <= `REG_ADDR_ZERO;
 						reg_wr_addr <= `REG_ADDR_ZERO;
-						jmp_flag <= `JMP_DIS;
+						jmp_flag <= `JMP_NOPE;
 						load_code <= `LOAD_NOPE;
 						store_code <= `STORE_NOPE;
 					end
@@ -181,7 +185,7 @@ module id(
 				reg_rs2_addr <= `REG_ADDR_ZERO;
 				reg_wr_addr <= addr_rd;
 
-				jmp_flag <= `JMP_EN;
+				jmp_flag <= `JMP_J;
 				load_code <= `LOAD_NOPE;
 				store_code <= `STORE_NOPE;
 				
@@ -206,7 +210,7 @@ module id(
 						jmp_op_num1	<= addr_rs1;
 						jmp_op_num2	<= {{20{instr[31]}},instr[31:20]};
 
-						jmp_flag <= `JMP_EN;
+						jmp_flag <= `JMP_J;
 						load_code <= `LOAD_NOPE;
 						store_code <= `STORE_NOPE;
 					end
@@ -215,7 +219,7 @@ module id(
 						reg_rs1_addr <= `REG_ADDR_ZERO;
 						reg_rs2_addr <= `REG_ADDR_ZERO;
 						reg_wr_addr <= `REG_ADDR_ZERO;
-						jmp_flag <= `JMP_DIS;
+						jmp_flag <= `JMP_NOPE;
 						load_code <= `LOAD_NOPE;
 						store_code <= `STORE_NOPE;
 					end
@@ -228,7 +232,7 @@ module id(
 				reg_rs2_addr <= `REG_ADDR_ZERO;
 				reg_wr_addr <= addr_rd;
 				
-				alu_operation <= `ALU_ADD;
+				alu_operation <= `JMP_J;
 				alu_op_num1 <= addr_instr;
 				alu_op_num2 <= 32'd4;
 				jmp_op_num1	<= addr_instr;
@@ -245,7 +249,7 @@ module id(
 				reg_rs2_addr <= `REG_ADDR_ZERO;
 				reg_wr_addr <= `REG_ADDR_ZERO;
 
-				jmp_flag <= `JMP_DIS;
+				jmp_flag <= `JMP_NOPE;
 				load_code <= `LOAD_NOPE;
 				store_code <= `STORE_NOPE;
 			end
@@ -255,7 +259,7 @@ module id(
 				reg_rs1_addr <= `REG_ADDR_ZERO;
 				reg_rs2_addr <= `REG_ADDR_ZERO;
 				reg_wr_addr <= `REG_ADDR_ZERO;
-				jmp_flag <= `JMP_DIS;
+				jmp_flag <= `JMP_NOPE;
 				load_code <= `LOAD_NOPE;
 				store_code <= `STORE_NOPE;
 			end
