@@ -73,7 +73,7 @@ module core(
 	wire jmp_en_ex_o;
 	wire [`BUS_ADDR_MEM] jmp_to_ex_o;
 
-	wire [`BUS_DATA_MAM] data_mem_wb_i;
+	wire [`BUS_DATA_MEM] data_mem_wb_i;
 	wire [`BUS_DATA_REG] alu_result_wb_i;
 	wire [`BUS_ADDR_REG] addr_wr_wb_i;
 	wire reg_wr_en_wb_i;
@@ -194,7 +194,7 @@ module core(
 		.jmp_flag_o		(jmp_flag_id_o)
 	);
 
-	module ex(
+	ex core_ex(
 
 		.data_rs1		(data_rs1_ex_i),
 		.data_rs2		(data_rs2_ex_i),
@@ -231,7 +231,7 @@ module core(
 
 		.data_mem_i 	(data_mem_wb_i),
 		.data_alu_i	 	(alu_result_wb_i),
-		.addr_reg_wr_i	(data_wr_wb_i),
+		.addr_reg_wr_i	(addr_wr_wb_i),
 		.reg_wr_en_i	(reg_wr_en_wb_i),
 		.load_code_i	(load_code_wb_i),
 

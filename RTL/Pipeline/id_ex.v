@@ -53,7 +53,7 @@ module id_ex(
 		.data_in	(data_rs1_i),
 		.data_r_ini	(`ZERO_WORD),
 
-		.data_out	(data_rs1_o),
+		.data_out	(data_rs1_o)
 	);
 
 	gnrl_dff # (.DW(32)) dff_data_rs2(
@@ -63,7 +63,7 @@ module id_ex(
 		.data_in	(data_rs2_i),
 		.data_r_ini	(`ZERO_WORD),
 
-		.data_out	(data_rs2_o),
+		.data_out	(data_rs2_o)
 	);	
 
 	gnrl_dff # (.DW(5)) dff_addr_rd(
@@ -73,7 +73,7 @@ module id_ex(
 		.data_in	(data_rd_i),
 		.data_r_ini	(`REG_ADDR_ZERO),
 
-		.data_out	(data_rd_o),
+		.data_out	(data_rd_o)
 	);	
 	gnrl_dff # (.DW(1)) dff_wr_en(
 		.clk		(clk),
@@ -82,7 +82,7 @@ module id_ex(
 		.data_in	(reg_wr_en_i),
 		.data_r_ini	(`REG_WR_DIS),
 
-		.data_out	(reg_wr_en_o),
+		.data_out	(reg_wr_en_o)
 	);	
 
 	gnrl_dff # (.DW(32)) dff_instr(
@@ -92,7 +92,7 @@ module id_ex(
 		.data_in	(instr_i),
 		.data_r_ini	(`ZERO_WORD),
 
-		.data_out	(instr_o),
+		.data_out	(instr_o)
 	);	
 
 
@@ -103,7 +103,7 @@ module id_ex(
 		.data_in	(store_code_i),
 		.data_r_ini	(`ZERO_WORD),
 
-		.data_out	(store_code_o),
+		.data_out	(store_code_o)
 	);	
 	gnrl_dff # (.DW(32)) dff_load_code(
 		.clk		(clk),
@@ -112,7 +112,7 @@ module id_ex(
 		.data_in	(load_code_i),
 		.data_r_ini	(`ZERO_WORD),
 
-		.data_out	(load_code_o),
+		.data_out	(load_code_o)
 	);	
 	gnrl_dff # (.DW(3)) dff_alu_opcode(
 		.clk		(clk),
@@ -121,7 +121,7 @@ module id_ex(
 		.data_in	(alu_operation_i),
 		.data_r_ini	(`ALU_ADD),
 
-		.data_out	(alu_operation_o),
+		.data_out	(alu_operation_o)
 	);
 
 	gnrl_dff # (.DW(32)) dff_alu_num1(
@@ -131,7 +131,7 @@ module id_ex(
 		.data_in	(alu_op_num1_i),
 		.data_r_ini	(`ZERO_WORD),
 
-		.data_out	(alu_op_num1_o),
+		.data_out	(alu_op_num1_o)
 	);	
 
 	gnrl_dff # (.DW(32)) dff_alu_num2(
@@ -141,7 +141,7 @@ module id_ex(
 		.data_in	(alu_op_num2_i),
 		.data_r_ini	(`ZERO_WORD),
 
-		.data_out	(alu_op_num2_o),
+		.data_out	(alu_op_num2_o)
 	);
 
 	gnrl_dff # (.DW(32)) dff_jmp_num1(
@@ -151,7 +151,7 @@ module id_ex(
 		.data_in	(jmp_op_num1_i),
 		.data_r_ini	(`ZERO_WORD),
 
-		.data_out	(jmp_op_num1_o),
+		.data_out	(jmp_op_num1_o)
 	);	
 
 	gnrl_dff # (.DW(32)) dff_jmp_num2(
@@ -161,7 +161,7 @@ module id_ex(
 		.data_in	(jmp_op_num2_i),
 		.data_r_ini	(`ZERO_WORD),
 
-		.data_out	(jmp_op_num2_o),
+		.data_out	(jmp_op_num2_o)
 	);
 
 	gnrl_dff # (.DW(2)) dff_jmp_flag(
@@ -171,7 +171,7 @@ module id_ex(
 		.data_in	(jmp_flag),
 		.data_r_ini	(`JMP_NOPE),
 
-		.data_out	(jmp_flag),
+		.data_out	(jmp_flag)
 	);
 
 

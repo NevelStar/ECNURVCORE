@@ -43,7 +43,7 @@ module reg_wb(
 		.data_in	(addr_reg_wr_i),
 		.data_r_ini	(`REG_ADDR_ZERO),
 
-		.data_out	(addr_reg_wr_o),
+		.data_out	(addr_reg_wr_o)
 	);
 
 	gnrl_dff # (.DW(32)) dff_data_reg_wr(
@@ -53,7 +53,7 @@ module reg_wb(
 		.data_in	(data_reg_wr),
 		.data_r_ini	(`ZERO_WORD),
 
-		.data_out	(data_reg_wr_o),
+		.data_out	(data_reg_wr_o)
 	);
 
 	gnrl_dff # (.DW(1)) dff_reg_wr_en(
@@ -63,7 +63,7 @@ module reg_wb(
 		.data_in	(reg_wr_en_i),
 		.data_r_ini	(`REG_WR_DIS),
 
-		.data_out	(reg_wr_en_o),
+		.data_out	(reg_wr_en_o)
 	);
 
 

@@ -12,7 +12,7 @@ module gnrl_dff # (
 	input	[DW-1:0]	data_in		,
 	input	[DW-1:0]	data_r_ini	,
 
-	output	[DW-1:0]	data_out	,
+	output	[DW-1:0]	data_out	
 
 );
 

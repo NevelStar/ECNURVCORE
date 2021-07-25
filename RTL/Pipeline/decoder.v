@@ -25,7 +25,7 @@ module decoder(
 	output 	reg [`BUS_S_CODE]	store_code		,
 
 	output	reg [`BUS_ADDR_REG]	reg_rs1_addr	,
-	output	reg [`BUS_ADDR_REG]	reg_rs1_addr	,
+	output	reg [`BUS_ADDR_REG]	reg_rs2_addr	,
 	output	reg [`BUS_ADDR_REG]	reg_wr_addr		,
 	output	reg 				reg_wr_en		
 );
@@ -41,8 +41,8 @@ module decoder(
 	assign operation_code = instr[`OPERATION_CODE];
 	assign addr_rd = instr[`ADDR_RD];
 	assign funt3 = instr[`FUNCT3];
-	assign addr_rs1 = instr[`ADDR_R1];		
-	assign addr_rs2 = instr[`ADDR_R2];	
+	assign addr_rs1 = instr[`ADDR_RS1];		
+	assign addr_rs2 = instr[`ADDR_RS2];	
 	assign funt7 = instr[`FUNCT7];
 
 

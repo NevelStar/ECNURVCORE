@@ -26,7 +26,7 @@ module if_id(
 		.data_in	(addr_instr_i),
 		.data_r_ini	(`ZERO_WORD),
 
-		.data_out	(addr_instr_o),
+		.data_out	(addr_instr_o)
 	);
 
 	gnrl_dff # (.DW(32)) dff_instr(
@@ -36,7 +36,7 @@ module if_id(
 		.data_in	(instr_i),
 		.data_r_ini	(`ZERO_WORD),
 
-		.data_out	(instr_o),
+		.data_out	(instr_o)
 	);
 
 
