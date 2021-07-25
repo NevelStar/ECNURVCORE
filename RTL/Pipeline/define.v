@@ -123,3 +123,9 @@
 `define JMP_DIS				1'b0
 `define MEM_WR_EN			1'b1
 `define MEM_RD_EN			1'b0
+
+
+
+//the scale of memory
+`define NUM_DATA_MEM		0:255
+`define NUM_INSTR_MEM		0:255
