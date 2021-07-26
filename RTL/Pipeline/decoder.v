@@ -17,6 +17,8 @@ module decoder(
 	input	[`BUS_ADDR_MEM]		addr_instr		,
 
 
+	output	[`BUS_DATA_REG]		data_rs1		,
+	output	[`BUS_DATA_REG]		data_rs2		,
 	output	reg [`BUS_ALU_OP]	alu_operation	,
 	output	reg 				alu_add_sub		,
 	output	reg 				alu_shift		,
@@ -42,8 +44,6 @@ module decoder(
 	wire	[4:0]	addr_rs1;
 	wire	[4:0]	addr_rs2;
 	wire	[6:0]	funct7;
-	wire	[`BUS_DATA_REG] data_rs1;
-	wire	[`BUS_DATA_REG] data_rs2;	
 
 
 	assign operation_code = instr[`OPERATION_CODE];
@@ -143,7 +143,7 @@ module decoder(
 
 			`OPERATION_S: begin
 				case(funct3)
-					`INSTR_SB,`INSTR_SH,`INSTR_SH: begin
+					`INSTR_SB,`INSTR_SH,`INSTR_SW: begin
 						reg_wr_en <= `REG_WR_DIS;
 						reg_rs1_addr <= addr_rs1;
 						reg_rs2_addr <= addr_rs2;

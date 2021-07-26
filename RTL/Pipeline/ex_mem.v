@@ -2,10 +2,11 @@
 //Pipeline CPU
 //Created by Chesed
 //2021.07.23
+//Edited in 2021.07.26
 
 `include "define.v"
 
-module reg_wb(
+module ex_mem(
 	input						clk				,
 	input						rst_n			,
 	input						hold_n			,
@@ -19,7 +20,6 @@ module reg_wb(
 
 	output	[`BUS_ADDR_REG]		addr_reg_wr_o	,
 	output	[`BUS_DATA_REG]		data_reg_wr_o 	,
-	output	[`BUS_DATA_REG]		data_bypass_o 	,
 	output						reg_wr_en_o		
 	
 
@@ -27,16 +27,19 @@ module reg_wb(
 	
 	reg [`BUS_DATA_REG] data_reg_wr; 
 
-	assign data_bypass_o = data_reg_wr;
+	wire [`BUS_DATA_REG]	data_alu_t;
+	wire [`BUS_L_CODE] load_code_t;
+
+	assign data_reg_wr_o = data_reg_wr;
 
 	always@(*) begin
-		case(load_code_i)
+		case(load_code_t)
 			`INSTR_LB: data_reg_wr <= {{24{data_mem_i[7]}},data_mem_i[7:0]};
 			`INSTR_LH: data_reg_wr <= {{16{data_mem_i[15]}},data_mem_i[15:0]};
 			`INSTR_LW: data_reg_wr <= data_mem_i;
 			`INSTR_LBU: data_reg_wr <= {24'd0,data_mem_i[7:0]};
 			`INSTR_LHU: data_reg_wr <= {16'd0,data_mem_i[15:0]};
-			default: data_reg_wr <= data_alu_i;
+			default: data_reg_wr <= data_alu_t;
 		endcase
 	end
 
@@ -50,14 +53,14 @@ module reg_wb(
 		.data_out	(addr_reg_wr_o)
 	);
 
-	gnrl_dff # (.DW(32)) dff_data_reg_wr(
+	gnrl_dff # (.DW(32)) dff_data_alu(
 		.clk		(clk),
 		.rst_n		(rst_n),
 		.wr_en		(hold_n),
-		.data_in	(data_reg_wr),
+		.data_in	(data_alu_i),
 		.data_r_ini	(`ZERO_WORD),
 
-		.data_out	(data_reg_wr_o)
+		.data_out	(data_alu_t)
 	);
 
 	gnrl_dff # (.DW(1)) dff_reg_wr_en(
@@ -68,6 +71,15 @@ module reg_wb(
 		.data_r_ini	(`REG_WR_DIS),
 
 		.data_out	(reg_wr_en_o)
+	);
+	gnrl_dff # (.DW(3)) dff_load_code(
+		.clk		(clk),
+		.rst_n		(rst_n),
+		.wr_en		(hold_n),
+		.data_in	(load_code_i),
+		.data_r_ini	(`LOAD_NOPE),
+
+		.data_out	(load_code_t)
 	);
 
 

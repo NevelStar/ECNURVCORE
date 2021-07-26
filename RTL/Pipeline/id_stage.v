@@ -42,6 +42,8 @@ module id_stage(
 	wire [`BUS_DATA_REG] alu_op_num2;
 	wire [`BUS_DATA_REG] jmp_op_num1;
 	wire [`BUS_DATA_REG] jmp_op_num2;
+	wire [`BUS_DATA_REG] data_rs1;
+	wire [`BUS_DATA_REG] data_rs2;
 	wire [`BUS_JMP_FLAG] jmp_flag;
 	wire [`BUS_L_CODE] load_code;
 	wire [`BUS_S_CODE] store_code;
@@ -59,7 +61,8 @@ module id_stage(
 		.instr			(instr_i),
 		.addr_instr		(addr_instr_i),
 	
-	
+		.data_rs1		(data_rs1),
+		.data_rs2		(data_rs2),
 		.alu_add_sub	(alu_add_sub),
 		.alu_shift		(alu_shift),
 		.alu_operation	(alu_operation),
@@ -84,8 +87,8 @@ module id_stage(
 		.clk			(clk),
 		.rst_n			(rst_n),
 
-		.data_rs1_i		(data_rs1_i),
-		.data_rs2_i		(data_rs2_i),
+		.data_rs1_i		(data_rs1),
+		.data_rs2_i		(data_rs2),
 		.addr_rd_i		(reg_wr_addr),
 		.reg_wr_en_i	(reg_wr_en),
 

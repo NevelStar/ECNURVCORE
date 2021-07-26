@@ -2,6 +2,7 @@
 //Pipeline CPU
 //Created by Chesed
 //2021.07.25
+//Edited in 2021.07.26
 
 
 `include "define.v"
@@ -36,7 +37,7 @@ module bus_core(
 			mem_data[addr_mem_i+3] <= data_mem_wr_i[31:24];
 		end
 		else begin
-			data_mem_rd_o <= mem_data[addr_mem_i];
+			data_mem_rd_o <= {mem_data[addr_mem_i+3],mem_data[addr_mem_i+2],mem_data[addr_mem_i+1],mem_data[addr_mem_i]};
 		end
 	end
 
