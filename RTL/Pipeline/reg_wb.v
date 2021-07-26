@@ -19,11 +19,15 @@ module reg_wb(
 
 	output	[`BUS_ADDR_REG]		addr_reg_wr_o	,
 	output	[`BUS_DATA_REG]		data_reg_wr_o 	,
+	output	[`BUS_DATA_REG]		data_bypass_o 	,
 	output						reg_wr_en_o		
 	
 
 );
+	
 	reg [`BUS_DATA_REG] data_reg_wr; 
+
+	assign data_bypass_o = data_reg_wr;
 
 	always@(*) begin
 		case(load_code_i)

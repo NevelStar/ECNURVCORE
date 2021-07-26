@@ -20,6 +20,8 @@ module id_ex(
 	input 	[`BUS_L_CODE]		load_code_i		,
 	input 	[`BUS_S_CODE]		store_code_i	,
 
+	input		 				alu_add_sub_i	,
+	input		 				alu_shift_i		,
 	input	[`BUS_ALU_OP]		alu_operation_i	,
 	input	[`BUS_DATA_REG]		alu_op_num1_i	,
 	input	[`BUS_DATA_REG]		alu_op_num2_i	,
@@ -38,6 +40,8 @@ module id_ex(
 	output 	[`BUS_L_CODE]		load_code_o		,
 	output 	[`BUS_S_CODE]		store_code_o	,
 
+	output		 				alu_add_sub_o	,
+	output		 				alu_shift_o		,
 	output	[`BUS_ALU_OP]		alu_operation_o	,
 	output	[`BUS_DATA_REG]		alu_op_num1_o	,
 	output	[`BUS_DATA_REG]		alu_op_num2_o	,
@@ -70,10 +74,10 @@ module id_ex(
 		.clk		(clk),
 		.rst_n		(rst_n),
 		.wr_en		(hold_n),
-		.data_in	(data_rd_i),
+		.data_in	(addr_rd_i),
 		.data_r_ini	(`REG_ADDR_ZERO),
 
-		.data_out	(data_rd_o)
+		.data_out	(addr_rd_o)
 	);	
 	gnrl_dff # (.DW(1)) dff_wr_en(
 		.clk		(clk),
@@ -96,23 +100,43 @@ module id_ex(
 	);	
 
 
-	gnrl_dff # (.DW(32)) dff_store_code(
+	gnrl_dff # (.DW(3)) dff_store_code(
 		.clk		(clk),
 		.rst_n		(rst_n),
 		.wr_en		(hold_n),
 		.data_in	(store_code_i),
-		.data_r_ini	(`ZERO_WORD),
+		.data_r_ini	(`STORE_NOPE),
 
 		.data_out	(store_code_o)
 	);	
-	gnrl_dff # (.DW(32)) dff_load_code(
+	gnrl_dff # (.DW(3)) dff_load_code(
 		.clk		(clk),
 		.rst_n		(rst_n),
 		.wr_en		(hold_n),
 		.data_in	(load_code_i),
-		.data_r_ini	(`ZERO_WORD),
+		.data_r_ini	(`LOAD_NOPE),
 
 		.data_out	(load_code_o)
+	);	
+
+	gnrl_dff # (.DW(1)) dff_add_sub(
+		.clk		(clk),
+		.rst_n		(rst_n),
+		.wr_en		(hold_n),
+		.data_in	(alu_add_sub_i),
+		.data_r_ini	(`ALU_ADD_EN),
+
+		.data_out	(alu_add_sub_o)
+	);	
+
+	gnrl_dff # (.DW(1)) dff_shift_l_a(
+		.clk		(clk),
+		.rst_n		(rst_n),
+		.wr_en		(hold_n),
+		.data_in	(alu_shift_i),
+		.data_r_ini	(`ALU_SHIFT_L),
+
+		.data_out	(alu_shift_o)
 	);	
 	gnrl_dff # (.DW(3)) dff_alu_opcode(
 		.clk		(clk),
@@ -164,7 +188,7 @@ module id_ex(
 		.data_out	(jmp_op_num2_o)
 	);
 
-	gnrl_dff # (.DW(2)) dff_jmp_flag(
+	gnrl_dff # (.DW(3)) dff_jmp_flag(
 		.clk		(clk),
 		.rst_n		(rst_n),
 		.wr_en		(hold_n),

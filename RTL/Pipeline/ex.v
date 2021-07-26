@@ -11,12 +11,12 @@ module ex(
 	input	[`BUS_DATA_REG]		data_rs1		,
 	input	[`BUS_DATA_REG]		data_rs2		,
 
-	input	[`BUS_DATA_MEM]		instr			,
-
 	input 	[`BUS_L_CODE]		load_code		,
 	input 	[`BUS_S_CODE]		store_code		,
 	input 	[`BUS_JMP_FLAG]		jmp_flag		,
 
+	input						alu_add_sub		,
+	input						alu_shift		,
 	input	[`BUS_ALU_OP]		alu_operation	,
 	input	[`BUS_DATA_REG]		alu_op_num1		,
 	input	[`BUS_DATA_REG]		alu_op_num2		,
@@ -36,7 +36,6 @@ module ex(
 );
 	
 	wire [4:0] shamt;
-	wire [6:0] funct7;
 
 	wire [`BUS_DATA_REG] sra_mask;
 	wire [`BUS_DATA_REG] sra_sign;
@@ -56,7 +55,6 @@ module ex(
 
 
 	assign shamt = alu_op_num2[4:0];
-	assign funct7 = instr[`FUNCT7];
 
 	assign sra_mask = ~(32'hffffffff >> shamt);
 	assign sra_sign = sra_mask & {32{alu_op_num1[31]}};
@@ -82,9 +80,9 @@ module ex(
 	always@(*)begin
 		case(alu_operation)
 			`INSTR_ADD: begin
-				case(funct7)
-					`FUNCT7_ADD:	alu_result <= alu_add;
-					`FUNCT7_SUB:	alu_result <= alu_sub;
+				case(alu_add_sub)
+					`ALU_ADD_EN:	alu_result <= alu_add;
+					`ALU_SUB_EN:	alu_result <= alu_sub;
 					default:		alu_result <= `ZERO_WORD;
 				endcase
 			end
@@ -93,9 +91,9 @@ module ex(
 			`INSTR_SLTU:	alu_result <= alu_sltu;
 			`INSTR_XOR:		alu_result <= alu_xor;
 			`INSTR_SR: begin
-				case(funct7)
-					`FUNCT7_SRL:	alu_result <= alu_srl;
-					`FUNCT7_SRA:	alu_result <= alu_sra;
+				case(alu_shift)
+					`ALU_SHIFT_L:	alu_result <= alu_srl;
+					`ALU_SHIFT_A:	alu_result <= alu_sra;
 					default:		alu_result <= `ZERO_WORD;
 				endcase
 			end
@@ -143,18 +141,14 @@ module ex(
 
 	always@(*) begin
 		case(jmp_flag)
-			`JMP_B: begin
-				case(funct3)
-					`INSTR_BEQ:		jmp_en <= (data_rs1 == data_rs2) ? `JMP_EN : `JMP_DIS;
-					`INSTR_BNE:		jmp_en <= (data_rs1 != data_rs2) ? `JMP_EN : `JMP_DIS;
-					`INSTR_BLT:		jmp_en <= alu_slt[0] ? `JMP_EN : `JMP_DIS;
-					`INSTR_BGE:		jmp_en <= alu_slt[0] ? `JMP_DIS : `JMP_EN;
-					`INSTR_BLTU:	jmp_en <= alu_sltu[0] ? `JMP_EN : `JMP_DIS;
-					`INSTR_BGEU:	jmp_en <= alu_sltu[0] ? `JMP_DIS : `JMP_EN;
-				endcase
-			end
-			`JMP_J: 	jmp_en <= `JMP_EN;
-			default:	jmp_en <= `JMP_DIS;
+			`INSTR_BEQ:		jmp_en <= (data_rs1 == data_rs2) ? `JMP_EN : `JMP_DIS;
+			`INSTR_BNE:		jmp_en <= (data_rs1 != data_rs2) ? `JMP_EN : `JMP_DIS;
+			`INSTR_BLT:		jmp_en <= alu_slt[0] ? `JMP_EN : `JMP_DIS;
+			`INSTR_BGE:		jmp_en <= alu_slt[0] ? `JMP_DIS : `JMP_EN;
+			`INSTR_BLTU:	jmp_en <= alu_sltu[0] ? `JMP_EN : `JMP_DIS;
+			`INSTR_BGEU:	jmp_en <= alu_sltu[0] ? `JMP_DIS : `JMP_EN;
+			`JMP_J: 		jmp_en <= `JMP_EN;
+			default:		jmp_en <= `JMP_DIS;
 		endcase
 	end
 

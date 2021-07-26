@@ -2,6 +2,7 @@
 //Pipeline CPU
 //Created by Chesed
 //2021.07.20
+//Edited in 2021.07.26
 
 
 `include "define.v"
@@ -16,12 +17,12 @@ module pc(
 	input						jmp_en		,
 	input	[`BUS_ADDR_MEM]		jmp_to		,
 
-	output reg [`BUS_ADDR_MEM]	addr_next
+	output reg [`BUS_ADDR_MEM]	addr_instr
 );
 
 
 
-	always @(posedge clk)begin
+	always @(posedge clk or negedge rst_n)begin
 		if(!rst_n) begin
 			addr_instr <= `INSTR_ADDR_INI;
 		end

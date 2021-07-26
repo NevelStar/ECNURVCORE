@@ -6,6 +6,7 @@
 //Edited in 2021.07.21
 //Edited in 2021.07.22
 //Edited in 2021.07.23
+//Edited in 2021.07.25
 
 
 //the initial data
@@ -29,6 +30,7 @@
 `define BUS_L_CODE			2:0
 `define BUS_S_CODE			2:0
 `define BUS_JMP_FLAG		2:0
+`define BUS_BYTE_DATA		7:0
 
 //decode the instrument
 `define OPERATION_CODE		6:0
@@ -100,9 +102,9 @@
 `define FUNCT7_SRA			7'b0100000
 
 //jmp flag code
-`define JMP_NOPE			2'b00
-`define JMP_B				2'b01
-`define JMP_J				2'b10
+`define JMP_NOPE			3'b011
+`define JMP_J				3'b010
+//the jump code of type B is funct3
 
 
 //alu operation
@@ -123,6 +125,10 @@
 `define JMP_DIS				1'b0
 `define MEM_WR_EN			1'b1
 `define MEM_RD_EN			1'b0
+`define ALU_SUB_EN			1'b1
+`define ALU_ADD_EN			1'b0
+`define ALU_SHIFT_L			1'b0
+`define ALU_SHIFT_A			1'b1
 
 
 

@@ -4,17 +4,22 @@
 //2021.07.20
 //Edited in 2021.07.21
 //Edited in 2021.07.23
+//Edited in 2021.07.26
 
 `include "define.v"
 
 module decoder(
-	input	[`BUS_DATA_REG]		data_rs1		,
-	input	[`BUS_DATA_REG]		data_rs2		,
+	input	[`BUS_DATA_REG]		data_rs1_reg	,
+	input	[`BUS_DATA_REG]		data_rs2_reg	,
+	input	[`BUS_ADDR_REG]		reg_rd_addr_t	,
+	input	[`BUS_DATA_REG]		data_bypass		,
 	input	[`BUS_DATA_MEM]		instr			,
 	input	[`BUS_ADDR_MEM]		addr_instr		,
 
 
 	output	reg [`BUS_ALU_OP]	alu_operation	,
+	output	reg 				alu_add_sub		,
+	output	reg 				alu_shift		,
 	output	reg [`BUS_DATA_REG]	alu_op_num1		,
 	output	reg [`BUS_DATA_REG]	alu_op_num2		,
 	output	reg [`BUS_DATA_REG]	jmp_op_num1		,
@@ -33,17 +38,24 @@ module decoder(
 
 	wire	[6:0]	operation_code;
 	wire	[4:0]	addr_rd;
-	wire	[2:0]	funt3;
+	wire	[2:0]	funct3;
 	wire	[4:0]	addr_rs1;
 	wire	[4:0]	addr_rs2;
-	wire	[6:0]	funt7;
+	wire	[6:0]	funct7;
+	wire	[`BUS_DATA_REG] data_rs1;
+	wire	[`BUS_DATA_REG] data_rs2;	
+
 
 	assign operation_code = instr[`OPERATION_CODE];
 	assign addr_rd = instr[`ADDR_RD];
-	assign funt3 = instr[`FUNCT3];
+	assign funct3 = instr[`FUNCT3];
 	assign addr_rs1 = instr[`ADDR_RS1];		
 	assign addr_rs2 = instr[`ADDR_RS2];	
-	assign funt7 = instr[`FUNCT7];
+	assign funct7 = instr[`FUNCT7];
+
+
+	assign data_rs1 = (addr_rs1 == reg_rd_addr_t) ? data_bypass : data_rs1_reg;
+	assign data_rs2 = (addr_rs2 == reg_rd_addr_t) ? data_bypass : data_rs2_reg;
 
 
 	always@(*) begin
@@ -58,6 +70,8 @@ module decoder(
 				load_code <= `LOAD_NOPE;
 				store_code <= `STORE_NOPE;
 				
+				alu_add_sub <= (funct7 == `FUNCT7_SUB) ? `ALU_SUB_EN : `ALU_ADD_EN;
+				alu_shift <= (funct7 == `FUNCT7_SRA) ? `ALU_SHIFT_A : `ALU_SHIFT_L;
 				alu_operation <= funct3;
 				alu_op_num1	<= data_rs1;
 				alu_op_num2	<= data_rs2;
@@ -73,6 +87,8 @@ module decoder(
 				load_code <= `LOAD_NOPE;
 				store_code <= `STORE_NOPE;
 
+				alu_add_sub <= `ALU_ADD_EN;
+				alu_shift <= (funct7 == `FUNCT7_SRA) ? `ALU_SHIFT_A : `ALU_SHIFT_L;
 				alu_operation <= funct3;
 				alu_op_num1	<= data_rs1;
 				alu_op_num2	<= {{20{instr[31]}},instr[31:20]};
@@ -88,13 +104,15 @@ module decoder(
 				load_code <= `LOAD_NOPE;
 				store_code <= `STORE_NOPE;
 				
+				alu_add_sub <= `ALU_ADD_EN;
+				alu_shift <= `ALU_SHIFT_L;
 				alu_operation <= `ALU_ADD;
 				alu_op_num1	<= {instr[31:12],12'h0};
 				alu_op_num2	<= `ZERO_WORD;
 			end
 								
 			`OPERATION_LOAD: begin
-				case(funt3)
+				case(funct3)
 					`INSTR_LB,`INSTR_LH,`INSTR_LW,`INSTR_LBU,`INSTR_LHU: begin
 						reg_wr_en <= `REG_WR_EN;
 						reg_rs1_addr <= addr_rs1;
@@ -105,6 +123,8 @@ module decoder(
 						load_code <= funct3;
 						store_code <= `STORE_NOPE;
 						
+						alu_add_sub <= `ALU_ADD_EN;
+						alu_shift <= `ALU_SHIFT_L;
 						alu_operation <= `ALU_ADD;
 						alu_op_num1	<= data_rs1;
 						alu_op_num2	<= {{20{instr[31]}},instr[31:20]};
@@ -122,7 +142,7 @@ module decoder(
 			end
 
 			`OPERATION_S: begin
-				case(funt3)
+				case(funct3)
 					`INSTR_SB,`INSTR_SH,`INSTR_SH: begin
 						reg_wr_en <= `REG_WR_DIS;
 						reg_rs1_addr <= addr_rs1;
@@ -133,6 +153,8 @@ module decoder(
 						load_code <= `LOAD_NOPE;
 						store_code <= funct3;
 						
+						alu_add_sub <= `ALU_ADD_EN;
+						alu_shift <= `ALU_SHIFT_L;
 						alu_operation <= `ALU_ADD;
 						alu_op_num1	<= data_rs1;
 						alu_op_num2	<= {{20{instr[31]}}, instr[31:25], instr[11:7]};
@@ -150,17 +172,19 @@ module decoder(
 			end
 
 			`OPERATION_B: begin				
-				case(funt3)
+				case(funct3)
 					`INSTR_BEQ,`INSTR_BNE,`INSTR_BLT,`INSTR_BGE,`INSTR_BLTU,`INSTR_BGEU: begin
 						reg_wr_en <= `REG_WR_DIS;
 						reg_rs1_addr <= addr_rs1;
 						reg_rs2_addr <= addr_rs2;
 						reg_wr_addr <= `REG_ADDR_ZERO;
 
-						jmp_flag <= `JMP_B;
+						jmp_flag <= funct3;
 						load_code <= `LOAD_NOPE;
 						store_code <= `STORE_NOPE;
 						
+						alu_add_sub <= `ALU_ADD_EN;
+						alu_shift <= `ALU_SHIFT_L;
 						alu_operation <= `ALU_ADD;
 						alu_op_num1 <= data_rs1;
 						alu_op_num2 <= data_rs2;
@@ -189,6 +213,8 @@ module decoder(
 				load_code <= `LOAD_NOPE;
 				store_code <= `STORE_NOPE;
 				
+				alu_add_sub <= `ALU_ADD_EN;
+				alu_shift <= `ALU_SHIFT_L;
 				alu_operation <= `ALU_ADD;
 				alu_op_num1 <= addr_instr;
 				alu_op_num2 <= 32'd4;
@@ -204,6 +230,8 @@ module decoder(
 						reg_rs2_addr <= `REG_ADDR_ZERO;
 						reg_wr_addr <= addr_rd;
 						
+						alu_add_sub <= `ALU_ADD_EN;
+						alu_shift <= `ALU_SHIFT_L;
 						alu_operation <= `ALU_ADD;
 						alu_op_num1 <= addr_instr;
 						alu_op_num2 <= 32'd4;
@@ -232,13 +260,15 @@ module decoder(
 				reg_rs2_addr <= `REG_ADDR_ZERO;
 				reg_wr_addr <= addr_rd;
 				
-				alu_operation <= `JMP_J;
+				alu_add_sub <= `ALU_ADD_EN;
+				alu_shift <= `ALU_SHIFT_L;
+				alu_operation <= `ALU_ADD;
 				alu_op_num1 <= addr_instr;
 				alu_op_num2 <= 32'd4;
 				jmp_op_num1	<= addr_instr;
 				jmp_op_num2	<= {instr[31:12],12'd0};
 
-				jmp_flag <= `JMP_EN;
+				jmp_flag <= `JMP_J;
 				load_code <= `LOAD_NOPE;
 				store_code <= `STORE_NOPE;
 			end

@@ -3,6 +3,7 @@
 //Created by Chesed
 //2021.07.23
 //Edited in 2021.07.25
+//Edited in 2021.07.26
 
 `include "define.v"
 
@@ -36,6 +37,7 @@ module core(
 	
 	wire [`BUS_DATA_REG] data_rs1_id_i;
 	wire [`BUS_DATA_REG] data_rs2_id_i;
+	wire [`BUS_DATA_REG] data_bypass_id_i;
 	wire [`BUS_DATA_MEM] instr_id_i;
 	wire [`BUS_DATA_MEM] addr_instr_id_i;
 	wire [`BUS_DATA_REG] data_rs1_id_o;
@@ -47,6 +49,8 @@ module core(
 	wire [`BUS_DATA_MEM] instr_id_o;
 	wire [`BUS_L_CODE] load_code_id_o;
 	wire [`BUS_S_CODE] store_code_id_o;
+	wire alu_add_sub_id_o;
+	wire alu_shift_id_o;	
 	wire [`BUS_ALU_OP] alu_operation_id_o;
 	wire [`BUS_DATA_REG] alu_op_num1_id_o;
 	wire [`BUS_DATA_REG] alu_op_num2_id_o;
@@ -57,9 +61,10 @@ module core(
 
 	wire [`BUS_DATA_REG] data_rs1_ex_i;
 	wire [`BUS_DATA_REG] data_rs2_ex_i;
-	wire [`BUS_DATA_MEM] instr_ex_i;
 	wire [`BUS_L_CODE] load_code_ex_i;
 	wire [`BUS_S_CODE] store_code_ex_i;
+	wire alu_add_sub_ex_i;
+	wire alu_shift_ex_i;
 	wire [`BUS_ALU_OP] alu_operation_ex_i;
 	wire [`BUS_DATA_REG] alu_op_num1_ex_i;
 	wire [`BUS_DATA_REG] alu_op_num2_ex_i;
@@ -81,6 +86,7 @@ module core(
 	wire [`BUS_L_CODE] load_code_wb_i;
 	wire [`BUS_ADDR_REG] addr_wr_wb_o;
 	wire [`BUS_DATA_REG] data_wr_wb_o;
+	wire [`BUS_DATA_REG] data_bypass_wb_o;
 	wire wr_en_wb_o;
 
 
@@ -107,13 +113,16 @@ module core(
 
 	assign data_rs1_id_i = data_rd1_reg_o;
 	assign data_rs2_id_i = data_rd2_reg_o;
+	assign data_bypass_id_i = data_bypass_wb_o;
 	assign instr_id_i = instr_if_o;
 	assign addr_instr_id_i = instr_if_o;
+
 	assign data_rs1_ex_i = data_rs1_id_o;
 	assign data_rs2_ex_i = data_rs2_id_o;
-	assign instr_ex_i = instr_id_o;
 	assign load_code_ex_i = load_code_id_o;	
 	assign store_code_ex_i = store_code_id_o;
+	assign alu_add_sub_ex_i = alu_add_sub_id_o;
+	assign alu_shift_ex_i = alu_shift_id_o;
 	assign alu_operation_ex_i = alu_operation_id_o;
 	assign alu_op_num1_ex_i = alu_op_num1_id_o;
 	assign alu_op_num2_ex_i = alu_op_num2_id_o;
@@ -136,7 +145,7 @@ module core(
 	assign addr_rd2_reg_i = addr_rs2_id_o;
 	assign data_wr_reg_i = data_wr_wb_o;
 	assign jmp_en_ctrl_i = jmp_en_ex_o;
-	assign jmp_to_ctrl_i = jmp_en_to_o;
+	assign jmp_to_ctrl_i = jmp_to_ex_o;
 
 
 	pc core_pc(
@@ -147,7 +156,7 @@ module core(
 		.jmp_en		(jmp_en_pc_i),
 		.jmp_to		(jmp_to_pc_i),
 	
-		.addr_next	(pc_o)
+		.addr_instr	(pc_o)
 	);
 
 
@@ -174,6 +183,7 @@ module core(
 
 		.data_rs1_i		(data_rs1_id_i),
 		.data_rs2_i		(data_rs2_id_i),
+		.data_bypass_i 	(data_bypass_id_i),
 		.instr_i		(instr_id_i),
 		.addr_instr_i	(addr_instr_id_i),	
 
@@ -187,6 +197,8 @@ module core(
 		.instr_o		(instr_id_o),
 		.load_code_o	(load_code_id_o),
 		.store_code_o	(store_code_id_o),
+		.alu_add_sub_o	(alu_add_sub_id_o),
+		.alu_shift_o	(alu_shift_id_o),
 		.alu_operation_o(alu_operation_id_o),
 		.alu_op_num1_o	(alu_op_num1_id_o),
 		.alu_op_num2_o	(alu_op_num2_id_o),
@@ -200,12 +212,11 @@ module core(
 		.data_rs1		(data_rs1_ex_i),
 		.data_rs2		(data_rs2_ex_i),
 
-		.instr			(instr_ex_i),
-
 		.load_code		(load_code_ex_i),
 		.store_code		(store_code_ex_i),
 		.jmp_flag		(jmp_flag_ex_i),
-
+		.alu_add_sub	(alu_add_sub_ex_i),
+		.alu_shift		(alu_shift_ex_i),
 		.alu_operation	(alu_operation_ex_i),
 		.alu_op_num1	(alu_op_num1_ex_i),
 		.alu_op_num2	(alu_op_num2_ex_i),
@@ -239,6 +250,7 @@ module core(
 
 		.addr_reg_wr_o	(addr_wr_wb_o),
 		.data_reg_wr_o 	(data_wr_wb_o),
+		.data_bypass_o	(data_bypass_wb_o),
 		.reg_wr_en_o	(wr_en_wb_o)	
 	
 

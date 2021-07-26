@@ -13,6 +13,7 @@ module id_stage(
 
 	input	[`BUS_DATA_REG]		data_rs1_i		,
 	input	[`BUS_DATA_REG]		data_rs2_i		,
+	input	[`BUS_DATA_REG]		data_bypass_i	,
 	input	[`BUS_DATA_MEM]		instr_i			,
 	input	[`BUS_ADDR_MEM]		addr_instr_i	,	
 
@@ -26,6 +27,8 @@ module id_stage(
 	output	[`BUS_DATA_MEM]		instr_o			,
 	output 	[`BUS_L_CODE] 		load_code_o		,
 	output 	[`BUS_S_CODE] 		store_code_o	,
+	output						alu_add_sub_o	,
+	output						alu_shift_o		,
 	output 	[`BUS_ALU_OP] 		alu_operation_o	,
 	output	[`BUS_DATA_REG]		alu_op_num1_o	,
 	output	[`BUS_DATA_REG]		alu_op_num2_o	,
@@ -44,15 +47,21 @@ module id_stage(
 	wire [`BUS_S_CODE] store_code;
 	wire [`BUS_ADDR_REG] reg_wr_addr;
 	wire reg_wr_en;
+	wire alu_add_sub;
+	wire alu_shift;
 
 
 	decoder id_decoder(
-		.data_rs1		(data_rs1_i),
-		.data_rs2		(data_rs2_i),
+		.data_rs1_reg	(data_rs1_i),
+		.data_rs2_reg	(data_rs2_i),
+		.reg_rd_addr_t	(addr_wr_o),
+		.data_bypass 	(data_bypass_i),
 		.instr			(instr_i),
 		.addr_instr		(addr_instr_i),
 	
 	
+		.alu_add_sub	(alu_add_sub),
+		.alu_shift		(alu_shift),
 		.alu_operation	(alu_operation),
 		.alu_op_num1	(alu_op_num1),
 		.alu_op_num2	(alu_op_num2),
@@ -67,6 +76,7 @@ module id_stage(
 		.reg_rs2_addr	(addr_rs2_o),
 		.reg_wr_addr	(reg_wr_addr),
 		.reg_wr_en		(reg_wr_en)
+
 	);
 
 
@@ -83,6 +93,8 @@ module id_stage(
 		.load_code_i	(load_code),
 		.store_code_i	(store_code),
 
+		.alu_add_sub_i	(alu_add_sub),
+		.alu_shift_i	(alu_shift),
 		.alu_operation_i(alu_operation),
 		.alu_op_num1_i	(alu_op_num1),
 		.alu_op_num2_i	(alu_op_num2),
@@ -101,6 +113,8 @@ module id_stage(
 		.load_code_o	(load_code_o),
 		.store_code_o	(store_code_o),
 
+		.alu_add_sub_o	(alu_add_sub_o),
+		.alu_shift_o	(alu_shift_o),
 		.alu_operation_o(alu_operation_o),
 		.alu_op_num1_o	(alu_op_num1_o),
 		.alu_op_num2_o	(alu_op_num2_o),
