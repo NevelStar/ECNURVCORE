@@ -13,15 +13,12 @@ module ex(
 
 	input 	[`BUS_L_CODE]		load_code		,
 	input 	[`BUS_S_CODE]		store_code		,
-	input 	[`BUS_JMP_FLAG]		jmp_flag		,
 
 	input						alu_add_sub		,
 	input						alu_shift		,
 	input	[`BUS_ALU_OP]		alu_operation	,
 	input	[`BUS_DATA_REG]		alu_op_num1		,
 	input	[`BUS_DATA_REG]		alu_op_num2		,
-	input	[`BUS_DATA_REG]		jmp_op_num1		,
-	input	[`BUS_DATA_REG]		jmp_op_num2		,
 
 
 
@@ -29,9 +26,7 @@ module ex(
 	output reg 	[`BUS_DATA_MEM]	data_mem_wr		,
 	output reg 	[`BUS_ADDR_MEM]	addr_mem_wr		,
 	output reg 	[`BUS_ADDR_MEM]	addr_mem_rd		,
-	output reg 					mem_state		,
-	output reg					jmp_en			,
-	output	[`BUS_ADDR_MEM]		jmp_to
+	output reg 					mem_state		
 	
 );
 	
@@ -74,7 +69,6 @@ module ex(
 
 
 
-	assign jmp_to = jmp_op_num1 + jmp_op_num2;
 
 
 	always@(*)begin
@@ -139,18 +133,7 @@ module ex(
 		endcase
 	end
 
-	always@(*) begin
-		case(jmp_flag)
-			`INSTR_BEQ:		jmp_en <= (data_rs1 == data_rs2) ? `JMP_EN : `JMP_DIS;
-			`INSTR_BNE:		jmp_en <= (data_rs1 != data_rs2) ? `JMP_EN : `JMP_DIS;
-			`INSTR_BLT:		jmp_en <= alu_slt[0] ? `JMP_EN : `JMP_DIS;
-			`INSTR_BGE:		jmp_en <= alu_slt[0] ? `JMP_DIS : `JMP_EN;
-			`INSTR_BLTU:	jmp_en <= alu_sltu[0] ? `JMP_EN : `JMP_DIS;
-			`INSTR_BGEU:	jmp_en <= alu_sltu[0] ? `JMP_DIS : `JMP_EN;
-			`JMP_J: 		jmp_en <= `JMP_EN;
-			default:		jmp_en <= `JMP_DIS;
-		endcase
-	end
+
 
 endmodule
 

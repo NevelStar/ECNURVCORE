@@ -35,7 +35,6 @@ module core(
 	wire [`BUS_DATA_MEM] instr_if_o;
 	wire [`BUS_DATA_MEM] addr_instr_if_o;
 
-	
 	wire [`BUS_DATA_REG] data_rs1_id_i;
 	wire [`BUS_DATA_REG] data_rs2_id_i;
 	wire [`BUS_DATA_REG] data_bypass_id_i;
@@ -43,6 +42,8 @@ module core(
 	wire [`BUS_DATA_MEM] addr_instr_id_i;
 	wire [`BUS_DATA_REG] data_rs1_id_o;
 	wire [`BUS_DATA_REG] data_rs2_id_o;
+	wire [`BUS_DATA_REG] jmpb_rs1_id_o;
+	wire [`BUS_DATA_REG] jmpb_rs2_id_o;
 	wire [`BUS_ADDR_REG] addr_rs1_id_o;
 	wire [`BUS_ADDR_REG] addr_rs2_id_o;
 	wire [`BUS_ADDR_REG] addr_wr_id_o;
@@ -60,7 +61,6 @@ module core(
 	wire [`BUS_JMP_FLAG] jmp_flag_id_o;	
 	wire load_bypass_id_o;
 
-
 	wire [`BUS_DATA_REG] data_rs1_ex_i;
 	wire [`BUS_DATA_REG] data_rs2_ex_i;
 	wire [`BUS_L_CODE] load_code_ex_i;
@@ -70,9 +70,6 @@ module core(
 	wire [`BUS_ALU_OP] alu_operation_ex_i;
 	wire [`BUS_DATA_REG] alu_op_num1_ex_i;
 	wire [`BUS_DATA_REG] alu_op_num2_ex_i;
-	wire [`BUS_DATA_REG] jmp_op_num1_ex_i;
-	wire [`BUS_DATA_REG] jmp_op_num2_ex_i;	
-	wire [`BUS_JMP_FLAG] jmp_flag_ex_i;
 	wire [`BUS_DATA_MEM] data_mem_ex_i;
 	wire [`BUS_ADDR_REG] addr_wr_ex_i;
 	wire reg_wr_en_ex_i;
@@ -81,8 +78,6 @@ module core(
 	wire [`BUS_ADDR_MEM] addr_mem_wr_ex_o;	
 	wire [`BUS_ADDR_MEM] addr_mem_rd_ex_o;	
 	wire mem_state_ex_o;
-	wire jmp_en_ex_o;
-	wire [`BUS_ADDR_MEM] jmp_to_ex_o;
 	wire [`BUS_ADDR_REG] addr_wr_ex_o;
 	wire [`BUS_DATA_REG] data_wr_ex_o;
 	wire wr_en_ex_o;
@@ -96,8 +91,11 @@ module core(
 	wire [`BUS_DATA_REG] data_rd1_reg_o;
 	wire [`BUS_DATA_REG] data_rd2_reg_o;
 
-	wire jmp_en_ctrl_i;
-	wire [`BUS_ADDR_MEM] jmp_to_ctrl_i;
+	wire [`BUS_ADDR_MEM] jmp_num1_ctrl_i;
+	wire [`BUS_ADDR_MEM] jmp_num2_ctrl_i;
+	wire [`BUS_DATA_REG] data_rs1_ctrl_i;
+	wire [`BUS_DATA_REG] data_rs2_ctrl_i;
+	wire [`BUS_JMP_FLAG] jmp_flag_ctrl_i;
 	wire load_bypass_ctrl_i;
 	wire jmp_en_ctrl_o;
 	wire [`BUS_ADDR_MEM] jmp_to_ctrl_o;
@@ -124,9 +122,6 @@ module core(
 	assign alu_operation_ex_i = alu_operation_id_o;
 	assign alu_op_num1_ex_i = alu_op_num1_id_o;
 	assign alu_op_num2_ex_i = alu_op_num2_id_o;
-	assign jmp_op_num1_ex_i = jmp_op_num1_id_o;
-	assign jmp_op_num2_ex_i = jmp_op_num2_id_o;
-	assign jmp_flag_ex_i = jmp_flag_id_o;
 	assign data_mem_wr_o = data_mem_wr_ex_o;
 	assign mem_state_o = mem_state_ex_o;
 	assign addr_mem_o = (mem_state_o == `MEM_WR_EN) ? addr_mem_wr_ex_o : addr_mem_rd_ex_o;
@@ -141,8 +136,11 @@ module core(
 	assign addr_rd2_reg_i = addr_rs2_id_o;
 	assign data_wr_reg_i = data_wr_ex_o;
 
-	assign jmp_en_ctrl_i = jmp_en_ex_o;
-	assign jmp_to_ctrl_i = jmp_to_ex_o;
+	assign jmp_num1_ctrl_i = jmp_op_num1_id_o;
+	assign jmp_num2_ctrl_i = jmp_op_num2_id_o;	
+	assign data_rs1_ctrl_i = jmpb_rs1_id_o;
+	assign data_rs2_ctrl_i = jmpb_rs2_id_o;
+	assign jmp_flag_ctrl_i = jmp_flag_id_o;
 	assign load_bypass_ctrl_i = load_bypass_id_o;
 
 	assign hold_code = hold_code_ctrl_o;
@@ -178,6 +176,8 @@ module core(
 
 		.data_rs1_o		(data_rs1_id_o),
 		.data_rs2_o		(data_rs2_id_o),
+		.jmpb_rs1_o		(jmpb_rs1_id_o),
+		.jmpb_rs2_o		(jmpb_rs2_id_o),
 		.addr_rs1_o		(addr_rs1_id_o),
 		.addr_rs2_o		(addr_rs2_id_o),		
 		.addr_wr_o		(addr_wr_id_o),
@@ -208,27 +208,22 @@ module core(
 
 		.load_code_i		(load_code_ex_i),
 		.store_code_i		(store_code_ex_i),
-		.jmp_flag_i		(jmp_flag_ex_i),
 		.alu_add_sub_i	(alu_add_sub_ex_i),
 		.alu_shift_i		(alu_shift_ex_i),
 		.alu_operation_i	(alu_operation_ex_i),
 		.alu_op_num1_i	(alu_op_num1_ex_i),
 		.alu_op_num2_i	(alu_op_num2_ex_i),
-		.jmp_op_num1_i	(jmp_op_num1_ex_i),
-		.jmp_op_num2_i	(jmp_op_num2_ex_i),
 
 		.data_mem_i 	(data_mem_ex_i),
 		.addr_reg_wr_i	(addr_wr_ex_i),
 		.reg_wr_en_i	(reg_wr_en_ex_i),
 
 
-		.alu_result_o		(alu_result_ex_o),
+		.alu_result_o	(alu_result_ex_o),
 		.data_mem_wr_o	(data_mem_wr_ex_o),
 		.addr_mem_wr_o	(addr_mem_wr_ex_o),
 		.addr_mem_rd_o	(addr_mem_rd_ex_o),
-		.mem_state_o		(mem_state_ex_o),
-		.jmp_en_o			(jmp_en_ex_o),
-		.jmp_to_o			(jmp_to_ex_o),
+		.mem_state_o	(mem_state_ex_o),
 
 		.addr_reg_wr_o	(addr_wr_ex_o),
 		.data_reg_wr_o 	(data_wr_ex_o),
@@ -256,9 +251,13 @@ module core(
 
 
 	ctrl core_ctrl(
-		.jmp_en_i 		(jmp_en_ctrl_i),
-		.jmp_to_i		(jmp_to_ctrl_i),
-		.load_bypass_i 	(load_bypass_ctrl_i),
+
+		.jmp_num1_i		(jmp_num1_ctrl_i),
+		.jmp_num2_i		(jmp_num2_ctrl_i),
+		.data_rs1_i		(data_rs1_ctrl_i),
+		.data_rs2_i		(data_rs2_ctrl_i),
+		.jmp_flag_i		(jmp_flag_ctrl_i),
+		.load_bypass_i	(load_bypass_ctrl_i),
 
 		.jmp_en_o		(jmp_en_ctrl_o),		
 		.jmp_to_o		(jmp_to_ctrl_o),

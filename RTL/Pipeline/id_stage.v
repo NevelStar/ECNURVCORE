@@ -19,6 +19,8 @@ module id_stage(
 
 	output	[`BUS_DATA_REG]		data_rs1_o		,
 	output	[`BUS_DATA_REG]		data_rs2_o		,
+	output	[`BUS_DATA_REG]		jmpb_rs1_o		,
+	output	[`BUS_DATA_REG]		jmpb_rs2_o		,
 	output	[`BUS_ADDR_REG]		addr_rs1_o		,
 	output	[`BUS_ADDR_REG]		addr_rs2_o		,
 	output	[`BUS_ADDR_REG]		addr_wr_o		,
@@ -37,7 +39,6 @@ module id_stage(
 	output	[`BUS_JMP_FLAG] 	jmp_flag_o		,
 	output						load_bypass_o
 );
-	
 	wire [`BUS_ALU_OP] alu_operation;
 	wire [`BUS_DATA_REG] alu_op_num1;
 	wire [`BUS_DATA_REG] alu_op_num2;
@@ -57,6 +58,13 @@ module id_stage(
 	wire hold_n;
 
 	assign hold_n = (hold_code >= `HOLD_CODE_ID) ? `HOLD_EN : `HOLD_DIS;
+
+	assign jmp_op_num1_o = jmp_op_num1;
+	assign jmp_op_num2_o = jmp_op_num2;
+	assign jmp_flag_o = jmp_flag;
+	assign jmpb_rs1_o = data_rs1;
+	assign jmpb_rs2_o = data_rs2;
+
 
 	decoder id_decoder(
 		.data_rs1_reg	(data_rs1_i),
@@ -108,9 +116,6 @@ module id_stage(
 		.alu_operation_i(alu_operation),
 		.alu_op_num1_i	(alu_op_num1),
 		.alu_op_num2_i	(alu_op_num2),
-		.jmp_op_num1_i	(jmp_op_num1),
-		.jmp_op_num2_i	(jmp_op_num2),
-		.jmp_flag_i		(jmp_flag),
 
 		.hold_n			(hold_n),
 
@@ -127,10 +132,7 @@ module id_stage(
 		.alu_shift_o	(alu_shift_o),
 		.alu_operation_o(alu_operation_o),
 		.alu_op_num1_o	(alu_op_num1_o),
-		.alu_op_num2_o	(alu_op_num2_o),
-		.jmp_op_num1_o	(jmp_op_num1_o),
-		.jmp_op_num2_o	(jmp_op_num2_o),
-		.jmp_flag_o		(jmp_flag_o)
+		.alu_op_num2_o	(alu_op_num2_o)
 	);
 
 endmodule

@@ -26,9 +26,6 @@ module id_ex(
 	input	[`BUS_ALU_OP]		alu_operation_i	,
 	input	[`BUS_DATA_REG]		alu_op_num1_i	,
 	input	[`BUS_DATA_REG]		alu_op_num2_i	,
-	input	[`BUS_DATA_REG]		jmp_op_num1_i	,
-	input	[`BUS_DATA_REG]		jmp_op_num2_i	,
-	input	[`BUS_JMP_FLAG]		jmp_flag_i		,
 
 	input						hold_n			,
 
@@ -45,10 +42,7 @@ module id_ex(
 	output		 				alu_shift_o		,
 	output	[`BUS_ALU_OP]		alu_operation_o	,
 	output	[`BUS_DATA_REG]		alu_op_num1_o	,
-	output	[`BUS_DATA_REG]		alu_op_num2_o	,
-	output	[`BUS_DATA_REG]		jmp_op_num1_o	,
-	output	[`BUS_DATA_REG]		jmp_op_num2_o	,
-	output	[`BUS_JMP_FLAG]		jmp_flag_o		
+	output	[`BUS_DATA_REG]		alu_op_num2_o	
 	
 );
 	gnrl_dff # (.DW(32)) dff_data_rs1(
@@ -169,35 +163,7 @@ module id_ex(
 		.data_out	(alu_op_num2_o)
 	);
 
-	gnrl_dff # (.DW(32)) dff_jmp_num1(
-		.clk		(clk),
-		.rst_n		(rst_n),
-		.wr_en		(hold_n),
-		.data_in	(jmp_op_num1_i),
-		.data_r_ini	(`ZERO_WORD),
 
-		.data_out	(jmp_op_num1_o)
-	);	
-
-	gnrl_dff # (.DW(32)) dff_jmp_num2(
-		.clk		(clk),
-		.rst_n		(rst_n),
-		.wr_en		(hold_n),
-		.data_in	(jmp_op_num2_i),
-		.data_r_ini	(`ZERO_WORD),
-
-		.data_out	(jmp_op_num2_o)
-	);
-
-	gnrl_dff # (.DW(3)) dff_jmp_flag(
-		.clk		(clk),
-		.rst_n		(rst_n),
-		.wr_en		(hold_n),
-		.data_in	(jmp_flag_i),
-		.data_r_ini	(`JMP_NOPE),
-
-		.data_out	(jmp_flag_o)
-	);
 
 
 endmodule
