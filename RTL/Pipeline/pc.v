@@ -12,7 +12,7 @@
 module pc(
 	input						clk			,
 	input						rst_n		,
-	input						hold_n		,
+	input	[`BUS_HOLD_CODE]	hold_code	,
 
 	input						jmp_en		,
 	input	[`BUS_ADDR_MEM]		jmp_to		,
@@ -20,7 +20,9 @@ module pc(
 	output reg [`BUS_ADDR_MEM]	addr_instr
 );
 
+	wire hold_n;
 
+	assign hold_n = (hold_code >= `HOLD_CODE_PC) ? `HOLD_EN : `HOLD_DIS;
 
 	always @(posedge clk or negedge rst_n)begin
 		if(!rst_n) begin

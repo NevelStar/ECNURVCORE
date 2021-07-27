@@ -11,6 +11,7 @@ module bus_core(
 	input							clk				,
 
 	input							mem_state_i		,
+	input							instr_rd_en_i		,
 	input		[`BUS_DATA_MEM]		data_mem_wr_i	,	
 	input		[`BUS_DATA_MEM]		addr_mem_i		,
 	input 		[`BUS_ADDR_MEM]		addr_instr_i	,		
@@ -27,6 +28,9 @@ module bus_core(
 	initial begin
 		$readmemh("memory_data.dat",mem_data);
 		$readmemh("memory_instr.dat",mem_instr);
+		addr_instr_o <= `MEM_ADDR_ZERO;
+		data_instr_o <= `ZERO_WORD;
+		data_mem_rd_o <= `ZERO_WORD;
 	end
 
 	always@(posedge clk) begin
@@ -42,8 +46,10 @@ module bus_core(
 	end
 
 	always@(posedge clk) begin
-		data_instr_o <= {mem_instr[addr_instr_i],mem_instr[addr_instr_i+1],mem_instr[addr_instr_i+2],mem_instr[addr_instr_i+3]};
-		addr_instr_o <= addr_instr_i;
+		if(instr_rd_en_i) begin
+			data_instr_o <= {mem_instr[addr_instr_i],mem_instr[addr_instr_i+1],mem_instr[addr_instr_i+2],mem_instr[addr_instr_i+3]};
+			addr_instr_o <= addr_instr_i;
+		end
 	end
 
 endmodule

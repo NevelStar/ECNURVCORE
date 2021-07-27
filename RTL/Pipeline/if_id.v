@@ -12,12 +12,20 @@ module if_id(
 	input	[`BUS_ADDR_MEM]		addr_instr_i	,
 	input	[`BUS_DATA_MEM]		instr_i			,
 
-	input						hold_n			,
+	input	[`BUS_HOLD_CODE]	hold_code		,
 
 
 	output	[`BUS_ADDR_MEM]		addr_instr_o	,
 	output	[`BUS_DATA_MEM]		instr_o			
 );
+
+
+	//assign addr_instr_o = addr_instr_i;
+	//assign instr_o = instr_i;
+
+	wire hold_n;
+
+	assign hold_n = (hold_code >= `HOLD_CODE_IF) ? `HOLD_EN : `HOLD_DIS;
 
 	gnrl_dff # (.DW(32)) dff_addr_instr(
 		.clk		(clk),
@@ -38,6 +46,5 @@ module if_id(
 
 		.data_out	(instr_o)
 	);
-
 
 endmodule

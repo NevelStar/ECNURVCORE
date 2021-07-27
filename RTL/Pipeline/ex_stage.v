@@ -9,7 +9,7 @@ module ex_stage(
 	input						clk				,
 	input						rst_n			,
 
-	input						hold_n			,
+	input	[`BUS_HOLD_CODE]	hold_code		,
 
 
 	input	[`BUS_DATA_REG]		data_rs1_i		,
@@ -47,7 +47,9 @@ module ex_stage(
 
 
 	wire [`BUS_DATA_REG] alu_result;	
+	wire hold_n;
 
+	assign hold_n = (hold_code >= `HOLD_CODE_EX) ? `HOLD_EN : `HOLD_DIS;
 	assign alu_result_o = alu_result;
 
 	ex ex_alu(
@@ -70,8 +72,8 @@ module ex_stage(
 		.addr_mem_wr	(addr_mem_wr_o),
 		.addr_mem_rd	(addr_mem_rd_o),
 		.mem_state		(mem_state_o),
-		.jmp_en			(jmp_en),
-		.jmp_to			(jmp_to)
+		.jmp_en			(jmp_en_o),
+		.jmp_to			(jmp_to_o)
 	);
 
 	ex_mem core_pipline_ex_mem(

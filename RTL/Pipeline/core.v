@@ -18,6 +18,7 @@ module core(
 
 
 	output						mem_state_o		,
+	output						instr_rd_en_o		,
 	output	[`BUS_DATA_MEM]		data_mem_wr_o	,	
 	output	[`BUS_DATA_MEM]		addr_mem_o		,
 	output 	[`BUS_ADDR_MEM]		pc_o			
@@ -57,6 +58,7 @@ module core(
 	wire [`BUS_DATA_REG] jmp_op_num1_id_o;
 	wire [`BUS_DATA_REG] jmp_op_num2_id_o;
 	wire [`BUS_JMP_FLAG] jmp_flag_id_o;	
+	wire load_bypass_id_o;
 
 
 	wire [`BUS_DATA_REG] data_rs1_ex_i;
@@ -71,6 +73,9 @@ module core(
 	wire [`BUS_DATA_REG] jmp_op_num1_ex_i;
 	wire [`BUS_DATA_REG] jmp_op_num2_ex_i;	
 	wire [`BUS_JMP_FLAG] jmp_flag_ex_i;
+	wire [`BUS_DATA_MEM] data_mem_ex_i;
+	wire [`BUS_ADDR_REG] addr_wr_ex_i;
+	wire reg_wr_en_ex_i;
 	wire [`BUS_DATA_REG] alu_result_ex_o;
 	wire [`BUS_DATA_MEM] data_mem_wr_ex_o;	
 	wire [`BUS_ADDR_MEM] addr_mem_wr_ex_o;	
@@ -78,14 +83,8 @@ module core(
 	wire mem_state_ex_o;
 	wire jmp_en_ex_o;
 	wire [`BUS_ADDR_MEM] jmp_to_ex_o;
-
-	wire [`BUS_DATA_MEM] data_mem_ex_i;
-	wire [`BUS_DATA_REG] alu_result_wb_i;
-	wire [`BUS_ADDR_REG] addr_wr_ex_i;
-	wire reg_wr_en_ex_i;
 	wire [`BUS_ADDR_REG] addr_wr_ex_o;
 	wire [`BUS_DATA_REG] data_wr_ex_o;
-	wire [`BUS_DATA_REG] data_bypass_wb_o;
 	wire wr_en_ex_o;
 
 
@@ -99,23 +98,22 @@ module core(
 
 	wire jmp_en_ctrl_i;
 	wire [`BUS_ADDR_MEM] jmp_to_ctrl_i;
+	wire load_bypass_ctrl_i;
 	wire jmp_en_ctrl_o;
 	wire [`BUS_ADDR_MEM] jmp_to_ctrl_o;
-	wire pipline_hold_n;
-	wire pc_hold_n;
+	wire [`BUS_HOLD_CODE] hold_code_ctrl_o;
 
+	wire [`BUS_HOLD_CODE] hold_code;
 
 	assign jmp_en_pc_i = jmp_en_ctrl_o;
 	assign jmp_to_pc_i = jmp_to_ctrl_o;
 
-	assign instr_if_i = instr_i;
-	assign addr_instr_if_i = addr_instr_i;
 
 	assign data_rs1_id_i = data_rd1_reg_o;
 	assign data_rs2_id_i = data_rd2_reg_o;
 	assign data_bypass_id_i = alu_result_ex_o;
-	assign instr_id_i = instr_if_o;
-	assign addr_instr_id_i = addr_instr_if_o;
+	assign instr_id_i = instr_i;
+	assign addr_instr_id_i = addr_instr_i;
 
 	assign data_rs1_ex_i = data_rs1_id_o;
 	assign data_rs2_ex_i = data_rs2_id_o;
@@ -142,14 +140,19 @@ module core(
 	assign addr_rd1_reg_i = addr_rs1_id_o;
 	assign addr_rd2_reg_i = addr_rs2_id_o;
 	assign data_wr_reg_i = data_wr_ex_o;
+
 	assign jmp_en_ctrl_i = jmp_en_ex_o;
 	assign jmp_to_ctrl_i = jmp_to_ex_o;
+	assign load_bypass_ctrl_i = load_bypass_id_o;
+
+	assign hold_code = hold_code_ctrl_o;
+	assign instr_rd_en_o = hold_code < `HOLD_CODE_IF;
 
 
 	pc core_pc(
 		.clk		(clk),
 		.rst_n		(rst_n),
-		.hold_n 	(pc_hold_n),
+		.hold_code 	(hold_code),
 	
 		.jmp_en		(jmp_en_pc_i),
 		.jmp_to		(jmp_to_pc_i),
@@ -158,26 +161,14 @@ module core(
 	);
 
 
-	if_id core_pipline_if_id(
-		.clk			(clk),
-		.rst_n			(rst_n),
 
-		.addr_instr_i	(addr_instr_if_i),
-		.instr_i		(instr_if_i),
-
-		.hold_n			(pipline_hold_n),
-
-
-		.addr_instr_o	(addr_instr_if_o),
-		.instr_o		(instr_if_o)	
-	);
 
 
 	id_stage core_id(
 		.clk			(clk),
 		.rst_n			(rst_n),
 
-		.hold_n			(pipline_hold_n),
+		.hold_code		(hold_code),
 
 		.data_rs1_i		(data_rs1_id_i),
 		.data_rs2_i		(data_rs2_id_i),
@@ -202,14 +193,15 @@ module core(
 		.alu_op_num2_o	(alu_op_num2_id_o),
 		.jmp_op_num1_o	(jmp_op_num1_id_o),
 		.jmp_op_num2_o	(jmp_op_num2_id_o),	
-		.jmp_flag_o		(jmp_flag_id_o)
+		.jmp_flag_o		(jmp_flag_id_o),
+		.load_bypass_o	(load_bypass_id_o)
 	);
 
 	ex_stage core_ex(
 
 		.clk			(clk),
 		.rst_n			(rst_n),
-		.hold_n			(pipline_hold_n),
+		.hold_code		(hold_code),
 
 		.data_rs1_i		(data_rs1_ex_i),
 		.data_rs2_i		(data_rs2_ex_i),
@@ -264,13 +256,13 @@ module core(
 
 
 	ctrl core_ctrl(
-		.jmp_en_i 	(jmp_en_ctrl_i),
-		.jmp_to_i	(jmp_to_ctrl_i),
+		.jmp_en_i 		(jmp_en_ctrl_i),
+		.jmp_to_i		(jmp_to_ctrl_i),
+		.load_bypass_i 	(load_bypass_ctrl_i),
 
-		.jmp_en_o	(jmp_en_ctrl_o),		
-		.jmp_to_o	(jmp_to_ctrl_o),
-		.hold_n		(pipline_hold_n)
-		.pc_hold_n	(pc_hold_n)
+		.jmp_en_o		(jmp_en_ctrl_o),		
+		.jmp_to_o		(jmp_to_ctrl_o),
+		.hold_code_o	(hold_code_ctrl_o)
 	);
 
 endmodule

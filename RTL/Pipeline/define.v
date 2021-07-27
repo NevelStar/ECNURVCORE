@@ -31,6 +31,7 @@
 `define BUS_S_CODE			2:0
 `define BUS_JMP_FLAG		2:0
 `define BUS_BYTE_DATA		7:0
+`define BUS_HOLD_CODE		2:0
 
 //decode the instrument
 `define OPERATION_CODE		6:0
@@ -129,9 +130,23 @@
 `define ALU_ADD_EN			1'b0
 `define ALU_SHIFT_L			1'b0
 `define ALU_SHIFT_A			1'b1
+`define BYPASS_EN			1'b0
+`define BYPASS_DIS			1'b1
+`define LOAD_BYPASS_EN		1'b1
+`define LOAD_BYPASS_DIS		1'b0
+`define HOLD_EN				1'b0
+`define HOLD_DIS			1'b1
 
 
 
 //the scale of memory
 `define NUM_DATA_MEM		0:255
 `define NUM_INSTR_MEM		0:255
+
+
+//hold code
+`define HOLD_CODE_NOPE		3'b000
+`define HOLD_CODE_PC		3'b001
+`define HOLD_CODE_IF		3'b010
+`define HOLD_CODE_ID		3'b011
+`define HOLD_CODE_EX		3'b100

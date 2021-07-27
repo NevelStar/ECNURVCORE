@@ -4,6 +4,7 @@
 //2021.07.20
 //Edited in 2021.07.21
 //Edited in 2021.07.23
+//Edited in 2021.07.27
 
 `include "define.v"
 
@@ -73,7 +74,7 @@ module id_ex(
 	gnrl_dff # (.DW(5)) dff_addr_rd(
 		.clk		(clk),
 		.rst_n		(rst_n),
-		.wr_en		(hold_n),
+		.wr_en		(`HOLD_DIS),
 		.data_in	(addr_rd_i),
 		.data_r_ini	(`REG_ADDR_ZERO),
 
@@ -112,7 +113,7 @@ module id_ex(
 	gnrl_dff # (.DW(3)) dff_load_code(
 		.clk		(clk),
 		.rst_n		(rst_n),
-		.wr_en		(hold_n),
+		.wr_en		(`HOLD_DIS),
 		.data_in	(load_code_i),
 		.data_r_ini	(`LOAD_NOPE),
 
@@ -192,10 +193,10 @@ module id_ex(
 		.clk		(clk),
 		.rst_n		(rst_n),
 		.wr_en		(hold_n),
-		.data_in	(jmp_flag),
+		.data_in	(jmp_flag_i),
 		.data_r_ini	(`JMP_NOPE),
 
-		.data_out	(jmp_flag)
+		.data_out	(jmp_flag_o)
 	);
 
 
