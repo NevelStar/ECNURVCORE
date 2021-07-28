@@ -2,8 +2,7 @@
 //Pipeline CPU
 //Created by Chesed
 //2021.07.23
-//Edited in 2021.07.25
-//Edited in 2021.07.26
+//Edited in 2021.07.28
 
 `include "define.v"
 
@@ -30,10 +29,10 @@ module core(
 	wire jmp_en_pc_i;
 	wire [`BUS_ADDR_MEM] jmp_to_pc_i;
 
-	wire [`BUS_DATA_MEM] instr_if_i; 		
-	wire [`BUS_DATA_MEM] addr_instr_if_i;
-	wire [`BUS_DATA_MEM] instr_if_o;
-	wire [`BUS_DATA_MEM] addr_instr_if_o;
+	wire instr_mask_if_i;
+	wire [`BUS_DATA_MEM] instr_rd_if_i; 	
+	wire [`BUS_DATA_MEM] instr_rd_if_o;
+	wire instr_rd_en_if_o;
 
 	wire [`BUS_DATA_REG] data_rs1_id_i;
 	wire [`BUS_DATA_REG] data_rs2_id_i;
@@ -99,6 +98,7 @@ module core(
 	wire load_bypass_ctrl_i;
 	wire jmp_en_ctrl_o;
 	wire [`BUS_ADDR_MEM] jmp_to_ctrl_o;
+	wire instr_mask_ctrl_o;
 	wire [`BUS_HOLD_CODE] hold_code_ctrl_o;
 
 	wire [`BUS_HOLD_CODE] hold_code;
@@ -106,11 +106,13 @@ module core(
 	assign jmp_en_pc_i = jmp_en_ctrl_o;
 	assign jmp_to_pc_i = jmp_to_ctrl_o;
 
+	assign instr_rd_if_i = instr_i;
+	assign instr_mask_if_i = instr_mask_ctrl_o;
 
 	assign data_rs1_id_i = data_rd1_reg_o;
 	assign data_rs2_id_i = data_rd2_reg_o;
 	assign data_bypass_id_i = alu_result_ex_o;
-	assign instr_id_i = instr_i;
+	assign instr_id_i = instr_rd_if_o;
 	assign addr_instr_id_i = addr_instr_i;
 
 	assign data_rs1_ex_i = data_rs1_id_o;
@@ -144,7 +146,7 @@ module core(
 	assign load_bypass_ctrl_i = load_bypass_id_o;
 
 	assign hold_code = hold_code_ctrl_o;
-	assign instr_rd_en_o = hold_code < `HOLD_CODE_IF;
+	assign instr_rd_en_o = instr_rd_en_if_o;
 
 
 	pc core_pc(
@@ -158,6 +160,14 @@ module core(
 		.addr_instr	(pc_o)
 	);
 
+	if_stage code_if(
+		.hold_code 		(hold_code),
+		.instr_rd_i 	(instr_rd_if_i),
+		.instr_mask_i	(instr_mask_if_i),
+	
+		.instr_rd_o 	(instr_rd_if_o),
+		.instr_rd_en_o	(instr_rd_en_if_o)
+	);
 
 
 
@@ -252,6 +262,8 @@ module core(
 
 	ctrl core_ctrl(
 
+		.clk			(clk),
+		.rst_n			(rst_n),
 		.jmp_num1_i		(jmp_num1_ctrl_i),
 		.jmp_num2_i		(jmp_num2_ctrl_i),
 		.data_rs1_i		(data_rs1_ctrl_i),
@@ -261,6 +273,7 @@ module core(
 
 		.jmp_en_o		(jmp_en_ctrl_o),		
 		.jmp_to_o		(jmp_to_ctrl_o),
+		.instr_mask_o	(instr_mask_ctrl_o),
 		.hold_code_o	(hold_code_ctrl_o)
 	);
 

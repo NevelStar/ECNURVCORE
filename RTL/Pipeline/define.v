@@ -2,11 +2,7 @@
 //Pipline CPU
 //Created by Chesed
 //2021.07.19
-//Edited in 2021.07.20
-//Edited in 2021.07.21
-//Edited in 2021.07.22
-//Edited in 2021.07.23
-//Edited in 2021.07.25
+//Edited in 2021.07.28
 
 
 //the initial data
@@ -120,6 +116,8 @@
 
 
 //enable/disable
+`define INSTR_RD_EN 1'b1
+`define INSTR_RD_DIS 1'b0
 `define REG_WR_EN			1'b1
 `define REG_WR_DIS			1'b0
 `define JMP_EN				1'b1
@@ -136,6 +134,8 @@
 `define LOAD_BYPASS_DIS		1'b0
 `define HOLD_EN				1'b0
 `define HOLD_DIS			1'b1
+`define MASK_EN				1'b1
+`define MASK_DIS			1'b0
 
 
 

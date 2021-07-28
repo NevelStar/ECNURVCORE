@@ -2,11 +2,13 @@
 //Pipeline CPU
 //Created by Chesed
 //2021.07.23
-//Edited in 2021.07.26
+//Edited in 2021.07.28
 
 `include "define.v"
 
 module ctrl(
+	input					clk				,
+	input					rst_n			,
 	input [`BUS_ADDR_MEM]	jmp_num1_i		,
 	input [`BUS_ADDR_MEM]	jmp_num2_i		,
 	input [`BUS_DATA_REG]	data_rs1_i		,
@@ -16,12 +18,12 @@ module ctrl(
 
 	output					jmp_en_o		,
 	output [`BUS_ADDR_MEM]	jmp_to_o		,	
-	output					id_flush		,	
-	output					ex_flush		,
+	output					instr_mask_o	,	
 	output [`BUS_HOLD_CODE]	hold_code_o 			
 );
 
 	reg jmp_en;
+	wire jmp_en_t;
 
 	assign jmp_en_o = jmp_en;
 	assign jmp_to_o = jmp_num1_i + jmp_num2_i;
@@ -43,8 +45,19 @@ module ctrl(
 	end
 
 
-
+	assign instr_mask_o = jmp_en_t;
 
 	assign hold_code_o = (load_bypass_i==`LOAD_BYPASS_EN) ? `HOLD_CODE_ID : `HOLD_CODE_NOPE;
+
+
+	gnrl_dff # (.DW(1)) dff_shift_l_a(
+		.clk		(clk),
+		.rst_n		(rst_n),
+		.wr_en		(`HOLD_DIS),
+		.data_in	(jmp_en),
+		.data_r_ini	(`JMP_DIS),
+
+		.data_out	(jmp_en_t)
+	);	
 
 endmodule
