@@ -59,8 +59,8 @@ module decoder(
 	assign addr_rs2 = instr[`ADDR_RS2];	
 	assign funct7 = instr[`FUNCT7];
 
-	assign bypass_en1 = (addr_rs1 == reg_rd_addr_t) ? `BYPASS_EN : `BYPASS_DIS;
-	assign bypass_en2 = (addr_rs2 == reg_rd_addr_t) ? `BYPASS_EN : `BYPASS_DIS;
+	assign bypass_en1 = (reg_rs1_addr == reg_rd_addr_t) ? `BYPASS_EN : `BYPASS_DIS;
+	assign bypass_en2 = (reg_rs2_addr == reg_rd_addr_t) ? `BYPASS_EN : `BYPASS_DIS;
 	assign bypass_act = bypass_en1 | bypass_en2;
 
 	assign data_rs1 = (bypass_en1 == `BYPASS_EN) ? data_bypass : data_rs1_reg;
