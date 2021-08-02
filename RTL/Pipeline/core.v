@@ -47,7 +47,6 @@ module core(
 	wire [`BUS_ADDR_REG] addr_rs2_id_o;
 	wire [`BUS_ADDR_REG] addr_wr_id_o;
 	wire reg_wr_en_id_o;
-	wire [`BUS_DATA_MEM] instr_id_o;
 	wire [`BUS_L_CODE] load_code_id_o;
 	wire [`BUS_S_CODE] store_code_id_o;
 	wire alu_add_sub_id_o;
@@ -193,7 +192,6 @@ module core(
 		.addr_wr_o		(addr_wr_id_o),
 
 		.reg_wr_en_o	(reg_wr_en_id_o),
-		.instr_o		(instr_id_o),
 		.load_code_o	(load_code_id_o),
 		.store_code_o	(store_code_id_o),
 		.alu_add_sub_o	(alu_add_sub_id_o),

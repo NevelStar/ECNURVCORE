@@ -2,6 +2,7 @@
 //Pipeline CPU
 //Created by Chesed
 //2021.07.23
+//Edited in 2021.07.28
 
 `include "define.v"
 
@@ -26,7 +27,6 @@ module id_stage(
 	output	[`BUS_ADDR_REG]		addr_wr_o		,
 
 	output						reg_wr_en_o		,
-	output	[`BUS_DATA_MEM]		instr_o			,
 	output 	[`BUS_L_CODE] 		load_code_o		,
 	output 	[`BUS_S_CODE] 		store_code_o	,
 	output						alu_add_sub_o	,
@@ -107,7 +107,6 @@ module id_stage(
 		.addr_rd_i		(reg_wr_addr),
 		.reg_wr_en_i	(reg_wr_en),
 
-		.instr_i		(instr_i),
 		.load_code_i	(load_code),
 		.store_code_i	(store_code),
 
@@ -124,7 +123,6 @@ module id_stage(
 		.addr_rd_o		(addr_wr_o),
 		.reg_wr_en_o	(reg_wr_en_o),
 
-		.instr_o		(instr_o),
 		.load_code_o	(load_code_o),
 		.store_code_o	(store_code_o),
 

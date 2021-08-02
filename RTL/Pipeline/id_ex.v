@@ -2,8 +2,6 @@
 //Pipeline CPU
 //Created by Chesed
 //2021.07.20
-//Edited in 2021.07.21
-//Edited in 2021.07.23
 //Edited in 2021.07.27
 
 `include "define.v"
@@ -17,7 +15,6 @@ module id_ex(
 	input	[`BUS_ADDR_REG]		addr_rd_i		,
 	input						reg_wr_en_i		,
 
-	input	[`BUS_DATA_MEM]		instr_i			,
 	input 	[`BUS_L_CODE]		load_code_i		,
 	input 	[`BUS_S_CODE]		store_code_i	,
 
@@ -34,7 +31,7 @@ module id_ex(
 	output	[`BUS_ADDR_REG]		addr_rd_o		,
 	output						reg_wr_en_o		,
 
-	output	[`BUS_DATA_MEM]		instr_o			,
+
 	output 	[`BUS_L_CODE]		load_code_o		,
 	output 	[`BUS_S_CODE]		store_code_o	,
 
@@ -82,16 +79,6 @@ module id_ex(
 		.data_r_ini	(`REG_WR_DIS),
 
 		.data_out	(reg_wr_en_o)
-	);	
-
-	gnrl_dff # (.DW(32)) dff_instr(
-		.clk		(clk),
-		.rst_n		(rst_n),
-		.wr_en		(hold_n),
-		.data_in	(instr_i),
-		.data_r_ini	(`ZERO_WORD),
-
-		.data_out	(instr_o)
 	);	
 
 

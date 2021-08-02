@@ -2,6 +2,7 @@
 //Pipeline CPU
 //Created by Chesed
 //2021.07.26
+//Edited in 2021.08.01
 
 `include "define.v"
 
@@ -65,7 +66,7 @@ module ex_stage(
 		.mem_state		(mem_state_o)
 	);
 
-	ex_mem core_pipline_ex_mem(
+	ex_mem core_pipeline_ex_mem(
 		.clk			(clk),
 		.rst_n			(rst_n),
 		.hold_n			(hold_n),
