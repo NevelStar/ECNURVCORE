@@ -61,9 +61,7 @@ module ctrl_btb(
 			jmp_prediction_t <= `JMP_DIS;
 		end
 		else begin
-			if(target_pc_i == pc_buffer) begin
-				jmp_prediction_t <= prediction_o;
-			end
+			jmp_prediction_t <= prediction_o;
 		end
 	end
 
