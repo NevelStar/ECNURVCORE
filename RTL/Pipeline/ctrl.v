@@ -25,7 +25,7 @@ module ctrl(
 	reg jmp_en;
 	wire jmp_en_t;
 
-	assign jmp_en_o = jmp_en;
+	assign jmp_en_o = (load_bypass_i==`LOAD_BYPASS_EN) ? `JMP_DIS : jmp_en ;
 	assign jmp_to_o = jmp_num1_i + jmp_num2_i;
 
 	assign rs1_slt_rs2 = (data_rs1_i[31] == data_rs2_i[31]) ? ((data_rs1_i < data_rs2_i) ? 1'b1 : 1'b0 ) : data_rs1_i[31];

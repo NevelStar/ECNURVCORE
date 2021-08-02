@@ -137,6 +137,8 @@
 `define HOLD_DIS			1'b1
 `define MASK_EN				1'b1
 `define MASK_DIS			1'b0
+`define JMP_ERROR			1'b1
+`define JMP_RIGHT			1'b0
 
 
 
