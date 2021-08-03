@@ -2,7 +2,7 @@
 //Pipeline CPU
 //Created by Chesed
 //2021.07.23
-//Edited in 2021.07.28
+//Edited in 2021.08.03
 
 `include "define.v"
 
@@ -91,6 +91,8 @@ module core(
 
 	wire [`BUS_ADDR_MEM] jmp_num1_ctrl_i;
 	wire [`BUS_ADDR_MEM] jmp_num2_ctrl_i;
+	wire [`BUS_ADDR_MEM] pc_prediction_ctrl_i;
+	wire [`BUS_ADDR_MEM] pc_jmp_ctrl_i;
 	wire [`BUS_DATA_REG] data_rs1_ctrl_i;
 	wire [`BUS_DATA_REG] data_rs2_ctrl_i;
 	wire [`BUS_JMP_FLAG] jmp_flag_ctrl_i;
@@ -138,7 +140,9 @@ module core(
 	assign data_wr_reg_i = data_wr_ex_o;
 
 	assign jmp_num1_ctrl_i = jmp_op_num1_id_o;
-	assign jmp_num2_ctrl_i = jmp_op_num2_id_o;	
+	assign jmp_num2_ctrl_i = jmp_op_num2_id_o;
+	assign pc_prediction_ctrl_i = pc_o;
+	assign pc_jmp_ctrl_i = addr_instr_i;
 	assign data_rs1_ctrl_i = jmpb_rs1_id_o;
 	assign data_rs2_ctrl_i = jmpb_rs2_id_o;
 	assign jmp_flag_ctrl_i = jmp_flag_id_o;
@@ -214,11 +218,11 @@ module core(
 		.data_rs1_i		(data_rs1_ex_i),
 		.data_rs2_i		(data_rs2_ex_i),
 
-		.load_code_i		(load_code_ex_i),
-		.store_code_i		(store_code_ex_i),
+		.load_code_i	(load_code_ex_i),
+		.store_code_i	(store_code_ex_i),
 		.alu_add_sub_i	(alu_add_sub_ex_i),
-		.alu_shift_i		(alu_shift_ex_i),
-		.alu_operation_i	(alu_operation_ex_i),
+		.alu_shift_i	(alu_shift_ex_i),
+		.alu_operation_i(alu_operation_ex_i),
 		.alu_op_num1_i	(alu_op_num1_ex_i),
 		.alu_op_num2_i	(alu_op_num2_ex_i),
 
@@ -264,6 +268,8 @@ module core(
 		.rst_n			(rst_n),
 		.jmp_num1_i		(jmp_num1_ctrl_i),
 		.jmp_num2_i		(jmp_num2_ctrl_i),
+		.pc_pred_i		(pc_prediction_ctrl_i),
+		.pc_instr_i		(pc_jmp_ctrl_i),
 		.data_rs1_i		(data_rs1_ctrl_i),
 		.data_rs2_i		(data_rs2_ctrl_i),
 		.jmp_flag_i		(jmp_flag_ctrl_i),

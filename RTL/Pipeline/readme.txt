@@ -16,3 +16,9 @@ ver1.0:
 	Hold logic is set for load hazard
 	The instruction can be set as NOPE in control hazard
 	Module "ctrl.v" is reserved for branch prediction
+
+
+ver 1.1:
+·Branch prediction supported:
+	Used a buffer whose depth is one to store the pc of branch instruction and target
+	If the pc is stored in the buffer, ctrl unit will predict to jump
