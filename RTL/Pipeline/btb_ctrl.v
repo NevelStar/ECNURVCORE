@@ -2,7 +2,7 @@
 //Pipeline CPU
 //Created by Chesed
 //2021.08.02
-//Edited in 2021.08.03
+//Edited in 2021.08.04
 
 module btb_ctrl(
 	input						clk					,
@@ -23,15 +23,21 @@ module btb_ctrl(
 	reg [`BUS_ADDR_MEM] target_buffer;
 
 	reg jmp_prediction_t;
+	reg pc_match_t;
 	reg [`BUS_ADDR_MEM] target_prediction_t;
+
+	reg [`BUS_PRE_STATE] prediction_state;
 
 	wire jmp_en_error;
 	wire jmp_target_error;
 	wire prediction_error;
 
+	wire pc_match;
+
+	assign pc_match =  ((pc_i == pc_buffer) && (pc_i != `MEM_ADDR_ZERO)) ? `PC_MATCH : `PC_MISMATCH;
 
 	assign target_pc_o = (jmp_prediction_o == `JMP_EN) ? target_buffer : `MEM_ADDR_ZERO;
-	assign jmp_prediction_o = ((pc_i == pc_buffer) & (pc_i != `MEM_ADDR_ZERO)) ? `JMP_EN : `JMP_DIS;
+	assign jmp_prediction_o = (pc_match == `PC_MATCH) ? prediction_state[1] : `JMP_DIS;
 
 	assign jmp_en_error = (jmp_en_i == jmp_prediction_t) ? `JMP_RIGHT : `JMP_ERROR;
 	assign jmp_target_error = (target_pc_i == target_prediction_t) ? `JMP_RIGHT : `JMP_ERROR;
@@ -42,15 +48,18 @@ module btb_ctrl(
 		if(!rst_n) begin
 			pc_buffer <= `MEM_ADDR_ZERO;
 			target_buffer <= `MEM_ADDR_ZERO;
+			prediction_state <= `STATE_S_HOLD;
 		end
 		else begin
 			if(prediction_error == `JMP_ERROR) begin
 				pc_buffer <= (jmp_en_i == `JMP_EN) ? pc_jmp_i : `MEM_ADDR_ZERO;
 				target_buffer <= (jmp_en_i == `JMP_EN) ? target_pc_i : `MEM_ADDR_ZERO;
+				prediction_state <= (jmp_en_i == `JMP_DIS) ? (prediction_state - 2'b01) : ((pc_match_t == `PC_MATCH) ? (prediction_state + 2'b01) : `STATE_W_HOLD);
 			end
 			else begin
 				pc_buffer <= pc_buffer;
 				target_buffer <= target_buffer;
+				prediction_state <= (jmp_en_i == `JMP_EN) ? `STATE_S_JMP : ((pc_match_t == `PC_MATCH) ? `STATE_S_HOLD : prediction_state);
 			end
 		end
 	end
@@ -59,10 +68,12 @@ module btb_ctrl(
 		if(!rst_n) begin
 			jmp_prediction_t <= `JMP_DIS;
 			target_prediction_t <= `MEM_ADDR_ZERO;
+			pc_match_t <= `PC_MISMATCH;
 		end
 		else begin
 			jmp_prediction_t <= jmp_prediction_o;
 			target_prediction_t <= target_pc_o;
+			pc_match_t <= pc_match;
 		end
 	end
 

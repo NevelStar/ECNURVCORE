@@ -20,5 +20,19 @@ ver1.0:
 
 ver 1.1:
 ·Branch prediction supported:
-	Used a buffer whose depth is one to store the pc of branch instruction and target
+	Use a buffer whose depth is one to store the pc of branch instruction and target
 	If the pc is stored in the buffer, ctrl unit will predict to jump
+
+
+ver 1.2:
+·Branch prediction improved:
+	Use two bit to construct BHT(branch history table)
+·The structure of memory is edited:
+	before:
+		[7:0] memory[0:255] 
+		
+		data_out <= {memory[addr+3],memory[addr+2],memory[addr+1],memory[addr]}
+	now:
+		[31:0] memory[0:255]
+		
+		data_out <= memory[addr>>2]

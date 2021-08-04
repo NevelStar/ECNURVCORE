@@ -2,7 +2,7 @@
 //Pipline CPU
 //Created by Chesed
 //2021.07.19
-//Edited in 2021.07.28
+//Edited in 2021.08.04
 
 
 //the initial data
@@ -28,6 +28,7 @@
 `define BUS_JMP_FLAG		2:0
 `define BUS_BYTE_DATA		7:0
 `define BUS_HOLD_CODE		2:0
+`define BUS_PRE_STATE		1:0
 
 //decode the instrument
 `define OPERATION_CODE		6:0
@@ -139,6 +140,8 @@
 `define MASK_DIS			1'b0
 `define JMP_ERROR			1'b1
 `define JMP_RIGHT			1'b0
+`define PC_MATCH			1'b1
+`define PC_MISMATCH			1'b0
 
 
 
@@ -153,3 +156,10 @@
 `define HOLD_CODE_IF		3'b010
 `define HOLD_CODE_ID		3'b011
 `define HOLD_CODE_EX		3'b100
+
+
+//prediction state
+`define STATE_S_HOLD		2'b00
+`define STATE_W_HOLD		2'b01
+`define STATE_W_JMP			2'b10
+`define STATE_S_JMP			2'b11
