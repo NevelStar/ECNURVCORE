@@ -4,6 +4,8 @@
 //2021.08.02
 //Edited in 2021.08.04
 
+`include "define.v"
+
 module btb_ctrl(
 	input						clk					,
 	input						rst_n				,

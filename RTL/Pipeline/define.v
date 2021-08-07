@@ -2,7 +2,7 @@
 //Pipline CPU
 //Created by Chesed
 //2021.07.19
-//Edited in 2021.08.04
+//Edited in 2021.08.07
 
 
 //the initial data
@@ -10,18 +10,24 @@
 
 //zero
 `define ZERO_WORD			32'h0000_0000
+`define ZERO_DOUBLE			64'h0000_0000_0000_0000
+
 `define MEM_ADDR_ZERO		32'h0000_0000
 `define REG_ADDR_ZERO		5'h00
 
 //the constant
 `define REG_NUM				32
+`define DATA_WIDTH			64
 
 
 //the bus width
 `define BUS_ADDR_REG		4:0
-`define BUS_ADDR_MEM		31:0
-`define BUS_DATA_REG		31:0
-`define BUS_DATA_MEM		31:0
+`define BUS_ADDR_MEM		63:0
+`define BUS_DATA_REG		63:0
+`define BUS_DATA_MEM		63:0
+`define BUS_DATA_INSTR		31:0
+`define BUS_AXI_STRB		3:0
+`define BUS_AXI_CACHE		3:0
 `define BUS_ALU_OP			2:0
 `define BUS_L_CODE			2:0
 `define BUS_S_CODE			2:0
@@ -38,13 +44,17 @@
 `define ADDR_RS2			24:20
 `define SHAMT				24:20
 `define FUNCT7				31:25
+`define FUNCT7_W			31:26
+
 
 
 
 //operation code
 `define OPERATION_NOP		7'b0000000
 `define OPERATION_R			7'b0110011
+`define OPERATION_RW		7'b0111011
 `define OPERATION_I			7'b0010011
+`define OPERATION_IW		7'b0011011
 
 `define OPERATION_LUI		7'b0110111
 `define OPERATION_LOAD		7'b0000011
@@ -68,6 +78,10 @@
 `define INSTR_SR			3'b101
 `define INSTR_OR			3'b110
 `define INSTR_AND			3'b111
+//type RW
+`define INSTR_ADDW			3'b000
+`define INSTR_SLW			3'b001
+`define INSTR_SRW			3'b101
 
 //type B
 `define INSTR_BEQ			3'b000
@@ -81,6 +95,7 @@
 `define INSTR_SB			3'b000
 `define INSTR_SH			3'b001
 `define INSTR_SW			3'b010
+`define INSTR_SD			3'b011
 `define STORE_NOPE			3'b111
 
 //type I JALR
@@ -90,8 +105,10 @@
 `define INSTR_LB			3'b000
 `define INSTR_LH			3'b001
 `define INSTR_LW			3'b010
+`define INSTR_LD			3'b011
 `define INSTR_LBU			3'b100
 `define INSTR_LHU			3'b101
+`define INSTR_LWU			3'b110
 `define LOAD_NOPE			3'b111
 
 //funct7 code
@@ -99,6 +116,10 @@
 `define FUNCT7_SUB			7'b0100000
 `define FUNCT7_SRL			7'b0000000
 `define FUNCT7_SRA			7'b0100000
+`define FUNCT7_SRLW			7'b0000000
+`define FUNCT7_SRAW			7'b0101000
+`define FUNCT7_W_SRL		6'b000000
+`define FUNCT7_W_SRA		6'b010000
 
 //jmp flag code
 `define JMP_NOPE			3'b011
@@ -136,12 +157,16 @@
 `define LOAD_BYPASS_DIS		1'b0
 `define HOLD_EN				1'b0
 `define HOLD_DIS			1'b1
+`define STALL_EN			1'b1
+`define STALL_DIS			1'b0
 `define MASK_EN				1'b1
 `define MASK_DIS			1'b0
 `define JMP_ERROR			1'b1
 `define JMP_RIGHT			1'b0
 `define PC_MATCH			1'b1
 `define PC_MISMATCH			1'b0
+`define INTERCEPT_EN		1'b1
+`define INTERCEPT_DIS		1'b0
 
 
 

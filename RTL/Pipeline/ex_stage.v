@@ -2,7 +2,7 @@
 //Pipeline CPU
 //Created by Chesed
 //2021.07.26
-//Edited in 2021.08.01
+//Edited in 2021.08.07
 
 `include "define.v"
 
@@ -21,6 +21,7 @@ module ex_stage(
 
 	input						alu_add_sub_i	,
 	input						alu_shift_i		,
+	input						word_intercept_i,
 	input	[`BUS_ALU_OP]		alu_operation_i	,
 	input	[`BUS_DATA_REG]		alu_op_num1_i	,
 	input	[`BUS_DATA_REG]		alu_op_num2_i	,
@@ -42,6 +43,7 @@ module ex_stage(
 );
 
 	wire [`BUS_DATA_REG] alu_result;	
+	wire [`DATA_BYTE] alu_result;	
 	wire hold_n;
 
 	assign hold_n = (hold_code >= `HOLD_CODE_EX) ? `HOLD_EN : `HOLD_DIS;
@@ -55,6 +57,7 @@ module ex_stage(
 		.store_code		(store_code_i),
 		.alu_add_sub	(alu_add_sub_i),
 		.alu_shift		(alu_shift_i),
+		.word_intercept (word_intercept_i),
 		.alu_operation	(alu_operation_i),
 		.alu_op_num1	(alu_op_num1_i),
 		.alu_op_num2	(alu_op_num2_i),

@@ -5,10 +5,10 @@
 
 module if_stage(
 	input	[`BUS_HOLD_CODE]	hold_code 		,
-	input	[`BUS_DATA_MEM]		instr_rd_i 		,
+	input	[`BUS_DATA_INSTR]	instr_rd_i 		,
 	input						instr_mask_i	,
 	
-	output	[`BUS_DATA_MEM]		instr_rd_o 		,
+	output	[`BUS_DATA_INSTR]	instr_rd_o 		,
 	output						instr_rd_en_o
 );
 
