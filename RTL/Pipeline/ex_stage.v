@@ -35,7 +35,8 @@ module ex_stage(
 	output	[`BUS_DATA_REG]		data_reg_wr_o 	,
 	output						reg_wr_en_o		,
 
-	output						mem_state_o		,
+	output						mem_wr_en_o		,
+	output						mem_rd_en_o		,
 	output 	[`BUS_DATA_MEM] 	data_mem_wr_o	,	
 	output 	[`BUS_ADDR_MEM] 	addr_mem_wr_o	,	
 	output 	[`BUS_ADDR_MEM] 	addr_mem_rd_o	
@@ -43,7 +44,6 @@ module ex_stage(
 );
 
 	wire [`BUS_DATA_REG] alu_result;	
-	wire [`DATA_BYTE] alu_result;	
 	wire hold_n;
 
 	assign hold_n = (hold_code >= `HOLD_CODE_EX) ? `HOLD_EN : `HOLD_DIS;
@@ -66,7 +66,8 @@ module ex_stage(
 		.data_mem_wr	(data_mem_wr_o),
 		.addr_mem_wr	(addr_mem_wr_o),
 		.addr_mem_rd	(addr_mem_rd_o),
-		.mem_state		(mem_state_o)
+		.mem_wr_en		(mem_wr_en_o),
+		.mem_rd_en		(mem_rd_en_o)
 	);
 
 	ex_mem core_pipeline_ex_mem(

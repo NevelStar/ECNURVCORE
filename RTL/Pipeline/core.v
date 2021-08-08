@@ -18,10 +18,12 @@ module core(
 
 
 
-	output						mem_state_o		,
+	output						mem_wr_en_o		,
+	output						mem_rd_en_o		,
 	output						instr_rd_en_o	,
 	output	[`BUS_DATA_MEM]		data_mem_wr_o	,	
-	output	[`BUS_DATA_MEM]		addr_mem_o		,
+	output	[`BUS_ADDR_MEM]		addr_mem_wr_o	,	
+	output	[`BUS_ADDR_MEM]		addr_mem_rd_o	,	
 	output 	[`BUS_ADDR_MEM]		pc_o			
 	
 
@@ -79,7 +81,8 @@ module core(
 	wire [`BUS_DATA_MEM] data_mem_wr_ex_o;	
 	wire [`BUS_ADDR_MEM] addr_mem_wr_ex_o;	
 	wire [`BUS_ADDR_MEM] addr_mem_rd_ex_o;	
-	wire mem_state_ex_o;
+	wire mem_wr_en_ex_o;
+	wire mem_rd_en_ex_o;
 	wire [`BUS_ADDR_REG] addr_wr_ex_o;
 	wire [`BUS_DATA_REG] data_wr_ex_o;
 	wire wr_en_ex_o;
@@ -132,8 +135,10 @@ module core(
 	assign alu_op_num1_ex_i = alu_op_num1_id_o;
 	assign alu_op_num2_ex_i = alu_op_num2_id_o;
 	assign data_mem_wr_o = data_mem_wr_ex_o;
-	assign mem_state_o = mem_state_ex_o;
-	assign addr_mem_o = (mem_state_o == `MEM_WR_EN) ? addr_mem_wr_ex_o : addr_mem_rd_ex_o;
+	assign mem_wr_en_o = mem_wr_en_ex_o;
+	assign mem_rd_en_o = mem_rd_en_ex_o;
+	assign addr_mem_wr_o = addr_mem_wr_ex_o;
+	assign addr_mem_rd_o = addr_mem_rd_ex_o;
 
 	assign data_mem_ex_i = data_mem_i;
 	assign addr_wr_ex_i = addr_wr_id_o;
@@ -244,7 +249,8 @@ module core(
 		.data_mem_wr_o	(data_mem_wr_ex_o),
 		.addr_mem_wr_o	(addr_mem_wr_ex_o),
 		.addr_mem_rd_o	(addr_mem_rd_ex_o),
-		.mem_state_o	(mem_state_ex_o),
+		.mem_wr_en_o	(mem_wr_en_ex_o),
+		.mem_rd_en_o	(mem_rd_en_ex_o),
 
 		.addr_reg_wr_o	(addr_wr_ex_o),
 		.data_reg_wr_o 	(data_wr_ex_o),

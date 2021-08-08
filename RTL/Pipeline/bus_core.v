@@ -10,10 +10,12 @@
 module bus_core(
 	input							clk				,
 
-	input							mem_state_i		,
+	input							mem_wr_en_i		,
+	input							mem_rd_en_i		,
 	input							instr_rd_en_i	,
 	input		[`BUS_DATA_MEM]		data_mem_wr_i	,	
-	input		[`BUS_DATA_MEM]		addr_mem_i		,
+	input		[`BUS_DATA_MEM]		addr_mem_wr_i	,
+	input		[`BUS_DATA_MEM]		addr_mem_rd_i	,
 	input 		[`BUS_ADDR_MEM]		addr_instr_i	,		
 
 	output	reg	[`BUS_DATA_INSTR] 	data_instr_o	,
@@ -34,11 +36,20 @@ module bus_core(
 	end
 
 	always@(posedge clk) begin
-		if(mem_state_i == `MEM_WR_EN) begin
-			mem_data[addr_mem_i>>2] <= data_mem_wr_i;
+		if(mem_wr_en_i == `MEM_WR_EN) begin
+			mem_data[addr_mem_wr_i>>2] <= data_mem_wr_i;
 		end
 		else begin
-			data_mem_rd_o <= mem_data[addr_mem_i>>2];
+			mem_data[addr_mem_wr_i>>2] <= mem_data[addr_mem_wr_i>>2];
+		end
+	end
+
+	always@(posedge clk) begin
+		if(mem_rd_en_i == `MEM_RD_EN) begin
+			data_mem_rd_o <= mem_data[addr_mem_rd_i>>2];
+		end
+		else begin
+			data_mem_rd_o <= `ZERO_DOUBLE;
 		end
 	end
 

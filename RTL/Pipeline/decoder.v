@@ -2,7 +2,7 @@
 //Pipeline CPU
 //Created by Chesed
 //2021.07.20
-//Edited in 2021.08.07
+//Edited in 2021.08.08
 
 `include "define.v"
 
@@ -243,10 +243,17 @@ module decoder(
 						reg_rs1_addr <= `REG_ADDR_ZERO;
 						reg_rs2_addr <= `REG_ADDR_ZERO;
 						reg_wr_addr <= `REG_ADDR_ZERO;
-						word_intercept <= `INTERCEPT_DIS;
+
 						jmp_flag <= `JMP_NOPE;
 						load_code <= `LOAD_NOPE;
 						store_code <= `STORE_NOPE;
+
+						alu_add_sub <= `ALU_ADD_EN;
+						alu_shift <= `ALU_SHIFT_L;
+						word_intercept <= `INTERCEPT_DIS;
+						alu_operation <= `ALU_ADD;
+						alu_op_num1	<= `ZERO_DOUBLE;
+						alu_op_num2	<= `ZERO_DOUBLE;
 						jmp_op_num1	<= `ZERO_DOUBLE;
 						jmp_op_num2	<= `ZERO_DOUBLE;
 					end
@@ -279,10 +286,17 @@ module decoder(
 						reg_rs1_addr <= `REG_ADDR_ZERO;
 						reg_rs2_addr <= `REG_ADDR_ZERO;
 						reg_wr_addr <= `REG_ADDR_ZERO;
-						word_intercept <= `INTERCEPT_DIS;
+
 						jmp_flag <= `JMP_NOPE;
 						load_code <= `LOAD_NOPE;
 						store_code <= `STORE_NOPE;
+
+						alu_add_sub <= `ALU_ADD_EN;
+						alu_shift <= `ALU_SHIFT_L;
+						word_intercept <= `INTERCEPT_DIS;
+						alu_operation <= `ALU_ADD;
+						alu_op_num1	<= `ZERO_DOUBLE;
+						alu_op_num2	<= `ZERO_DOUBLE;
 						jmp_op_num1	<= `ZERO_DOUBLE;
 						jmp_op_num2	<= `ZERO_DOUBLE;
 					end
@@ -315,10 +329,17 @@ module decoder(
 						reg_rs1_addr <= `REG_ADDR_ZERO;
 						reg_rs2_addr <= `REG_ADDR_ZERO;
 						reg_wr_addr <= `REG_ADDR_ZERO;
-						word_intercept <= `INTERCEPT_DIS;
+
 						jmp_flag <= `JMP_NOPE;
 						load_code <= `LOAD_NOPE;
 						store_code <= `STORE_NOPE;
+
+						alu_add_sub <= `ALU_ADD_EN;
+						alu_shift <= `ALU_SHIFT_L;
+						word_intercept <= `INTERCEPT_DIS;
+						alu_operation <= `ALU_ADD;
+						alu_op_num1	<= `ZERO_DOUBLE;
+						alu_op_num2	<= `ZERO_DOUBLE;
 						jmp_op_num1	<= `ZERO_DOUBLE;
 						jmp_op_num2	<= `ZERO_DOUBLE;
 					end
@@ -371,10 +392,17 @@ module decoder(
 						reg_rs1_addr <= `REG_ADDR_ZERO;
 						reg_rs2_addr <= `REG_ADDR_ZERO;
 						reg_wr_addr <= `REG_ADDR_ZERO;
-						word_intercept <= `INTERCEPT_DIS;
+
 						jmp_flag <= `JMP_NOPE;
 						load_code <= `LOAD_NOPE;
 						store_code <= `STORE_NOPE;
+
+						alu_add_sub <= `ALU_ADD_EN;
+						alu_shift <= `ALU_SHIFT_L;
+						word_intercept <= `INTERCEPT_DIS;
+						alu_operation <= `ALU_ADD;
+						alu_op_num1	<= `ZERO_DOUBLE;
+						alu_op_num2	<= `ZERO_DOUBLE;
 						jmp_op_num1	<= `ZERO_DOUBLE;
 						jmp_op_num2	<= `ZERO_DOUBLE;
 					end
@@ -406,13 +434,19 @@ module decoder(
 				reg_rs1_addr <= `REG_ADDR_ZERO;
 				reg_rs2_addr <= `REG_ADDR_ZERO;
 				reg_wr_addr <= `REG_ADDR_ZERO;
-				jmp_op_num1	<= `ZERO_DOUBLE;
-				jmp_op_num2	<= `ZERO_DOUBLE;
-				word_intercept <= `INTERCEPT_DIS;
 
 				jmp_flag <= `JMP_NOPE;
 				load_code <= `LOAD_NOPE;
 				store_code <= `STORE_NOPE;
+
+				alu_add_sub <= `ALU_ADD_EN;
+				alu_shift <= `ALU_SHIFT_L;
+				word_intercept <= `INTERCEPT_DIS;
+				alu_operation <= `ALU_ADD;
+				alu_op_num1	<= `ZERO_DOUBLE;
+				alu_op_num2	<= `ZERO_DOUBLE;
+				jmp_op_num1	<= `ZERO_DOUBLE;
+				jmp_op_num2	<= `ZERO_DOUBLE;
 			end
 
 			default: begin
@@ -420,10 +454,17 @@ module decoder(
 				reg_rs1_addr <= `REG_ADDR_ZERO;
 				reg_rs2_addr <= `REG_ADDR_ZERO;
 				reg_wr_addr <= `REG_ADDR_ZERO;
-				word_intercept <= `INTERCEPT_DIS;
+
 				jmp_flag <= `JMP_NOPE;
 				load_code <= `LOAD_NOPE;
 				store_code <= `STORE_NOPE;
+
+				alu_add_sub <= `ALU_ADD_EN;
+				alu_shift <= `ALU_SHIFT_L;
+				word_intercept <= `INTERCEPT_DIS;
+				alu_operation <= `ALU_ADD;
+				alu_op_num1	<= `ZERO_DOUBLE;
+				alu_op_num2	<= `ZERO_DOUBLE;
 				jmp_op_num1	<= `ZERO_DOUBLE;
 				jmp_op_num2	<= `ZERO_DOUBLE;
 			end

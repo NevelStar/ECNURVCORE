@@ -27,7 +27,8 @@ module ex(
 	output reg 	[`BUS_DATA_MEM]	data_mem_wr		,
 	output reg 	[`BUS_ADDR_MEM]	addr_mem_wr		,
 	output reg 	[`BUS_ADDR_MEM]	addr_mem_rd		,
-	output reg 					mem_state		
+	output reg 					mem_wr_en		,
+	output reg 					mem_rd_en		
 	
 );
 	
@@ -111,9 +112,11 @@ module ex(
 		case(load_code)
 			`INSTR_LB,`INSTR_LH,`INSTR_LW,`INSTR_LD,`INSTR_LBU,`INSTR_LHU,`INSTR_LWU: begin
 				addr_mem_rd <= alu_result;
+				mem_rd_en <= `MEM_RD_EN;
 			end
 			default: begin
 				addr_mem_rd <= `MEM_ADDR_ZERO;
+				mem_rd_en <= `MEM_RD_DIS;
 			end
 		endcase
 	end
@@ -123,27 +126,27 @@ module ex(
 			`INSTR_SB: begin
 				data_mem_wr <= {56'd0,data_rs2[7:0]};
 				addr_mem_wr <= alu_result;
-				mem_state <= `MEM_WR_EN;
+				mem_wr_en <= `MEM_WR_EN;
 			end
 			`INSTR_SH: begin
 				data_mem_wr <= {48'd0,data_rs2[15:0]};
 				addr_mem_wr <= alu_result;
-				mem_state <= `MEM_WR_EN;
+				mem_wr_en <= `MEM_WR_EN;
 			end
 			`INSTR_SW: begin
 				data_mem_wr <= {32'd0,data_rs2[31:0]};
 				addr_mem_wr <= alu_result;
-				mem_state <= `MEM_WR_EN;
+				mem_wr_en <= `MEM_WR_EN;
 			end
 			`INSTR_SD: begin
 				data_mem_wr <= data_rs2;
 				addr_mem_wr <= alu_result;
-				mem_state <= `MEM_WR_EN;
+				mem_wr_en <= `MEM_WR_EN;
 			end
 			default: begin
 				data_mem_wr <= `ZERO_WORD;
 				addr_mem_wr <= `MEM_ADDR_ZERO;
-				mem_state <= `MEM_RD_EN;
+				mem_wr_en <= `MEM_WR_DIS;
 			end
 		endcase
 	end

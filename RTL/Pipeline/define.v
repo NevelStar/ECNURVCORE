@@ -2,7 +2,7 @@
 //Pipline CPU
 //Created by Chesed
 //2021.07.19
-//Edited in 2021.08.07
+//Edited in 2021.08.08
 
 
 //the initial data
@@ -19,6 +19,8 @@
 `define REG_NUM				32
 `define DATA_WIDTH			64
 
+`define WR_STR_ALL			8'hff
+
 
 //the bus width
 `define BUS_ADDR_REG		4:0
@@ -26,13 +28,12 @@
 `define BUS_DATA_REG		63:0
 `define BUS_DATA_MEM		63:0
 `define BUS_DATA_INSTR		31:0
-`define BUS_AXI_STRB		3:0
+`define BUS_AXI_STRB		7:0
 `define BUS_AXI_CACHE		3:0
 `define BUS_ALU_OP			2:0
 `define BUS_L_CODE			2:0
 `define BUS_S_CODE			2:0
 `define BUS_JMP_FLAG		2:0
-`define BUS_BYTE_DATA		7:0
 `define BUS_HOLD_CODE		2:0
 `define BUS_PRE_STATE		1:0
 
@@ -146,7 +147,9 @@
 `define JMP_EN				1'b1
 `define JMP_DIS				1'b0
 `define MEM_WR_EN			1'b1
-`define MEM_RD_EN			1'b0
+`define MEM_WR_DIS			1'b0
+`define MEM_RD_EN			1'b1
+`define MEM_RD_DIS			1'b0
 `define ALU_SUB_EN			1'b1
 `define ALU_ADD_EN			1'b0
 `define ALU_SHIFT_L			1'b0
