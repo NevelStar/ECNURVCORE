@@ -2,7 +2,7 @@
 //Pipeline CPU
 //Created by Chesed
 //2021.07.23
-//Edited in 2021.07.26
+//Edited in 2021.08.07
 
 `include "define.v"
 
@@ -27,18 +27,20 @@ module ex_mem(
 	
 	reg [`BUS_DATA_REG] data_reg_wr; 
 
-	wire [`BUS_DATA_REG]	data_alu_t;
+	wire [`BUS_DATA_REG] data_alu_t;
 	wire [`BUS_L_CODE] load_code_t;
 
 	assign data_reg_wr_o = data_reg_wr;
 
 	always@(*) begin
 		case(load_code_t)
-			`INSTR_LB: data_reg_wr <= {{24{data_mem_i[7]}},data_mem_i[7:0]};
-			`INSTR_LH: data_reg_wr <= {{16{data_mem_i[15]}},data_mem_i[15:0]};
-			`INSTR_LW: data_reg_wr <= data_mem_i;
-			`INSTR_LBU: data_reg_wr <= {24'd0,data_mem_i[7:0]};
-			`INSTR_LHU: data_reg_wr <= {16'd0,data_mem_i[15:0]};
+			`INSTR_LB: data_reg_wr <= {{56{data_mem_i[7]}},data_mem_i[7:0]};
+			`INSTR_LH: data_reg_wr <= {{48{data_mem_i[15]}},data_mem_i[15:0]};
+			`INSTR_LW: data_reg_wr <= {{32{data_mem_i[31]}},data_mem_i[31:0]};
+			`INSTR_LD: data_reg_wr <= data_mem_i;
+			`INSTR_LBU: data_reg_wr <= {56'd0,data_mem_i[7:0]};
+			`INSTR_LHU: data_reg_wr <= {48'd0,data_mem_i[15:0]};
+			`INSTR_LWU: data_reg_wr <= {32'd0,data_mem_i[31:0]};
 			default: data_reg_wr <= data_alu_t;
 		endcase
 	end
@@ -53,12 +55,12 @@ module ex_mem(
 		.data_out	(addr_reg_wr_o)
 	);
 
-	gnrl_dff # (.DW(32)) dff_data_alu(
+	gnrl_dff # (.DW(`DATA_WIDTH)) dff_data_alu(
 		.clk		(clk),
 		.rst_n		(rst_n),
 		.wr_en		(hold_n),
 		.data_in	(data_alu_i),
-		.data_r_ini	(`ZERO_WORD),
+		.data_r_ini	(`ZERO_DOUBLE),
 
 		.data_out	(data_alu_t)
 	);

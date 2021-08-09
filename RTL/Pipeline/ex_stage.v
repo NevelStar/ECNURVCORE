@@ -2,7 +2,7 @@
 //Pipeline CPU
 //Created by Chesed
 //2021.07.26
-//Edited in 2021.08.01
+//Edited in 2021.08.07
 
 `include "define.v"
 
@@ -21,6 +21,7 @@ module ex_stage(
 
 	input						alu_add_sub_i	,
 	input						alu_shift_i		,
+	input						word_intercept_i,
 	input	[`BUS_ALU_OP]		alu_operation_i	,
 	input	[`BUS_DATA_REG]		alu_op_num1_i	,
 	input	[`BUS_DATA_REG]		alu_op_num2_i	,
@@ -34,7 +35,8 @@ module ex_stage(
 	output	[`BUS_DATA_REG]		data_reg_wr_o 	,
 	output						reg_wr_en_o		,
 
-	output						mem_state_o		,
+	output						mem_wr_en_o		,
+	output						mem_rd_en_o		,
 	output 	[`BUS_DATA_MEM] 	data_mem_wr_o	,	
 	output 	[`BUS_ADDR_MEM] 	addr_mem_wr_o	,	
 	output 	[`BUS_ADDR_MEM] 	addr_mem_rd_o	
@@ -55,6 +57,7 @@ module ex_stage(
 		.store_code		(store_code_i),
 		.alu_add_sub	(alu_add_sub_i),
 		.alu_shift		(alu_shift_i),
+		.word_intercept (word_intercept_i),
 		.alu_operation	(alu_operation_i),
 		.alu_op_num1	(alu_op_num1_i),
 		.alu_op_num2	(alu_op_num2_i),
@@ -63,7 +66,8 @@ module ex_stage(
 		.data_mem_wr	(data_mem_wr_o),
 		.addr_mem_wr	(addr_mem_wr_o),
 		.addr_mem_rd	(addr_mem_rd_o),
-		.mem_state		(mem_state_o)
+		.mem_wr_en		(mem_wr_en_o),
+		.mem_rd_en		(mem_rd_en_o)
 	);
 
 	ex_mem core_pipeline_ex_mem(

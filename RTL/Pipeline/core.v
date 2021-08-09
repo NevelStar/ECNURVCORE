@@ -2,7 +2,7 @@
 //Pipeline CPU
 //Created by Chesed
 //2021.07.23
-//Edited in 2021.08.03
+//Edited in 2021.08.07
 
 `include "define.v"
 
@@ -10,16 +10,20 @@ module core(
 	input						clk				,
 	input						rst_n			,
 
-	input	[`BUS_DATA_MEM] 	instr_i 		,
-	input	[`BUS_DATA_MEM] 	addr_instr_i 	,
+	input						stall			,
+
+	input	[`BUS_DATA_INSTR] 	instr_i 		,
+	input	[`BUS_ADDR_MEM] 	addr_instr_i 	,
 	input	[`BUS_DATA_MEM]		data_mem_i		,
 
 
 
-	output						mem_state_o		,
-	output						instr_rd_en_o		,
+	output						mem_wr_en_o		,
+	output						mem_rd_en_o		,
+	output						instr_rd_en_o	,
 	output	[`BUS_DATA_MEM]		data_mem_wr_o	,	
-	output	[`BUS_DATA_MEM]		addr_mem_o		,
+	output	[`BUS_ADDR_MEM]		addr_mem_wr_o	,	
+	output	[`BUS_ADDR_MEM]		addr_mem_rd_o	,	
 	output 	[`BUS_ADDR_MEM]		pc_o			
 	
 
@@ -30,15 +34,15 @@ module core(
 	wire [`BUS_ADDR_MEM] jmp_to_pc_i;
 
 	wire instr_mask_if_i;
-	wire [`BUS_DATA_MEM] instr_rd_if_i; 	
-	wire [`BUS_DATA_MEM] instr_rd_if_o;
+	wire [`BUS_DATA_INSTR] instr_rd_if_i; 	
+	wire [`BUS_DATA_INSTR] instr_rd_if_o;
 	wire instr_rd_en_if_o;
 
 	wire [`BUS_DATA_REG] data_rs1_id_i;
 	wire [`BUS_DATA_REG] data_rs2_id_i;
 	wire [`BUS_DATA_REG] data_bypass_id_i;
-	wire [`BUS_DATA_MEM] instr_id_i;
-	wire [`BUS_DATA_MEM] addr_instr_id_i;
+	wire [`BUS_DATA_INSTR] instr_id_i;
+	wire [`BUS_ADDR_MEM] addr_instr_id_i;
 	wire [`BUS_DATA_REG] data_rs1_id_o;
 	wire [`BUS_DATA_REG] data_rs2_id_o;
 	wire [`BUS_DATA_REG] jmpb_rs1_id_o;
@@ -51,6 +55,7 @@ module core(
 	wire [`BUS_S_CODE] store_code_id_o;
 	wire alu_add_sub_id_o;
 	wire alu_shift_id_o;	
+	wire word_intercept_id_o;
 	wire [`BUS_ALU_OP] alu_operation_id_o;
 	wire [`BUS_DATA_REG] alu_op_num1_id_o;
 	wire [`BUS_DATA_REG] alu_op_num2_id_o;
@@ -65,6 +70,7 @@ module core(
 	wire [`BUS_S_CODE] store_code_ex_i;
 	wire alu_add_sub_ex_i;
 	wire alu_shift_ex_i;
+	wire word_intercept_ex_i;
 	wire [`BUS_ALU_OP] alu_operation_ex_i;
 	wire [`BUS_DATA_REG] alu_op_num1_ex_i;
 	wire [`BUS_DATA_REG] alu_op_num2_ex_i;
@@ -75,7 +81,8 @@ module core(
 	wire [`BUS_DATA_MEM] data_mem_wr_ex_o;	
 	wire [`BUS_ADDR_MEM] addr_mem_wr_ex_o;	
 	wire [`BUS_ADDR_MEM] addr_mem_rd_ex_o;	
-	wire mem_state_ex_o;
+	wire mem_wr_en_ex_o;
+	wire mem_rd_en_ex_o;
 	wire [`BUS_ADDR_REG] addr_wr_ex_o;
 	wire [`BUS_DATA_REG] data_wr_ex_o;
 	wire wr_en_ex_o;
@@ -89,6 +96,7 @@ module core(
 	wire [`BUS_DATA_REG] data_rd1_reg_o;
 	wire [`BUS_DATA_REG] data_rd2_reg_o;
 
+	wire [`BUS_ADDR_MEM] stall_ctrl_i;
 	wire [`BUS_ADDR_MEM] jmp_num1_ctrl_i;
 	wire [`BUS_ADDR_MEM] jmp_num2_ctrl_i;
 	wire [`BUS_ADDR_MEM] pc_prediction_ctrl_i;
@@ -122,12 +130,15 @@ module core(
 	assign store_code_ex_i = store_code_id_o;
 	assign alu_add_sub_ex_i = alu_add_sub_id_o;
 	assign alu_shift_ex_i = alu_shift_id_o;
+	assign word_intercept_ex_i = word_intercept_id_o;
 	assign alu_operation_ex_i = alu_operation_id_o;
 	assign alu_op_num1_ex_i = alu_op_num1_id_o;
 	assign alu_op_num2_ex_i = alu_op_num2_id_o;
 	assign data_mem_wr_o = data_mem_wr_ex_o;
-	assign mem_state_o = mem_state_ex_o;
-	assign addr_mem_o = (mem_state_o == `MEM_WR_EN) ? addr_mem_wr_ex_o : addr_mem_rd_ex_o;
+	assign mem_wr_en_o = mem_wr_en_ex_o;
+	assign mem_rd_en_o = mem_rd_en_ex_o;
+	assign addr_mem_wr_o = addr_mem_wr_ex_o;
+	assign addr_mem_rd_o = addr_mem_rd_ex_o;
 
 	assign data_mem_ex_i = data_mem_i;
 	assign addr_wr_ex_i = addr_wr_id_o;
@@ -139,6 +150,7 @@ module core(
 	assign addr_rd2_reg_i = addr_rs2_id_o;
 	assign data_wr_reg_i = data_wr_ex_o;
 
+	assign stall_ctrl_i = stall;
 	assign jmp_num1_ctrl_i = jmp_op_num1_id_o;
 	assign jmp_num2_ctrl_i = jmp_op_num2_id_o;
 	assign pc_prediction_ctrl_i = pc_o;
@@ -163,7 +175,7 @@ module core(
 		.addr_instr	(pc_o)
 	);
 
-	if_stage code_if(
+	if_stage core_if(
 		.hold_code 		(hold_code),
 		.instr_rd_i 	(instr_rd_if_i),
 		.instr_mask_i	(instr_mask_if_i),
@@ -200,6 +212,7 @@ module core(
 		.store_code_o	(store_code_id_o),
 		.alu_add_sub_o	(alu_add_sub_id_o),
 		.alu_shift_o	(alu_shift_id_o),
+		.word_intercept_o(word_intercept_id_o),
 		.alu_operation_o(alu_operation_id_o),
 		.alu_op_num1_o	(alu_op_num1_id_o),
 		.alu_op_num2_o	(alu_op_num2_id_o),
@@ -222,6 +235,7 @@ module core(
 		.store_code_i	(store_code_ex_i),
 		.alu_add_sub_i	(alu_add_sub_ex_i),
 		.alu_shift_i	(alu_shift_ex_i),
+		.word_intercept_i(word_intercept_ex_i),
 		.alu_operation_i(alu_operation_ex_i),
 		.alu_op_num1_i	(alu_op_num1_ex_i),
 		.alu_op_num2_i	(alu_op_num2_ex_i),
@@ -235,7 +249,8 @@ module core(
 		.data_mem_wr_o	(data_mem_wr_ex_o),
 		.addr_mem_wr_o	(addr_mem_wr_ex_o),
 		.addr_mem_rd_o	(addr_mem_rd_ex_o),
-		.mem_state_o	(mem_state_ex_o),
+		.mem_wr_en_o	(mem_wr_en_ex_o),
+		.mem_rd_en_o	(mem_rd_en_ex_o),
 
 		.addr_reg_wr_o	(addr_wr_ex_o),
 		.data_reg_wr_o 	(data_wr_ex_o),
@@ -266,6 +281,7 @@ module core(
 
 		.clk			(clk),
 		.rst_n			(rst_n),
+		.stall			(stall_ctrl_i),
 		.jmp_num1_i		(jmp_num1_ctrl_i),
 		.jmp_num2_i		(jmp_num2_ctrl_i),
 		.pc_pred_i		(pc_prediction_ctrl_i),

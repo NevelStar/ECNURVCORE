@@ -2,7 +2,7 @@
 //Pipeline CPU
 //Created by Chesed
 //2021.07.23
-//Edited in 2021.07.28
+//Edited in 2021.08.07
 
 `include "define.v"
 
@@ -15,7 +15,7 @@ module id_stage(
 	input	[`BUS_DATA_REG]		data_rs1_i		,
 	input	[`BUS_DATA_REG]		data_rs2_i		,
 	input	[`BUS_DATA_REG]		data_bypass_i	,
-	input	[`BUS_DATA_MEM]		instr_i			,
+	input	[`BUS_DATA_INSTR]	instr_i			,
 	input	[`BUS_ADDR_MEM]		addr_instr_i	,	
 
 	output	[`BUS_DATA_REG]		data_rs1_o		,
@@ -31,6 +31,7 @@ module id_stage(
 	output 	[`BUS_S_CODE] 		store_code_o	,
 	output						alu_add_sub_o	,
 	output						alu_shift_o		,
+	output						word_intercept_o,
 	output 	[`BUS_ALU_OP] 		alu_operation_o	,
 	output	[`BUS_DATA_REG]		alu_op_num1_o	,
 	output	[`BUS_DATA_REG]		alu_op_num2_o	,
@@ -53,7 +54,7 @@ module id_stage(
 	wire reg_wr_en;
 	wire alu_add_sub;
 	wire alu_shift;
-
+	wire word_intercept;
 
 	wire hold_n;
 
@@ -79,6 +80,7 @@ module id_stage(
 		.data_rs2		(data_rs2),
 		.alu_add_sub	(alu_add_sub),
 		.alu_shift		(alu_shift),
+		.word_intercept	(word_intercept),
 		.alu_operation	(alu_operation),
 		.alu_op_num1	(alu_op_num1),
 		.alu_op_num2	(alu_op_num2),
@@ -112,6 +114,7 @@ module id_stage(
 
 		.alu_add_sub_i	(alu_add_sub),
 		.alu_shift_i	(alu_shift),
+		.word_intercept_i(word_intercept),
 		.alu_operation_i(alu_operation),
 		.alu_op_num1_i	(alu_op_num1),
 		.alu_op_num2_i	(alu_op_num2),
@@ -128,6 +131,7 @@ module id_stage(
 
 		.alu_add_sub_o	(alu_add_sub_o),
 		.alu_shift_o	(alu_shift_o),
+		.word_intercept_o(word_intercept_o),
 		.alu_operation_o(alu_operation_o),
 		.alu_op_num1_o	(alu_op_num1_o),
 		.alu_op_num2_o	(alu_op_num2_o)
