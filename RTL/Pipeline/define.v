@@ -66,7 +66,7 @@
 `define OPERATION_JR		7'b1100111
 `define OPERATION_FENCE		7'b0001111
 `define OPERATION_AUIPC		7'b0010111
-
+`define OPERATION_SYS		7'b1110011
 
 
 //funct3 code
