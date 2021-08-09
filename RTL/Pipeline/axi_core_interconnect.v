@@ -22,7 +22,6 @@ module axi_core_mem(
 	output	[`BUS_DATA_MEM]		data_mem_rd		,
 
 
-	output 						core_stall		,
 
 
 
