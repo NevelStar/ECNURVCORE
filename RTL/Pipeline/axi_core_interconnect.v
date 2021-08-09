@@ -5,7 +5,7 @@
 
 `include "define.v"
 
-module axi_core_interconnect(
+module axi_core_mem(
 	input						clk				,
 	input						rst_n			,
 	
@@ -25,12 +25,7 @@ module axi_core_interconnect(
 	output 						core_stall		,
 
 
-	//instruction fetch
-	input	[`BUS_ADDR_MEM]		pc				,	
-	input						instr_rd_en		,	
 
-	output 	[`BUS_ADDR_MEM]		instr_addr		,
-	output 	[`BUS_ADDR_MEM]		instr			,
 	
 
 	//with bus
@@ -93,7 +88,7 @@ module axi_core_interconnect(
 );
 
 	//type-s
-	assign awvalid = (mem_wr_en == `MEM_WR_EN) ? 1'b1 : 1'b0;
+	assign awvalid = mem_wr_en;
 	assign awaddr = addr_mem_wr;
 	assign wvalid = awvalid & awready;
 	assign wdata = data_mem_wr;
@@ -103,7 +98,7 @@ module axi_core_interconnect(
 	
 	//type-l
 	assign araddr = addr_mem_rd;
-	assign arvalid = (mem_rd_en == `MEM_RD_EN) ? 1'b1 : 1'b0;;
+	assign arvalid = mem_rd_en;
 	assign rready = 1'b1;
 	assign data_mem_rd = rdata & rvalid;
 
