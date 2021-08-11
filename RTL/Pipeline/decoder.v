@@ -420,11 +420,11 @@ module decoder(
 				alu_operation <= `ALU_ADD;
 				word_intercept <= `INTERCEPT_DIS;
 				alu_op_num1 <= addr_instr;
-				alu_op_num2 <= 32'd4;
-				jmp_op_num1	<= addr_instr;
-				jmp_op_num2	<= {{32{instr[31]}},instr[31:12],12'd0};
+				alu_op_num2 <= {{32{instr[31]}},instr[31:12],12'd0};
+				jmp_op_num1	<= `ZERO_DOUBLE;
+				jmp_op_num2	<= `ZERO_DOUBLE;
 
-				jmp_flag <= `JMP_J;
+				jmp_flag <= `JMP_NOPE;
 				load_code <= `LOAD_NOPE;
 				store_code <= `STORE_NOPE;
 			end

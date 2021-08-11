@@ -27,7 +27,7 @@ module axi_core_mem(
 
 	
 
-	//with bus
+//with bus
 
 	//address write
 
@@ -38,6 +38,15 @@ module axi_core_mem(
 	output						awid 			,
 	output 	[`BUS_ADDR_MEM]		awaddr			,
 
+	//burst
+	output 	[7:0] 				awlen			,
+	output 	[2:0] 				awsize			,
+	output 	[1:0] 				awburst			,
+
+	output	[`BUS_AXI_CACHE]	awcache			,
+	output						awprot			,
+	output						awqos			,
+	output						awregion		,
 
 
 
@@ -50,10 +59,13 @@ module axi_core_mem(
 	output 	[`BUS_DATA_MEM]		wdata			,
 	output 	[`BUS_AXI_STRB] 	wstrb			,
 
+	//burst
+	output 	      				wlast			,
 
 
 
 	//write response
+	input						bid 			,
 	input						bresp			,
 
 	//handshake
@@ -68,21 +80,32 @@ module axi_core_mem(
 	input	      				arready			,
 	output 	      				arvalid			,
 
+	output						arid 			,
 	output 	[`BUS_ADDR_MEM]		araddr			,
+
+	//burst
+	output 	[7:0] 				arlen			,
+	output 	[2:0] 				arsize			,
+	output 	[1:0] 				arburst			,
+
+	output	[`BUS_AXI_CACHE]	arcache			,
+	output						arprot			,
+	output						arqos			,
+	output						arregion		,
 
 
 
 	//data read
+	input	      				rid 			,
 	input	[`BUS_DATA_MEM]		rdata			,
 	input						rresp			,
 
+	//burst
+	input	      				rlast			,
 	
 	//handshake
 	input						rvalid 			,
 	output						rready
-
-
-
 
 );
 
@@ -98,7 +121,7 @@ module axi_core_mem(
 	//type-l
 	assign araddr = addr_mem_rd;
 	assign arvalid = mem_rd_en;
-	assign rready = 1'b1;
+	assign rready = mem_rd_en;
 	assign data_mem_rd = rdata & rvalid;
 
 
