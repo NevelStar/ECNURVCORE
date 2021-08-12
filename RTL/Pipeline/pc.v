@@ -26,7 +26,7 @@ module pc(
 
 	always @(posedge clk or negedge rst_n)begin
 		if(!rst_n) begin
-			addr_instr <= `INSTR_ADDR_INI;
+			addr_instr <= `BASE_PC;
 		end
 		else begin
 			if(!hold_n) begin
@@ -37,7 +37,7 @@ module pc(
 					addr_instr <= jmp_to;
 				end
 				else begin
-					addr_instr <= addr_instr + 32'd4;
+					addr_instr <= addr_instr + `PC_STEP;
 				end
 			end
 		end

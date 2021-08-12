@@ -6,20 +6,44 @@
 
 
 //the initial data
-`define INSTR_ADDR_INI		32'h0000_0000
+`define INSTR_ADDR_INI		64'h0000_0000_0000_0000
+
+`define BASE_PC				64'h0000_0000_0000_0000
+`define BASE_MEM			64'h0000_0000_0000_0100
+
 
 //zero
 `define ZERO_WORD			32'h0000_0000
 `define ZERO_DOUBLE			64'h0000_0000_0000_0000
 
-`define MEM_ADDR_ZERO		32'h0000_0000
+`define MEM_ADDR_ZERO		64'h0000_0000_0000_0000
 `define REG_ADDR_ZERO		5'h00
+
+`define AXI_ID_ZERO			4'b0000
+`define AXI_LEN_ZERO		8'h00
+
+
 
 //the constant
 `define REG_NUM				32
 `define DATA_WIDTH			64
 
 `define WR_STR_ALL			8'hff
+`define WR_STR_NONE			8'h00
+`define PC_STEP				64'd4
+
+
+//AXI size code
+`define AXI_SIZE_BYTE		3'b000
+`define AXI_SIZE_HALF		3'b001
+`define AXI_SIZE_WORD		3'b010
+`define AXI_SIZE_DOUBLE		3'b011
+
+//AXI burst mode
+`define AXI_BURST_FIX		2'b00
+`define AXI_BURST_INCR		2'b01
+`define AXI_BURST_WRAP		2'b10
+
 
 
 //the bus width
@@ -28,8 +52,6 @@
 `define BUS_DATA_REG		63:0
 `define BUS_DATA_MEM		63:0
 `define BUS_DATA_INSTR		31:0
-`define BUS_AXI_STRB		7:0
-`define BUS_AXI_CACHE		3:0
 `define BUS_ALU_OP			2:0
 `define BUS_L_CODE			2:0
 `define BUS_S_CODE			2:0
@@ -38,6 +60,20 @@
 `define BUS_PRE_STATE		1:0
 `define BUS_CSR_IMM			11:0
 `define BUS_CSR_IMMEX		31:0
+
+//AXI bus
+`define BUS_AXI_AWID		3:0
+`define BUS_AXI_ARID		3:0
+`define BUS_AXI_BID			3:0
+`define BUS_AXI_RID			3:0
+`define BUS_AXI_STRB		7:0
+`define BUS_AXI_CACHE		3:0
+`define BUS_AXI_LEN			7:0
+`define BUS_AXI_SIZE		2:0
+`define BUS_AXI_BURST		1:0
+`define BUS_AXI_RESP		1:0
+
+
 
 //decode the instrument
 `define OPERATION_CODE		6:0
@@ -172,6 +208,13 @@
 `define PC_MISMATCH			1'b0
 `define INTERCEPT_EN		1'b1
 `define INTERCEPT_DIS		1'b0
+
+`define HANDSHAKE_EN		1'b1
+`define HANDSHAKE_DIS		1'b0
+`define AXI_READY_EN		1'b1
+`define AXI_READY_DIS		1'b0
+`define AXI_VALID_EN		1'b1
+`define AXI_VALID_DIS		1'b0
 
 
 

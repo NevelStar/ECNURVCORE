@@ -10,7 +10,8 @@ module core(
 	input						clk				,
 	input						rst_n			,
 
-	input						stall			,
+	input						stall_load		,
+	input						stall_store		,
 
 	input	[`BUS_DATA_INSTR] 	instr_i 		,
 	input	[`BUS_ADDR_MEM] 	addr_instr_i 	,
@@ -97,7 +98,8 @@ module core(
 	wire [`BUS_DATA_REG] data_rd1_reg_o;
 	wire [`BUS_DATA_REG] data_rd2_reg_o;
 
-	wire [`BUS_ADDR_MEM] stall_ctrl_i;
+	wire [`BUS_ADDR_MEM] stall_load_ctrl_i;
+	wire [`BUS_ADDR_MEM] stall_store_ctrl_i;
 	wire [`BUS_ADDR_MEM] jmp_num1_ctrl_i;
 	wire [`BUS_ADDR_MEM] jmp_num2_ctrl_i;
 	wire [`BUS_ADDR_MEM] pc_prediction_ctrl_i;
@@ -153,7 +155,8 @@ module core(
 	assign addr_rd2_reg_i = addr_rs2_id_o;
 	assign data_wr_reg_i = data_wr_ex_o;
 
-	assign stall_ctrl_i = stall;
+	assign stall_load_ctrl_i = stall_load;
+	assign stall_store_ctrl_i = stall_store;
 	assign jmp_num1_ctrl_i = jmp_op_num1_id_o;
 	assign jmp_num2_ctrl_i = jmp_op_num2_id_o;
 	assign pc_prediction_ctrl_i = pc_o;
@@ -285,7 +288,8 @@ module core(
 
 		.clk			(clk),
 		.rst_n			(rst_n),
-		.stall			(stall_ctrl_i),
+		.stall_load		(stall_load_ctrl_i),
+		.stall_store	(stall_store_ctrl_i),
 		.jmp_num1_i		(jmp_num1_ctrl_i),
 		.jmp_num2_i		(jmp_num2_ctrl_i),
 		.pc_pred_i		(pc_prediction_ctrl_i),

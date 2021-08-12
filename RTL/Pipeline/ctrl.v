@@ -9,7 +9,8 @@
 module ctrl(
 	input					clk				,
 	input					rst_n			,
-	input					stall			,
+	input					stall_load		,
+	input					stall_store		,
 	input [`BUS_ADDR_MEM]	jmp_num1_i		,
 	input [`BUS_ADDR_MEM]	jmp_num2_i		,
 	input [`BUS_ADDR_MEM]	pc_pred_i		,
@@ -29,7 +30,8 @@ module ctrl(
 	wire jmp_en;
 	wire [`BUS_ADDR_MEM] jmp_to;
 
-
+    wire rs1_slt_rs2;
+    wire rs1_sltu_rs2;
 	wire prediction_result;
 	wire prediction_result_t;
 	wire jmp_en_prediction;
@@ -62,7 +64,7 @@ module ctrl(
 
 	assign instr_mask_o = prediction_result_t;
 
-	assign hold_code_o = (stall == `STALL_EN) ? `HOLD_CODE_EX :((load_bypass_i==`LOAD_BYPASS_EN) ? `HOLD_CODE_ID : `HOLD_CODE_NOPE);
+	assign hold_code_o = (stall_store == `STALL_EN) ? `HOLD_CODE_EX : ((stall_load == `STALL_EN) ? `HOLD_CODE_IF : `HOLD_CODE_NOPE);
 
 	gnrl_dff # (.DW(1)) dff_addr_reg_wr(
 			.clk		(clk),
