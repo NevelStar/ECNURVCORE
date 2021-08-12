@@ -36,6 +36,7 @@ module ex(
 
 	wire [`BUS_DATA_REG] sra_mask;
 	wire [`BUS_DATA_REG] sra_sign;
+	wire [`BUS_DATA_REG] sraw_sign;
 
 	wire [`BUS_DATA_REG] alu_add;
 	wire [`BUS_DATA_REG] alu_sub;
@@ -46,6 +47,8 @@ module ex(
 	wire [`BUS_DATA_REG] alu_xor;
 	wire [`BUS_DATA_REG] alu_srl;
 	wire [`BUS_DATA_REG] alu_sra;
+	wire [`BUS_DATA_REG] alu_srlw;
+	wire [`BUS_DATA_REG] alu_sraw;
 	wire [`BUS_DATA_REG] alu_or;
 	wire [`BUS_DATA_REG] alu_and;
 
@@ -66,7 +69,7 @@ module ex(
 	assign alu_add = alu_op_num1 + alu_op_num2;
 	assign alu_sub = alu_op_num1 - alu_op_num2;
 	assign alu_sl = alu_op_num1 << shamt;
-	assign alu_slw = {{32{alu_sl[31]}},alu_sl[31:0]};
+	assign alu_sllw = {{32{alu_sl[31]}},alu_sl[31:0]};
 	assign alu_slt = (alu_op_num1[63] == alu_op_num2[63]) ? ((alu_op_num1 < alu_op_num2) ? 64'd1 : 64'd0 ) : {63'd0,alu_op_num1[63]};
 	assign alu_sltu = (alu_op_num1 < alu_op_num2) ? 64'd1 : 64'd0;
 	assign alu_xor = alu_op_num1 ^ alu_op_num2;

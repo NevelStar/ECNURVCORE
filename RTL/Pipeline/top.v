@@ -7,7 +7,7 @@
 
 module top(
 	input	clk		,
-	input	rst_n	,
+	input	rst_n	
 );
 
 	wire [`BUS_DATA_MEM] data_mem_wr;
@@ -16,6 +16,8 @@ module top(
 	wire [`BUS_ADDR_MEM] addr_mem_rd;
 	wire mem_wr_en;
 	wire mem_rd_en;
+	wire stall_load;
+    wire stall_store;
 
 
 	wire [`BUS_DATA_INSTR] instr;
@@ -33,17 +35,34 @@ module top(
 	wire arvalid;
 	wire rvalid;
 	wire rready;
+	wire bready;
+	wire wlast;
 	wire [`BUS_ADDR_MEM] awaddr;
 	wire [`BUS_ADDR_MEM] araddr;
 	wire [`BUS_DATA_MEM] wdata;
 	wire [`BUS_DATA_MEM] rdata;
 	wire [`BUS_AXI_STRB] wstrb;
+	wire [3:0] awid;
+	wire [3:0] arid;
+	wire [3:0] bid;
+	wire [3:0] rid;
+	
+	wire [7:0] awlen;
+	wire [2:0] awsize;
+	wire [1:0] awburst;
+	wire [7:0] arlen;
+	wire [2:0] arsize;
+	wire [1:0] arburst;
+
+
+
 
 	core ecnurvcore(
 		.clk			(clk),
 		.rst_n			(rst_n),
 
-		.stall			(1'b0),
+		.stall_load		(stall_load),
+		.stall_store	(stall_store),
 
 		.instr_i 		(instr),
 		.addr_instr_i 	(addr_instr),
@@ -62,28 +81,14 @@ module top(
 
 	);
 
-	bus_core bus(
-		.clk			(clk),
-	
-		.mem_wr_en_i	(1'b0),
-		.mem_rd_en_i	(1'b0),
-		.instr_rd_en_i	(instr_rd_en),
-		.data_mem_wr_i	(64'd0),	
-		.addr_mem_wr_i	(64'd0),
-		.addr_mem_rd_i	(64'd0),
-		.addr_instr_i	(pc),		
-	
-		.data_instr_o	(instr),
-		.addr_instr_o 	(addr_instr),
-		.data_mem_rd_o	()
-		
-	
-	);
+
 
 
 	axi_core_mem core_mem(
 		.clk			(clk),
 		.rst_n			(rst_n),
+		.stall_load		(stall_load),
+		.stall_store	(stall_store),
 	
 
 		.addr_mem_wr	(addr_mem_wr),	
@@ -92,18 +97,25 @@ module top(
 		.mem_wr_en		(mem_wr_en),	
 		.mem_rd_en		(mem_rd_en),					
 		.data_mem_rd	(data_mem_rd),
+		
+		
+		
+	    .pc				(pc),
+	    .instr_rd_en	(instr_rd_en),
+	    .instr 			(instr),
+	    .addr_instr		(addr_instr),
 
 
 		.awready		(awready),
 		.awvalid		(awvalid),
 
-		.awid 			(),
+		.awid 			(awid),
 		.awaddr			(awaddr),
 
 
-		.awlen			(),
-		.awsize			(),
-		.awburst		(),
+		.awlen			(awlen),
+		.awsize			(awsize),
+		.awburst		(awburst),
 
 		.awcache		(),
 		.awprot			(),
@@ -116,23 +128,23 @@ module top(
 		.wdata			(wdata),
 		.wstrb			(wstrb),
 
-		.wlast			(),
+		.wlast			(wlast),
 
-		.bid 			(),
+		.bid 			(bid),
 		.bresp			(),
 
 		.bvalid			(),
-		.bready			(),
+		.bready			(bready),
 
 		.arready		(arready),
 		.arvalid		(arvalid),
 
-		.arid 			(),
+		.arid 			(arid),
 		.araddr			(araddr),
 
-		.arlen			(),
-		.arsize			(),
-		.arburst		(),
+		.arlen			(arlen),
+		.arsize			(arsize),
+		.arburst		(arburst),
 
 		.arcache		(),
 		.arprot			(),
@@ -140,41 +152,62 @@ module top(
 		.arregion		(),
 
 
-		.rid 			(),
+		.rid 			(rid),
 		.rdata			(rdata),
 		.rresp			(),
 
 		.rlast			(),
 
 		.rvalid 		(rvalid),
-		.rready 		()
+		.rready 		(rready)
 
 );
 
+wire rsta_busy;
+wire rstb_busy;
 
-	module AXI4RAM(
-		.clock			(clk),
-		.reset			(!rst_n),
-		.io_in_awready	(awready),
-		.io_in_awvalid	(awvalid),
-		.io_in_awaddr	(awaddr),
-		.io_in_wready	(wready),
-		.io_in_wvalid	(wvalid),
-		.io_in_wdata	(wdata),
-		.io_in_wstrb	(wstrb),
-		.io_in_wlast	(1'b1),
-		.io_in_bvalid	(),
-		.io_in_arready	(arready),
-		.io_in_arvalid	(arvalid),
-		.io_in_araddr	(araddr),
-		.io_in_arlen	(),
-		.io_in_arsize	(),
-		.io_in_arburst	(),
-		.io_in_rvalid	(rvalid),
-		.io_in_rdata	(rdata),
-		.io_in_rlast	()
-	);
+wire [1:0] s_axi_bresp;
+wire [1:0] s_axi_rresp;
+wire s_axi_rlast;
+wire s_axi_bvalid;
 
+
+
+blk_mem_gen_0 blk_mem_gen_0_u(
+    .rsta_busy(rsta_busy),
+    .rstb_busy(rstb_busy),
+    .s_aclk(clk),
+    .s_aresetn(rst_n),
+    .s_axi_awid(awid),
+    .s_axi_awaddr(awaddr),
+    .s_axi_awlen(awlen),
+    .s_axi_awsize(awsize),
+    .s_axi_awburst(awburst),
+    .s_axi_awvalid(awvalid),
+    .s_axi_awready(awready),
+    .s_axi_wdata(wdata),
+    .s_axi_wstrb(wstrb),
+    .s_axi_wlast(wlast),
+    .s_axi_wvalid(wvalid),
+    .s_axi_wready(wready),
+    .s_axi_bid(bid),
+    .s_axi_bresp(s_axi_bresp),
+    .s_axi_bvalid(s_axi_bvalid),
+    .s_axi_bready(bready),
+    .s_axi_arid(arid),
+    .s_axi_araddr(araddr),
+    .s_axi_arlen (arlen),
+    .s_axi_arsize(arsize),
+    .s_axi_arburst(arburst),
+    .s_axi_arvalid(arvalid),
+    .s_axi_arready(arready),
+    .s_axi_rid(rid),
+    .s_axi_rdata (rdata),
+    .s_axi_rresp (s_axi_rresp),
+    .s_axi_rlast (s_axi_rlast),
+    .s_axi_rvalid(rvalid),
+    .s_axi_rready(rready)
+  );
 
 
 endmodule

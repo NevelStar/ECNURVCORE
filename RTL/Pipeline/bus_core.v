@@ -29,7 +29,7 @@ module bus_core(
 
 	initial begin
 		$readmemh("memory_data.dat",mem_data);
-		$readmemh("memory_instr.dat",mem_instr);
+		$readmemh("../../../../memory_instr.dat",mem_instr);
 		addr_instr_o <= `MEM_ADDR_ZERO;
 		data_instr_o <= `ZERO_WORD;
 		data_mem_rd_o <= `ZERO_DOUBLE;

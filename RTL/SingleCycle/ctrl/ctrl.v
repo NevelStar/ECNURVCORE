@@ -62,7 +62,7 @@ module ctrl(
 	assign wr_en = type_R | type_I_cal | J_jal | I_jalr | type_I_load | type_U_LUI;
 
 
-	assign jmp_en = J_jal | type_U_AUIPC;
+	assign jmp_en = J_jal;
 	assign jmpr_en = I_jalr;
 	assign jmpb_en = type_B & jmpb;
 

@@ -67,7 +67,7 @@ module id_ex(
 	gnrl_dff # (.DW(5)) dff_addr_rd(
 		.clk		(clk),
 		.rst_n		(rst_n),
-		.wr_en		(`HOLD_DIS),
+		.wr_en		(hold_n),
 		.data_in	(addr_rd_i),
 		.data_r_ini	(`REG_ADDR_ZERO),
 

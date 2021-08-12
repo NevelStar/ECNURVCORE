@@ -5,7 +5,7 @@
 
 `include "define.v"
 
-module axi_core_mem(
+module axi_core_if(
 	input						clk				,
 	input						rst_n			,
 	

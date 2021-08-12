@@ -361,7 +361,7 @@ module decoder(
 				word_intercept <= `INTERCEPT_DIS;
 				alu_operation <= `ALU_ADD;
 				alu_op_num1 <= addr_instr;
-				alu_op_num2 <= 32'd4;
+				alu_op_num2 <= `PC_STEP;
 				jmp_op_num1	<= addr_instr;
 				jmp_op_num2	<= {{44{instr[31]}},instr[19:12],instr[20],instr[30:21],1'b0};
 			end
@@ -379,7 +379,7 @@ module decoder(
 						alu_operation <= `ALU_ADD;
 						word_intercept <= `INTERCEPT_DIS;
 						alu_op_num1 <= addr_instr;
-						alu_op_num2 <= 32'd4;
+						alu_op_num2 <= `PC_STEP;
 						jmp_op_num1	<= addr_rs1;
 						jmp_op_num2	<= {{52{instr[31]}},instr[31:20]};
 
