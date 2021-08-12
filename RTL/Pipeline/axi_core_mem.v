@@ -117,6 +117,7 @@ module axi_core_mem(
 
 	reg awhandshake_t;
 	reg mem_rd_en_t;
+	reg stall_store_t;
 	reg [`BUS_DATA_MEM] data_wr;
 	reg [`BUS_DATA_INSTR] instr_t;
 	wire [`BUS_DATA_MEM] rdata_act;
@@ -163,16 +164,18 @@ module axi_core_mem(
 	assign rdata_act = (rvalid == `AXI_VALID_EN) ? rdata : `ZERO_DOUBLE;
 
 	assign data_mem_rd = (mem_rd_en_t==`MEM_RD_EN) ? rdata_act : `ZERO_DOUBLE;
-	assign instr = (mem_rd_en_t==`MEM_RD_EN) ? instr_t : (pc[2] ? rdata_act[63:32] : rdata_act[31:0]);
+	assign instr = ((mem_rd_en_t==`MEM_RD_EN)| (stall_store_t == `STALL_EN)) ? instr_t : (addr_instr[2] ? rdata_act[63:32] : rdata_act[31:0]);
 
 
 
 	always@(posedge clk or negedge rst_n) begin
 		if(!rst_n) begin
 			awhandshake_t <= `HANDSHAKE_DIS;
+			stall_store_t <= `STALL_DIS;
 		end
 		else begin
 			awhandshake_t <= awhandshake;
+			stall_store_t <= stall_store;			
 		end
 	end
 
