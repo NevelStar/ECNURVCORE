@@ -36,6 +36,8 @@
 `define BUS_JMP_FLAG		2:0
 `define BUS_HOLD_CODE		2:0
 `define BUS_PRE_STATE		1:0
+`define BUS_CSR_IMM			11:0
+`define BUS_CSR_IMMEX		31:0
 
 //decode the instrument
 `define OPERATION_CODE		6:0

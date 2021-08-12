@@ -66,6 +66,7 @@ module core(
 
 	wire [`BUS_DATA_REG] data_rs1_ex_i;
 	wire [`BUS_DATA_REG] data_rs2_ex_i;
+	wire [`BUS_DATA_INSTR] instr_ex_i;
 	wire [`BUS_L_CODE] load_code_ex_i;
 	wire [`BUS_S_CODE] store_code_ex_i;
 	wire alu_add_sub_ex_i;
@@ -124,6 +125,8 @@ module core(
 	assign instr_id_i = instr_rd_if_o;
 	assign addr_instr_id_i = addr_instr_i;
 
+	assign pc_ex_i = pc_o;
+	assign instr_ex_i = instr_rd_if_o;
 	assign data_rs1_ex_i = data_rs1_id_o;
 	assign data_rs2_ex_i = data_rs2_id_o;
 	assign load_code_ex_i = load_code_id_o;	
@@ -228,6 +231,8 @@ module core(
 		.rst_n			(rst_n),
 		.hold_code		(hold_code),
 
+		.pc_i			(pc_ex_i),
+		.instr_i		(instr_ex_i),
 		.data_rs1_i		(data_rs1_ex_i),
 		.data_rs2_i		(data_rs2_ex_i),
 
