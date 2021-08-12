@@ -12,7 +12,8 @@ module ex_stage(
 
 	input	[`BUS_HOLD_CODE]	hold_code		,
 
-
+	input	[`BUS_ADDR_MEM]		pc_i			,
+	input	[`BUS_DATA_INSTR]	instr_i			,
 	input	[`BUS_DATA_REG]		data_rs1_i		,
 	input	[`BUS_DATA_REG]		data_rs2_i		,
 
@@ -85,8 +86,41 @@ module ex_stage(
 		.addr_reg_wr_o	(addr_reg_wr_o),
 		.data_reg_wr_o 	(data_reg_wr_o),
 		.reg_wr_en_o	(reg_wr_en_o)	
+	);
 	
+	ex_csr u_ex_csr
+	(
+		.clk			(clk),
+		.rst_n			(rst_n),
+		
+		.pc_i			(pc_i),
+		.instr_i		(instr_i),
+		.data_rs1_i		(data_rs1_i),
+		.addr_reg_wr_i	(addr_reg_wr_i),
+		
+		.csr_instr_i	(alu_operation_i),
+		.csr_addr_i		(alu_op_num2_i),
+		.csr_imm_i		(),
+		
+		.i_ext_irq		(),
+		.i_sft_irq		(),
+		.i_tmr_irq		(),
+		.i_irq_src		(),
+		.i_exp_src		(),
+		
+		.o_irq_pc		(),	
+		.o_mepc			(),
+		.i_mret_ena		(),
 
+		.o_wr_csr_nxt	(),
+		.o_rd_wen		(),
+		.o_wb_rd_idx	(),
+		.o_wb_data		(),
+
+		.o_meie			(),
+		.o_msie			(),
+		.o_mtie			(),
+		.o_glb_irq		()
 	);
 
 
