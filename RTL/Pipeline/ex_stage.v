@@ -85,8 +85,15 @@ module ex_stage(
 		.addr_reg_wr_o	(addr_reg_wr_o),
 		.data_reg_wr_o 	(data_reg_wr_o),
 		.reg_wr_en_o	(reg_wr_en_o)	
+	);
 	
-
+	ex_csr u_ex_csr
+	(
+		.clk			(clk),
+		.rst_n			(rst_n),
+		
+		.data_rs1		(data_rs1_i),
+		.addr_reg_wr_i	(addr_reg_wr_i)
 	);
 
 

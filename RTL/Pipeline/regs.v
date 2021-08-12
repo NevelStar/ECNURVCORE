@@ -4,7 +4,8 @@
 //2021.07.22
 
 
-module regs(
+module regs
+(
 	input						clk			,
 	input						rst_n		,
 
@@ -17,8 +18,6 @@ module regs(
 
 	output reg	[`BUS_DATA_REG]	data_rd1	,
 	output reg	[`BUS_DATA_REG]	data_rd2
-
-
 );
 
 	integer i;

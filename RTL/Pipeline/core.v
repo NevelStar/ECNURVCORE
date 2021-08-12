@@ -270,7 +270,6 @@ module core(
 		.addr_rd2	(addr_rd2_reg_i),
 		.data_wr	(data_wr_reg_i),
 
-
 		.data_rd1	(data_rd1_reg_o),
 		.data_rd2	(data_rd2_reg_o)
 
