@@ -88,7 +88,7 @@ module ex_stage(
 		.reg_wr_en_o	(reg_wr_en_o)	
 	);
 	
-	ex_csr u_ex_csr
+	ex_csr U_ex_csr
 	(
 		.clk			(clk),
 		.rst_n			(rst_n),
@@ -102,25 +102,25 @@ module ex_stage(
 		.csr_addr_i		(alu_op_num2_i),
 		.csr_imm_i		(),
 		
-		.i_ext_irq		(),
-		.i_sft_irq		(),
-		.i_tmr_irq		(),
-		.i_irq_src		(),
-		.i_exp_src		(),
+		.ext_irq_i		(),
+		.sft_irq_i		(),
+		.tmr_irq_i		(),
+		.irq_src_i		(),
+		.exp_src_i		(),
 		
-		.o_irq_pc		(),	
-		.o_mepc			(),
-		.i_mret_ena		(),
+		.irq_pc_o		(),	
+		.mepc_o			(),
+		.mret_ena_i		(),
 
-		.o_wr_csr_nxt	(),
-		.o_rd_wen		(),
-		.o_wb_rd_idx	(),
-		.o_wb_data		(),
+		.wr_csr_nxt_o	(),
+		.rd_wen_o		(),
+		.wb_rd_idx_o	(),
+		.wb_data_o		(),
 
-		.o_meie			(),
-		.o_msie			(),
-		.o_mtie			(),
-		.o_glb_irq		()
+		.meie_o			(),
+		.msie_o			(),
+		.mtie_o			(),
+		.glb_irq_o		()
 	);
 
 

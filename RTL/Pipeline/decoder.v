@@ -446,7 +446,7 @@ module decoder(
 //				word_intercept <= `INTERCEPT_DIS;
 //				alu_operation <= funct3;
 //				alu_op_num1	<= data_rs1;
-//				alu_op_num2	<= {{52{instr[31]}},instr[31:20]};
+//				alu_op_num2	<= {52'd0,instr[31:20]};
 //				jmp_op_num1	<= `ZERO_DOUBLE;
 //				jmp_op_num2	<= `ZERO_DOUBLE;
 //			end
