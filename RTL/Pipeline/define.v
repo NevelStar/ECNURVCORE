@@ -9,7 +9,9 @@
 `define INSTR_ADDR_INI		64'h0000_0000_0000_0000
 
 `define BASE_PC				64'h0000_0000_0000_0000
-`define BASE_MEM			64'h0000_0000_0000_0100
+`define BASE_MEM			64'h0000_0000_0000_1000
+
+`define PC_MAX				64'h0000_0000_0000_0fff
 
 
 //zero
@@ -157,7 +159,9 @@
 `define FUNCT7_SRA			7'b0100000
 `define FUNCT7_SRLW			7'b0000000
 `define FUNCT7_SRAW			7'b0101000
+`define FUNCT7_R_ACT		7'b0000000
 `define FUNCT7_W_SRL		6'b000000
+`define FUNCT7_W_SLL		6'b000000
 `define FUNCT7_W_SRA		6'b010000
 
 //jmp flag code
@@ -208,6 +212,9 @@
 `define PC_MISMATCH			1'b0
 `define INTERCEPT_EN		1'b1
 `define INTERCEPT_DIS		1'b0
+
+`define EXCEPT_NOPE			1'b0
+`define EXCEPT_ACT			1'b1
 
 `define HANDSHAKE_EN		1'b1
 `define HANDSHAKE_DIS		1'b0

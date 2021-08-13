@@ -38,6 +38,7 @@ module id_stage(
 	output	[`BUS_DATA_REG]		jmp_op_num1_o	,
 	output	[`BUS_DATA_REG]		jmp_op_num2_o	,	
 	output	[`BUS_JMP_FLAG] 	jmp_flag_o		,
+	output						decode_except_o	,
 	output						load_bypass_o
 );
 	wire [`BUS_ALU_OP] alu_operation;
@@ -95,6 +96,7 @@ module id_stage(
 		.reg_rs2_addr	(addr_rs2_o),
 		.reg_wr_addr	(reg_wr_addr),
 		.reg_wr_en		(reg_wr_en),
+		.decode_except	(decode_except_o),
 		.load_bypass	(load_bypass_o)
 
 	);

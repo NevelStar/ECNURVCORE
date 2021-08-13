@@ -2,7 +2,7 @@
 //Pipeline CPU
 //Created by Chesed
 //2021.07.23
-//Edited in 2021.08.07
+//Edited in 2021.08.13
 
 `include "define.v"
 
@@ -30,11 +30,14 @@ module core(
 
 );
 	
+	wire fetch_except;
+	wire decode_except;
 	
 	wire jmp_en_pc_i;
 	wire [`BUS_ADDR_MEM] jmp_to_pc_i;
 
 	wire instr_mask_if_i;
+	wire [`BUS_ADDR_MEM] pc_if_i;
 	wire [`BUS_DATA_INSTR] instr_rd_if_i; 	
 	wire [`BUS_DATA_INSTR] instr_rd_if_o;
 	wire instr_rd_en_if_o;
@@ -65,6 +68,7 @@ module core(
 	wire [`BUS_JMP_FLAG] jmp_flag_id_o;	
 	wire load_bypass_id_o;
 
+	wire [`BUS_ADDR_MEM] pc_ex_i;
 	wire [`BUS_DATA_REG] data_rs1_ex_i;
 	wire [`BUS_DATA_REG] data_rs2_ex_i;
 	wire [`BUS_DATA_INSTR] instr_ex_i;
@@ -119,6 +123,7 @@ module core(
 	assign jmp_to_pc_i = jmp_to_ctrl_o;
 
 	assign instr_rd_if_i = instr_i;
+	assign pc_if_i = pc_o;
 	assign instr_mask_if_i = instr_mask_ctrl_o;
 
 	assign data_rs1_id_i = data_rd1_reg_o;
@@ -185,7 +190,9 @@ module core(
 		.hold_code 		(hold_code),
 		.instr_rd_i 	(instr_rd_if_i),
 		.instr_mask_i	(instr_mask_if_i),
-	
+		.pc_i 			(pc_if_i),
+		
+		.fetch_except_o	(fetch_except),
 		.instr_rd_o 	(instr_rd_if_o),
 		.instr_rd_en_o	(instr_rd_en_if_o)
 	);
@@ -225,6 +232,7 @@ module core(
 		.jmp_op_num1_o	(jmp_op_num1_id_o),
 		.jmp_op_num2_o	(jmp_op_num2_id_o),	
 		.jmp_flag_o		(jmp_flag_id_o),
+		.decode_except_o(decode_except),
 		.load_bypass_o	(load_bypass_id_o)
 	);
 
