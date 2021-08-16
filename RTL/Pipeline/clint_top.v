@@ -1,7 +1,7 @@
 
 `include "defines.v"
 
-module clint
+module clint_top
 (
 	input wire clk,
 	input wire rst,
