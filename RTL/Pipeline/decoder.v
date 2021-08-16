@@ -6,7 +6,8 @@
 
 `include "define.v"
 
-module decoder(
+module decoder
+(
 	input	[`BUS_DATA_REG]			data_rs1_reg	,
 	input	[`BUS_DATA_REG]			data_rs2_reg	,
 	input	[`BUS_ADDR_REG]			reg_rd_addr_t	,
@@ -14,8 +15,6 @@ module decoder(
 	input	[`BUS_DATA_INSTR]		instr			,
 	input	[`BUS_ADDR_MEM]			addr_instr		,
 	input 	[`BUS_L_CODE]			load_code_t		,
-
-
 
 	output	[`BUS_DATA_REG]			data_rs1		,
 	output	[`BUS_DATA_REG]			data_rs2		,
@@ -39,7 +38,7 @@ module decoder(
 
 	output	reg 					decode_except	,
 	output	reg [`BUS_EXCEPT_CAUSE]	except_cause	,
-	output	reg [`BUS_CSR_CODE]		csr_instr		,
+	output	reg [`BUS_ALU_OP]		csr_instr		,
 	output	reg [`BUS_CSR_IMM]		csr_addr		,
 
 	output							load_bypass
@@ -1054,6 +1053,7 @@ module decoder(
 								csr_instr <= `CSR_CODE_NOPE;
 								csr_addr <= `CSR_ADDR_ZERO;
 							end
+							
 							`INSTR_ECALL: begin
 								reg_wr_en <= `REG_WR_DIS;
 								reg_rs1_addr <= `REG_ADDR_ZERO;
@@ -1077,6 +1077,7 @@ module decoder(
 								csr_instr <= `CSR_CODE_NOPE;
 								csr_addr <= `CSR_ADDR_ZERO;
 							end
+							
 							default: begin
 								reg_wr_en <= `REG_WR_DIS;
 								reg_rs1_addr <= `REG_ADDR_ZERO;
@@ -1102,6 +1103,7 @@ module decoder(
 							end
 						endcase
 					end
+					
 					`INSTR_CSRRW: begin
 						reg_wr_en <= `REG_WR_EN;
 						reg_rs1_addr <= addr_rs1;
@@ -1125,6 +1127,7 @@ module decoder(
 						csr_instr <= `CSR_CODE_CSRRW;
 						csr_addr <= instr[31:20];
 					end
+					
 					`INSTR_CSRRS: begin
 						reg_wr_en <= `REG_WR_EN;
 						reg_rs1_addr <= addr_rs1;
@@ -1148,6 +1151,7 @@ module decoder(
 						csr_instr <= `CSR_CODE_CSRRS;
 						csr_addr <= instr[31:20];
 					end
+					
 					`INSTR_CSRRC: begin
 						reg_wr_en <= `REG_WR_EN;
 						reg_rs1_addr <= addr_rs1;
@@ -1171,6 +1175,7 @@ module decoder(
 						csr_instr <= `CSR_CODE_CSRRC;
 						csr_addr <= instr[31:20];
 					end
+					
 					`INSTR_CSRRWI: begin
 						reg_wr_en <= `REG_WR_EN;
 						reg_rs1_addr <= `REG_ADDR_ZERO;
@@ -1194,6 +1199,7 @@ module decoder(
 						csr_instr <= `CSR_CODE_CSRRWI;
 						csr_addr <= instr[31:20];
 					end
+					
 					`INSTR_CSRRSI: begin
 						reg_wr_en <= `REG_WR_EN;
 						reg_rs1_addr <= `REG_ADDR_ZERO;
@@ -1217,6 +1223,7 @@ module decoder(
 						csr_instr <= `CSR_CODE_CSRRSI;
 						csr_addr <= instr[31:20];
 					end
+					
 					`INSTR_CSRRCI: begin
 						reg_wr_en <= `REG_WR_EN;
 						reg_rs1_addr <= `REG_ADDR_ZERO;
@@ -1240,6 +1247,7 @@ module decoder(
 						csr_instr <= `CSR_CODE_CSRRCI;
 						csr_addr <= instr[31:20];
 					end
+					
 					default: begin
 						reg_wr_en <= `REG_WR_DIS;
 						reg_rs1_addr <= `REG_ADDR_ZERO;

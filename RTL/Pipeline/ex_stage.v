@@ -16,6 +16,8 @@ module ex_stage(
 	input	[`BUS_DATA_INSTR]	instr_i			,
 	input	[`BUS_DATA_REG]		data_rs1_i		,
 	input	[`BUS_DATA_REG]		data_rs2_i		,
+	input	[`BUS_ALU_OP]		csr_instr_i		,
+	input	[`BUS_CSR_IMM]		csr_addr_i		,
 
 	input 	[`BUS_L_CODE]		load_code_i		,
 	input 	[`BUS_S_CODE]		store_code_i	,
@@ -98,8 +100,8 @@ module ex_stage(
 		.data_rs1_i		(data_rs1_i),
 		.addr_reg_wr_i	(addr_reg_wr_i),
 		
-		.csr_instr_i	(alu_operation_i),
-		.csr_addr_i		(alu_op_num2_i),
+		.csr_instr_i	(csr_instr_i),
+		.csr_addr_i		(csr_addr_i),
 		.csr_imm_i		(),
 		
 		.ext_irq_i		(),

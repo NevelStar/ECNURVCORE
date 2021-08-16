@@ -24,7 +24,7 @@ module id_ex(
 	input	[`BUS_ALU_OP]		alu_operation_i	,
 	input	[`BUS_DATA_REG]		alu_op_num1_i	,
 	input	[`BUS_DATA_REG]		alu_op_num2_i	,
-	input	[`BUS_CSR_CODE]		csr_instr_i		,
+	input	[`BUS_ALU_OP]		csr_instr_i		,
 	input	[`BUS_CSR_IMM]		csr_addr_i		,
 
 
@@ -45,7 +45,7 @@ module id_ex(
 	output	[`BUS_ALU_OP]		alu_operation_o	,
 	output	[`BUS_DATA_REG]		alu_op_num1_o	,
 	output	[`BUS_DATA_REG]		alu_op_num2_o	,
-	output	[`BUS_CSR_CODE]		csr_instr_o		,
+	output	[`BUS_ALU_OP]		csr_instr_o		,
 	output	[`BUS_CSR_IMM]		csr_addr_o		
 	
 );
@@ -166,7 +166,7 @@ module id_ex(
 		.data_out	(alu_op_num2_o)
 	);
 
-	gnrl_dff # (.DW(6)) dff_csr_instr(
+	gnrl_dff # (.DW(3)) dff_csr_instr(
 		.clk		(clk),
 		.rst_n		(rst_n),
 		.wr_en		(hold_n),

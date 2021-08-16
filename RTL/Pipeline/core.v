@@ -66,15 +66,17 @@ module core
 	wire [`BUS_DATA_REG] alu_op_num2_id_o;
 	wire [`BUS_DATA_REG] jmp_op_num1_id_o;
 	wire [`BUS_DATA_REG] jmp_op_num2_id_o;
-	wire [`BUS_CSR_CODE] csr_instr_id_o;
+	wire [`BUS_ALU_OP] 	 csr_instr_id_o;
 	wire [`BUS_CSR_IMM]	 csr_addr_id_o;
 	wire [`BUS_JMP_FLAG] jmp_flag_id_o;	
 	wire load_bypass_id_o;
 
 	wire [`BUS_ADDR_MEM] pc_ex_i;
+	wire [`BUS_DATA_INSTR] instr_ex_i;
 	wire [`BUS_DATA_REG] data_rs1_ex_i;
 	wire [`BUS_DATA_REG] data_rs2_ex_i;
-	wire [`BUS_DATA_INSTR] instr_ex_i;
+	wire [`BUS_ALU_OP]	csr_instr_ex_i;	
+	wire [`BUS_CSR_IMM]	csr_addr_ex_i;	
 	wire [`BUS_L_CODE] load_code_ex_i;
 	wire [`BUS_S_CODE] store_code_ex_i;
 	wire alu_add_sub_ex_i;
@@ -138,6 +140,8 @@ module core
 	assign instr_ex_i = instr_rd_if_o;
 	assign data_rs1_ex_i = data_rs1_id_o;
 	assign data_rs2_ex_i = data_rs2_id_o;
+	assign csr_instr_ex_i = csr_instr_id_o;
+	assign csr_addr_ex_i = csr_addr_id_o;
 	assign load_code_ex_i = load_code_id_o;	
 	assign store_code_ex_i = store_code_id_o;
 	assign alu_add_sub_ex_i = alu_add_sub_id_o;
@@ -255,6 +259,8 @@ module core
 		.instr_i		(instr_ex_i),
 		.data_rs1_i		(data_rs1_ex_i),
 		.data_rs2_i		(data_rs2_ex_i),
+		.csr_instr_i	(csr_instr_ex_i),
+		.csr_addr_i		(csr_addr_ex_i),
 
 		.load_code_i	(load_code_ex_i),
 		.store_code_i	(store_code_ex_i),
@@ -268,7 +274,6 @@ module core
 		.data_mem_i 	(data_mem_ex_i),
 		.addr_reg_wr_i	(addr_wr_ex_i),
 		.reg_wr_en_i	(reg_wr_en_ex_i),
-
 
 		.alu_result_o	(alu_result_ex_o),
 		.data_mem_wr_o	(data_mem_wr_ex_o),
