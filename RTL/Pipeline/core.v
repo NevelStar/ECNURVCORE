@@ -6,7 +6,8 @@
 
 `include "define.v"
 
-module core(
+module core
+(
 	input						clk				,
 	input						rst_n			,
 
@@ -26,8 +27,6 @@ module core(
 	output	[`BUS_ADDR_MEM]		addr_mem_wr_o	,	
 	output	[`BUS_ADDR_MEM]		addr_mem_rd_o	,	
 	output 	[`BUS_ADDR_MEM]		pc_o			
-	
-
 );
 	
 	wire fetch_except;
@@ -96,7 +95,6 @@ module core(
 	wire [`BUS_ADDR_REG] addr_wr_ex_o;
 	wire [`BUS_DATA_REG] data_wr_ex_o;
 	wire wr_en_ex_o;
-
 
 	wire wr_en_reg_i;
 	wire [`BUS_ADDR_REG] addr_wr_reg_i;
@@ -179,7 +177,8 @@ module core(
 	assign instr_rd_en_o = instr_rd_en_if_o;
 
 
-	pc core_pc(
+	pc core_pc
+	(
 		.clk		(clk),
 		.rst_n		(rst_n),
 		.hold_code 	(hold_code),
@@ -190,7 +189,9 @@ module core(
 		.addr_instr	(pc_o)
 	);
 
-	if_stage core_if(
+
+	if_stage core_if
+	(
 		.hold_code 		(hold_code),
 		.instr_rd_i 	(instr_rd_if_i),
 		.instr_mask_i	(instr_mask_if_i),
@@ -203,9 +204,8 @@ module core(
 	);
 
 
-
-
-	id_stage core_id(
+	id_stage core_id
+	(
 		.clk			(clk),
 		.rst_n			(rst_n),
 
@@ -244,8 +244,9 @@ module core(
 		.load_bypass_o	(load_bypass_id_o)
 	);
 
-	ex_stage core_ex(
 
+	ex_stage core_ex
+	(
 		.clk			(clk),
 		.rst_n			(rst_n),
 		.hold_code		(hold_code),
@@ -279,12 +280,11 @@ module core(
 		.addr_reg_wr_o	(addr_wr_ex_o),
 		.data_reg_wr_o 	(data_wr_ex_o),
 		.reg_wr_en_o	(wr_en_ex_o)	
-		
 	);
 
 
-
-	regs genral_regs(
+	regs genral_regs
+	(
 		.clk		(clk),
 		.rst_n		(rst_n),
 
@@ -296,12 +296,11 @@ module core(
 
 		.data_rd1	(data_rd1_reg_o),
 		.data_rd2	(data_rd2_reg_o)
-
 	);
 
 
-	ctrl core_ctrl(
-
+	ctrl core_ctrl
+	(
 		.clk			(clk),
 		.rst_n			(rst_n),
 		.stall_load		(stall_load_ctrl_i),
@@ -320,5 +319,30 @@ module core(
 		.instr_mask_o	(instr_mask_ctrl_o),
 		.hold_code_o	(hold_code_ctrl_o)
 	);
+	
+	clint_top core_clint
+	(
+		.clk			(clk),
+		.l_clk			(),			//低频时钟
+		.rst_n			(rst_n),
+	
+		.i_sft_int_v	(),
+		.i_timer_l		(),			//定时器低32位寄存器
+		.i_timer_h		(),			//定时器高32位寄存器
+
+		.o_timer_l		(),			//输出现在的定时器低32位寄存器
+		.o_timer_h		(),			//输出现在的定时器高32位寄存器
+
+		.i_tcmp_l		(),			//比较定时器低32位寄存器
+		.i_tcmp_h		(),			//比较定时器高32位寄存器
+
+		.i_timer_valid	(),			//两个bit分别控制定时器的低/高32位寄存器
+		.i_tm_ctrl		(),			//定时器控制寄存器
+
+		.o_mtip			(),			//输出定时器中断请求
+		.o_msip			()			//输出软件中断请求
+);
+
+
 
 endmodule
