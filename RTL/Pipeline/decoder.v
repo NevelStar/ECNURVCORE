@@ -2,42 +2,47 @@
 //Pipeline CPU
 //Created by Chesed
 //2021.07.20
-//Edited in 2021.08.13
+//Edited in 2021.08.16
 
 `include "define.v"
 
 module decoder(
-	input	[`BUS_DATA_REG]		data_rs1_reg	,
-	input	[`BUS_DATA_REG]		data_rs2_reg	,
-	input	[`BUS_ADDR_REG]		reg_rd_addr_t	,
-	input	[`BUS_DATA_REG]		data_bypass		,
-	input	[`BUS_DATA_INSTR]	instr			,
-	input	[`BUS_ADDR_MEM]		addr_instr		,
-	input 	[`BUS_L_CODE]		load_code_t		,
+	input	[`BUS_DATA_REG]			data_rs1_reg	,
+	input	[`BUS_DATA_REG]			data_rs2_reg	,
+	input	[`BUS_ADDR_REG]			reg_rd_addr_t	,
+	input	[`BUS_DATA_REG]			data_bypass		,
+	input	[`BUS_DATA_INSTR]		instr			,
+	input	[`BUS_ADDR_MEM]			addr_instr		,
+	input 	[`BUS_L_CODE]			load_code_t		,
 
 
 
-	output	[`BUS_DATA_REG]		data_rs1		,
-	output	[`BUS_DATA_REG]		data_rs2		,
-	output	reg [`BUS_ALU_OP]	alu_operation	,
-	output	reg 				alu_add_sub		,
-	output	reg 				alu_shift		,
-	output	reg 				word_intercept	,
-	output	reg [`BUS_DATA_REG]	alu_op_num1		,
-	output	reg [`BUS_DATA_REG]	alu_op_num2		,
-	output	reg [`BUS_DATA_REG]	jmp_op_num1		,
-	output	reg [`BUS_DATA_REG]	jmp_op_num2		,
-	output	reg [`BUS_JMP_FLAG]	jmp_flag		,
+	output	[`BUS_DATA_REG]			data_rs1		,
+	output	[`BUS_DATA_REG]			data_rs2		,
+	output	reg [`BUS_ALU_OP]		alu_operation	,
+	output	reg 					alu_add_sub		,
+	output	reg 					alu_shift		,
+	output	reg 					word_intercept	,
+	output	reg [`BUS_DATA_REG]		alu_op_num1		,
+	output	reg [`BUS_DATA_REG]		alu_op_num2		,
+	output	reg [`BUS_DATA_REG]		jmp_op_num1		,
+	output	reg [`BUS_DATA_REG]		jmp_op_num2		,
+	output	reg [`BUS_JMP_FLAG]		jmp_flag		,
 
-	output 	reg [`BUS_L_CODE]	load_code		,
-	output 	reg [`BUS_S_CODE]	store_code		,
+	output 	reg [`BUS_L_CODE]		load_code		,
+	output 	reg [`BUS_S_CODE]		store_code		,
 
-	output	reg [`BUS_ADDR_REG]	reg_rs1_addr	,
-	output	reg [`BUS_ADDR_REG]	reg_rs2_addr	,
-	output	reg [`BUS_ADDR_REG]	reg_wr_addr		,
-	output	reg 				reg_wr_en		,
-	output	reg 				decode_except	,
-	output						load_bypass
+	output	reg [`BUS_ADDR_REG]		reg_rs1_addr	,
+	output	reg [`BUS_ADDR_REG]		reg_rs2_addr	,
+	output	reg [`BUS_ADDR_REG]		reg_wr_addr		,
+	output	reg 					reg_wr_en		,
+
+	output	reg 					decode_except	,
+	output	reg [`BUS_EXCEPT_CAUSE]	except_cause	,
+	output	reg [`BUS_CSR_CODE]		csr_instr		,
+	output	reg [`BUS_CSR_IMM]		csr_addr		,
+
+	output							load_bypass
 );
 
 
@@ -96,6 +101,9 @@ module decoder(
 								jmp_op_num1	<= `ZERO_DOUBLE;
 								jmp_op_num2	<= `ZERO_DOUBLE;
 								decode_except <= `EXCEPT_NOPE;
+								except_cause <= `EXCEPT_NONE;
+								csr_instr <= `CSR_CODE_NOPE;
+								csr_addr <= `CSR_ADDR_ZERO;
 							end
 							`FUNCT7_SUB: begin
 								reg_wr_en <= `REG_WR_EN;
@@ -116,6 +124,9 @@ module decoder(
 								jmp_op_num1	<= `ZERO_DOUBLE;
 								jmp_op_num2	<= `ZERO_DOUBLE;
 								decode_except <= `EXCEPT_NOPE;
+								except_cause <= `EXCEPT_NONE;
+								csr_instr <= `CSR_CODE_NOPE;
+								csr_addr <= `CSR_ADDR_ZERO;
 							end
 							default: begin
 								reg_wr_en <= `REG_WR_DIS;
@@ -136,6 +147,9 @@ module decoder(
 								jmp_op_num1	<= `ZERO_DOUBLE;
 								jmp_op_num2	<= `ZERO_DOUBLE;
 								decode_except <= `EXCEPT_ACT;
+								except_cause <= `EXCEPT_ID_ILLEGAL;
+								csr_instr <= `CSR_CODE_NOPE;
+								csr_addr <= `CSR_ADDR_ZERO;
 							end
 						endcase
 					end
@@ -160,6 +174,9 @@ module decoder(
 								jmp_op_num1	<= `ZERO_DOUBLE;
 								jmp_op_num2	<= `ZERO_DOUBLE;
 								decode_except <= `EXCEPT_NOPE;
+								except_cause <= `EXCEPT_NONE;
+								csr_instr <= `CSR_CODE_NOPE;
+								csr_addr <= `CSR_ADDR_ZERO;
 							end
 							`FUNCT7_SRA: begin
 								reg_wr_en <= `REG_WR_EN;
@@ -180,6 +197,9 @@ module decoder(
 								jmp_op_num1	<= `ZERO_DOUBLE;
 								jmp_op_num2	<= `ZERO_DOUBLE;
 								decode_except <= `EXCEPT_NOPE;
+								except_cause <= `EXCEPT_NONE;
+								csr_instr <= `CSR_CODE_NOPE;
+								csr_addr <= `CSR_ADDR_ZERO;
 							end
 							default: begin
 								reg_wr_en <= `REG_WR_DIS;
@@ -200,6 +220,9 @@ module decoder(
 								jmp_op_num1	<= `ZERO_DOUBLE;
 								jmp_op_num2	<= `ZERO_DOUBLE;
 								decode_except <= `EXCEPT_ACT;
+								except_cause <= `EXCEPT_ID_ILLEGAL;
+								csr_instr <= `CSR_CODE_NOPE;
+								csr_addr <= `CSR_ADDR_ZERO;
 							end
 						endcase
 					end
@@ -224,6 +247,9 @@ module decoder(
 								jmp_op_num1	<= `ZERO_DOUBLE;
 								jmp_op_num2	<= `ZERO_DOUBLE;
 								decode_except <= `EXCEPT_NOPE;
+								except_cause <= `EXCEPT_NONE;
+								csr_instr <= `CSR_CODE_NOPE;
+								csr_addr <= `CSR_ADDR_ZERO;
 							end
 							default: begin
 								reg_wr_en <= `REG_WR_DIS;
@@ -244,6 +270,9 @@ module decoder(
 								jmp_op_num1	<= `ZERO_DOUBLE;
 								jmp_op_num2	<= `ZERO_DOUBLE;
 								decode_except <= `EXCEPT_ACT;
+								except_cause <= `EXCEPT_ID_ILLEGAL;
+								csr_instr <= `CSR_CODE_NOPE;
+								csr_addr <= `CSR_ADDR_ZERO;
 							end
 						endcase
 					end
@@ -266,6 +295,9 @@ module decoder(
 						jmp_op_num1	<= `ZERO_DOUBLE;
 						jmp_op_num2	<= `ZERO_DOUBLE;
 						decode_except <= `EXCEPT_ACT;
+						except_cause <= `EXCEPT_ID_ILLEGAL;
+						csr_instr <= `CSR_CODE_NOPE;
+						csr_addr <= `CSR_ADDR_ZERO;
 					end
 				endcase
 			end
@@ -293,6 +325,9 @@ module decoder(
 								jmp_op_num1	<= `ZERO_DOUBLE;
 								jmp_op_num2	<= `ZERO_DOUBLE;
 								decode_except <= `EXCEPT_NOPE;
+								except_cause <= `EXCEPT_NONE;
+								csr_instr <= `CSR_CODE_NOPE;
+								csr_addr <= `CSR_ADDR_ZERO;
 							end
 							`FUNCT7_SUB: begin
 								reg_wr_en <= `REG_WR_EN;
@@ -313,6 +348,9 @@ module decoder(
 								jmp_op_num1	<= `ZERO_DOUBLE;
 								jmp_op_num2	<= `ZERO_DOUBLE;
 								decode_except <= `EXCEPT_NOPE;
+								except_cause <= `EXCEPT_NONE;
+								csr_instr <= `CSR_CODE_NOPE;
+								csr_addr <= `CSR_ADDR_ZERO;
 							end
 							default: begin
 								reg_wr_en <= `REG_WR_DIS;
@@ -333,6 +371,9 @@ module decoder(
 								jmp_op_num1	<= `ZERO_DOUBLE;
 								jmp_op_num2	<= `ZERO_DOUBLE;
 								decode_except <= `EXCEPT_ACT;
+								except_cause <= `EXCEPT_ID_ILLEGAL;
+								csr_instr <= `CSR_CODE_NOPE;
+								csr_addr <= `CSR_ADDR_ZERO;
 							end
 						endcase
 					end
@@ -357,6 +398,9 @@ module decoder(
 								jmp_op_num1	<= `ZERO_DOUBLE;
 								jmp_op_num2	<= `ZERO_DOUBLE;
 								decode_except <= `EXCEPT_NOPE;
+								except_cause <= `EXCEPT_NONE;
+								csr_instr <= `CSR_CODE_NOPE;
+								csr_addr <= `CSR_ADDR_ZERO;
 							end
 							default: begin
 								reg_wr_en <= `REG_WR_DIS;
@@ -377,6 +421,9 @@ module decoder(
 								jmp_op_num1	<= `ZERO_DOUBLE;
 								jmp_op_num2	<= `ZERO_DOUBLE;
 								decode_except <= `EXCEPT_ACT;
+								except_cause <= `EXCEPT_ID_ILLEGAL;
+								csr_instr <= `CSR_CODE_NOPE;
+								csr_addr <= `CSR_ADDR_ZERO;
 							end
 						endcase
 					end
@@ -401,6 +448,9 @@ module decoder(
 								jmp_op_num1	<= `ZERO_DOUBLE;
 								jmp_op_num2	<= `ZERO_DOUBLE;
 								decode_except <= `EXCEPT_NOPE;
+								except_cause <= `EXCEPT_NONE;
+								csr_instr <= `CSR_CODE_NOPE;
+								csr_addr <= `CSR_ADDR_ZERO;
 							end
 							`FUNCT7_SRAW: begin
 								reg_wr_en <= `REG_WR_EN;
@@ -421,6 +471,9 @@ module decoder(
 								jmp_op_num1	<= `ZERO_DOUBLE;
 								jmp_op_num2	<= `ZERO_DOUBLE;
 								decode_except <= `EXCEPT_NOPE;
+								except_cause <= `EXCEPT_NONE;
+								csr_instr <= `CSR_CODE_NOPE;
+								csr_addr <= `CSR_ADDR_ZERO;
 							end
 							default: begin
 								reg_wr_en <= `REG_WR_DIS;
@@ -441,6 +494,9 @@ module decoder(
 								jmp_op_num1	<= `ZERO_DOUBLE;
 								jmp_op_num2	<= `ZERO_DOUBLE;
 								decode_except <= `EXCEPT_ACT;
+								except_cause <= `EXCEPT_ID_ILLEGAL;
+								csr_instr <= `CSR_CODE_NOPE;
+								csr_addr <= `CSR_ADDR_ZERO;
 							end
 						endcase
 					end
@@ -463,7 +519,9 @@ module decoder(
 						jmp_op_num1	<= `ZERO_DOUBLE;
 						jmp_op_num2	<= `ZERO_DOUBLE;
 						decode_except <= `EXCEPT_ACT;
-
+						except_cause <= `EXCEPT_ID_ILLEGAL;
+						csr_instr <= `CSR_CODE_NOPE;
+						csr_addr <= `CSR_ADDR_ZERO;
 					end
 				endcase
 			end
@@ -491,6 +549,9 @@ module decoder(
 								jmp_op_num1	<= `ZERO_DOUBLE;
 								jmp_op_num2	<= `ZERO_DOUBLE;
 								decode_except <= `EXCEPT_NOPE;
+								except_cause <= `EXCEPT_NONE;
+								csr_instr <= `CSR_CODE_NOPE;
+								csr_addr <= `CSR_ADDR_ZERO;
 							end
 							`FUNCT7_W_SRA: begin
 								reg_wr_en <= `REG_WR_EN;
@@ -511,6 +572,9 @@ module decoder(
 								jmp_op_num1	<= `ZERO_DOUBLE;
 								jmp_op_num2	<= `ZERO_DOUBLE;
 								decode_except <= `EXCEPT_NOPE;
+								except_cause <= `EXCEPT_NONE;
+								csr_instr <= `CSR_CODE_NOPE;
+								csr_addr <= `CSR_ADDR_ZERO;
 							end
 							default: begin
 								reg_wr_en <= `REG_WR_DIS;
@@ -531,6 +595,9 @@ module decoder(
 								jmp_op_num1	<= `ZERO_DOUBLE;
 								jmp_op_num2	<= `ZERO_DOUBLE;
 								decode_except <= `EXCEPT_ACT;
+								except_cause <= `EXCEPT_ID_ILLEGAL;
+								csr_instr <= `CSR_CODE_NOPE;
+								csr_addr <= `CSR_ADDR_ZERO;
 							end
 						endcase
 					end
@@ -555,6 +622,9 @@ module decoder(
 								jmp_op_num1	<= `ZERO_DOUBLE;
 								jmp_op_num2	<= `ZERO_DOUBLE;
 								decode_except <= `EXCEPT_NOPE;
+								except_cause <= `EXCEPT_NONE;
+								csr_instr <= `CSR_CODE_NOPE;
+								csr_addr <= `CSR_ADDR_ZERO;
 							end
 							default: begin
 								reg_wr_en <= `REG_WR_DIS;
@@ -575,6 +645,9 @@ module decoder(
 								jmp_op_num1	<= `ZERO_DOUBLE;
 								jmp_op_num2	<= `ZERO_DOUBLE;
 								decode_except <= `EXCEPT_ACT;
+								except_cause <= `EXCEPT_ID_ILLEGAL;
+								csr_instr <= `CSR_CODE_NOPE;
+								csr_addr <= `CSR_ADDR_ZERO;
 							end
 						endcase
 					end
@@ -597,6 +670,9 @@ module decoder(
 						jmp_op_num1	<= `ZERO_DOUBLE;
 						jmp_op_num2	<= `ZERO_DOUBLE;
 						decode_except <= `EXCEPT_NOPE;
+						except_cause <= `EXCEPT_NONE;
+						csr_instr <= `CSR_CODE_NOPE;
+						csr_addr <= `CSR_ADDR_ZERO;
 					end
 					default: begin
 						reg_wr_en <= `REG_WR_DIS;
@@ -617,6 +693,9 @@ module decoder(
 						jmp_op_num1	<= `ZERO_DOUBLE;
 						jmp_op_num2	<= `ZERO_DOUBLE;
 						decode_except <= `EXCEPT_ACT;
+						except_cause <= `EXCEPT_ID_ILLEGAL;
+						csr_instr <= `CSR_CODE_NOPE;
+						csr_addr <= `CSR_ADDR_ZERO;
 					end
 				endcase
 			end
@@ -642,6 +721,9 @@ module decoder(
 						jmp_op_num1	<= `ZERO_DOUBLE;
 						jmp_op_num2	<= `ZERO_DOUBLE;
 						decode_except <= `EXCEPT_NOPE;
+						except_cause <= `EXCEPT_NONE;
+						csr_instr <= `CSR_CODE_NOPE;
+						csr_addr <= `CSR_ADDR_ZERO;
 					end
 					default: begin
 						reg_wr_en <= `REG_WR_DIS;
@@ -662,6 +744,9 @@ module decoder(
 						jmp_op_num1	<= `ZERO_DOUBLE;
 						jmp_op_num2	<= `ZERO_DOUBLE;
 						decode_except <= `EXCEPT_ACT;
+						except_cause <= `EXCEPT_ID_ILLEGAL;
+						csr_instr <= `CSR_CODE_NOPE;
+						csr_addr <= `CSR_ADDR_ZERO;
 					end
 				endcase
 			end
@@ -685,6 +770,9 @@ module decoder(
 				jmp_op_num1	<= `ZERO_DOUBLE;
 				jmp_op_num2	<= `ZERO_DOUBLE;
 				decode_except <= `EXCEPT_NOPE;
+				except_cause <= `EXCEPT_NONE;
+				csr_instr <= `CSR_CODE_NOPE;
+				csr_addr <= `CSR_ADDR_ZERO;
 			end
 								
 			`OPERATION_LOAD: begin
@@ -708,6 +796,9 @@ module decoder(
 						jmp_op_num1	<= `ZERO_DOUBLE;
 						jmp_op_num2	<= `ZERO_DOUBLE;
 						decode_except <= `EXCEPT_NOPE;
+						except_cause <= `EXCEPT_NONE;
+						csr_instr <= `CSR_CODE_NOPE;
+						csr_addr <= `CSR_ADDR_ZERO;
 					end
 					default: begin
 						reg_wr_en <= `REG_WR_DIS;
@@ -728,6 +819,9 @@ module decoder(
 						jmp_op_num1	<= `ZERO_DOUBLE;
 						jmp_op_num2	<= `ZERO_DOUBLE;
 						decode_except <= `EXCEPT_ACT;
+						except_cause <= `EXCEPT_ID_ILLEGAL;
+						csr_instr <= `CSR_CODE_NOPE;
+						csr_addr <= `CSR_ADDR_ZERO;
 					end
 				endcase
 			end
@@ -753,6 +847,9 @@ module decoder(
 						jmp_op_num1	<= `ZERO_DOUBLE;
 						jmp_op_num2	<= `ZERO_DOUBLE;
 						decode_except <= `EXCEPT_NOPE;
+						except_cause <= `EXCEPT_NONE;
+						csr_instr <= `CSR_CODE_NOPE;
+						csr_addr <= `CSR_ADDR_ZERO;
 					end
 					default: begin
 						reg_wr_en <= `REG_WR_DIS;
@@ -773,6 +870,9 @@ module decoder(
 						jmp_op_num1	<= `ZERO_DOUBLE;
 						jmp_op_num2	<= `ZERO_DOUBLE;
 						decode_except <= `EXCEPT_ACT;
+						except_cause <= `EXCEPT_ID_ILLEGAL;
+						csr_instr <= `CSR_CODE_NOPE;
+						csr_addr <= `CSR_ADDR_ZERO;
 					end
 				endcase
 			end
@@ -798,6 +898,9 @@ module decoder(
 						jmp_op_num1	<= addr_instr;
 						jmp_op_num2	<= {{52{instr[31]}},instr[7],instr[30:25], instr[11:8],1'b0};
 						decode_except <= `EXCEPT_NOPE;
+						except_cause <= `EXCEPT_NONE;
+						csr_instr <= `CSR_CODE_NOPE;
+						csr_addr <= `CSR_ADDR_ZERO;
 					end
 					default: begin
 						reg_wr_en <= `REG_WR_DIS;
@@ -818,6 +921,9 @@ module decoder(
 						jmp_op_num1	<= `ZERO_DOUBLE;
 						jmp_op_num2	<= `ZERO_DOUBLE;
 						decode_except <= `EXCEPT_ACT;
+						except_cause <= `EXCEPT_ID_ILLEGAL;
+						csr_instr <= `CSR_CODE_NOPE;
+						csr_addr <= `CSR_ADDR_ZERO;
 					end
 				endcase
 			end
@@ -841,6 +947,9 @@ module decoder(
 				jmp_op_num1	<= addr_instr;
 				jmp_op_num2	<= {{44{instr[31]}},instr[19:12],instr[20],instr[30:21],1'b0};
 				decode_except <= `EXCEPT_NOPE;
+				except_cause <= `EXCEPT_NONE;
+				csr_instr <= `CSR_CODE_NOPE;
+				csr_addr <= `CSR_ADDR_ZERO;
 			end
 
 			`OPERATION_JR: begin
@@ -864,6 +973,9 @@ module decoder(
 						load_code <= `LOAD_NOPE;
 						store_code <= `STORE_NOPE;
 						decode_except <= `EXCEPT_NOPE;
+						except_cause <= `EXCEPT_NONE;
+						csr_instr <= `CSR_CODE_NOPE;
+						csr_addr <= `CSR_ADDR_ZERO;
 					end
 					default: begin
 						reg_wr_en <= `REG_WR_DIS;
@@ -884,6 +996,9 @@ module decoder(
 						jmp_op_num1	<= `ZERO_DOUBLE;
 						jmp_op_num2	<= `ZERO_DOUBLE;
 						decode_except <= `EXCEPT_ACT;
+						except_cause <= `EXCEPT_ID_ILLEGAL;
+						csr_instr <= `CSR_CODE_NOPE;
+						csr_addr <= `CSR_ADDR_ZERO;
 					end
 				endcase
 			end
@@ -907,28 +1022,249 @@ module decoder(
 				load_code <= `LOAD_NOPE;
 				store_code <= `STORE_NOPE;
 				decode_except <= `EXCEPT_NOPE;
+				except_cause <= `EXCEPT_NONE;
+				csr_instr <= `CSR_CODE_NOPE;
+				csr_addr <= `CSR_ADDR_ZERO;
 			end
 			
-//			`OPERATION_SYS: begin
-//				reg_wr_en <= `REG_WR_EN;
-//				reg_rs1_addr <= addr_rs1;
-//				reg_rs2_addr <= `REG_ADDR_ZERO;
-//				reg_wr_addr <= addr_rd;
-//				
-//				jmp_flag <= `JMP_NOPE;
-//				load_code <= `LOAD_NOPE;
-//				store_code <= `STORE_NOPE;
-//
-//				alu_add_sub <= `ALU_ADD_EN;
-//				alu_shift <= (funct7_w == `FUNCT7_W_SRA) ? `ALU_SHIFT_A : `ALU_SHIFT_L;
-//				word_intercept <= `INTERCEPT_DIS;
-//				alu_operation <= funct3;
-//				alu_op_num1	<= data_rs1;
-//				alu_op_num2	<= {52'd0,instr[31:20]};
-//				jmp_op_num1	<= `ZERO_DOUBLE;
-//				jmp_op_num2	<= `ZERO_DOUBLE;
-//				decode_except <= `EXCEPT_NOPE;
-//			end
+			`OPERATION_SYS: begin
+				case(funct3)
+					`INSTR_IRQ: begin
+						case(instr)
+							`INSTR_EBREAK: begin
+								reg_wr_en <= `REG_WR_DIS;
+								reg_rs1_addr <= `REG_ADDR_ZERO;
+								reg_rs2_addr <= `REG_ADDR_ZERO;
+								reg_wr_addr <= `REG_ADDR_ZERO;
+
+								jmp_flag <= `JMP_NOPE;
+								load_code <= `LOAD_NOPE;
+								store_code <= `STORE_NOPE;
+
+								alu_add_sub <= `ALU_ADD_EN;
+								alu_shift <= `ALU_SHIFT_L;
+								word_intercept <= `INTERCEPT_DIS;
+								alu_operation <= `ALU_ADD;
+								alu_op_num1	<= `ZERO_DOUBLE;
+								alu_op_num2	<= `ZERO_DOUBLE;
+								jmp_op_num1	<= `ZERO_DOUBLE;
+								jmp_op_num2	<= `ZERO_DOUBLE;
+								decode_except <= `EXCEPT_ACT;
+								except_cause <= `EXCEPT_EBREAK;
+								csr_instr <= `CSR_CODE_NOPE;
+								csr_addr <= `CSR_ADDR_ZERO;
+							end
+							`INSTR_ECALL: begin
+								reg_wr_en <= `REG_WR_DIS;
+								reg_rs1_addr <= `REG_ADDR_ZERO;
+								reg_rs2_addr <= `REG_ADDR_ZERO;
+								reg_wr_addr <= `REG_ADDR_ZERO;
+		
+								jmp_flag <= `JMP_NOPE;
+								load_code <= `LOAD_NOPE;
+								store_code <= `STORE_NOPE;
+		
+								alu_add_sub <= `ALU_ADD_EN;
+								alu_shift <= `ALU_SHIFT_L;
+								word_intercept <= `INTERCEPT_DIS;
+								alu_operation <= `ALU_ADD;
+								alu_op_num1	<= `ZERO_DOUBLE;
+								alu_op_num2	<= `ZERO_DOUBLE;
+								jmp_op_num1	<= `ZERO_DOUBLE;
+								jmp_op_num2	<= `ZERO_DOUBLE;
+								decode_except <= `EXCEPT_ACT;
+								except_cause <= `EXCEPT_ECALL;
+								csr_instr <= `CSR_CODE_NOPE;
+								csr_addr <= `CSR_ADDR_ZERO;
+							end
+							default: begin
+								reg_wr_en <= `REG_WR_DIS;
+								reg_rs1_addr <= `REG_ADDR_ZERO;
+								reg_rs2_addr <= `REG_ADDR_ZERO;
+								reg_wr_addr <= `REG_ADDR_ZERO;	
+
+								jmp_flag <= `JMP_NOPE;
+								load_code <= `LOAD_NOPE;
+								store_code <= `STORE_NOPE;
+
+								alu_add_sub <= `ALU_ADD_EN;
+								alu_shift <= `ALU_SHIFT_L;
+								word_intercept <= `INTERCEPT_DIS;
+								alu_operation <= `ALU_ADD;
+								alu_op_num1	<= `ZERO_DOUBLE;
+								alu_op_num2	<= `ZERO_DOUBLE;
+								jmp_op_num1	<= `ZERO_DOUBLE;
+								jmp_op_num2	<= `ZERO_DOUBLE;
+								decode_except <= `EXCEPT_ACT;
+								except_cause <= `EXCEPT_ID_ILLEGAL;
+								csr_instr <= `CSR_CODE_NOPE;
+								csr_addr <= `CSR_ADDR_ZERO;
+							end
+						endcase
+					end
+					`INSTR_CSRRW: begin
+						reg_wr_en <= `REG_WR_EN;
+						reg_rs1_addr <= addr_rs1;
+						reg_rs2_addr <= `REG_ADDR_ZERO;
+						reg_wr_addr <= addr_rd;
+				
+						jmp_flag <= `JMP_NOPE;
+						load_code <= `LOAD_NOPE;
+						store_code <= `STORE_NOPE;
+						
+						alu_add_sub <= `ALU_ADD_EN;
+						alu_shift <= `ALU_SHIFT_L;
+						word_intercept <= `INTERCEPT_DIS;
+						alu_operation <= `ALU_ADD;
+						alu_op_num1	<= `ZERO_DOUBLE;
+						alu_op_num2	<= `ZERO_DOUBLE;
+						jmp_op_num1	<= `ZERO_DOUBLE;
+						jmp_op_num2	<= `ZERO_DOUBLE;
+						decode_except <= `EXCEPT_NOPE;
+						except_cause <= `EXCEPT_NONE;
+						csr_instr <= `CSR_CODE_CSRRW;
+						csr_addr <= instr[31:20];
+					end
+					`INSTR_CSRRS: begin
+						reg_wr_en <= `REG_WR_EN;
+						reg_rs1_addr <= addr_rs1;
+						reg_rs2_addr <= `REG_ADDR_ZERO;
+						reg_wr_addr <= addr_rd;
+				
+						jmp_flag <= `JMP_NOPE;
+						load_code <= `LOAD_NOPE;
+						store_code <= `STORE_NOPE;
+						
+						alu_add_sub <= `ALU_ADD_EN;
+						alu_shift <= `ALU_SHIFT_L;
+						word_intercept <= `INTERCEPT_DIS;
+						alu_operation <= `ALU_ADD;
+						alu_op_num1	<= `ZERO_DOUBLE;
+						alu_op_num2	<= `ZERO_DOUBLE;
+						jmp_op_num1	<= `ZERO_DOUBLE;
+						jmp_op_num2	<= `ZERO_DOUBLE;
+						decode_except <= `EXCEPT_NOPE;
+						except_cause <= `EXCEPT_NONE;
+						csr_instr <= `CSR_CODE_CSRRS;
+						csr_addr <= instr[31:20];
+					end
+					`INSTR_CSRRC: begin
+						reg_wr_en <= `REG_WR_EN;
+						reg_rs1_addr <= addr_rs1;
+						reg_rs2_addr <= `REG_ADDR_ZERO;
+						reg_wr_addr <= addr_rd;
+				
+						jmp_flag <= `JMP_NOPE;
+						load_code <= `LOAD_NOPE;
+						store_code <= `STORE_NOPE;
+						
+						alu_add_sub <= `ALU_ADD_EN;
+						alu_shift <= `ALU_SHIFT_L;
+						word_intercept <= `INTERCEPT_DIS;
+						alu_operation <= `ALU_ADD;
+						alu_op_num1	<= `ZERO_DOUBLE;
+						alu_op_num2	<= `ZERO_DOUBLE;
+						jmp_op_num1	<= `ZERO_DOUBLE;
+						jmp_op_num2	<= `ZERO_DOUBLE;
+						decode_except <= `EXCEPT_NOPE;
+						except_cause <= `EXCEPT_NONE;
+						csr_instr <= `CSR_CODE_CSRRC;
+						csr_addr <= instr[31:20];
+					end
+					`INSTR_CSRRWI: begin
+						reg_wr_en <= `REG_WR_EN;
+						reg_rs1_addr <= `REG_ADDR_ZERO;
+						reg_rs2_addr <= `REG_ADDR_ZERO;
+						reg_wr_addr <= addr_rd;
+				
+						jmp_flag <= `JMP_NOPE;
+						load_code <= `LOAD_NOPE;
+						store_code <= `STORE_NOPE;
+						
+						alu_add_sub <= `ALU_ADD_EN;
+						alu_shift <= `ALU_SHIFT_L;
+						word_intercept <= `INTERCEPT_DIS;
+						alu_operation <= `ALU_ADD;
+						alu_op_num1	<= {58'b0,instr[19:15]};
+						alu_op_num2	<= `ZERO_DOUBLE;
+						jmp_op_num1	<= `ZERO_DOUBLE;
+						jmp_op_num2	<= `ZERO_DOUBLE;
+						decode_except <= `EXCEPT_NOPE;
+						except_cause <= `EXCEPT_NONE;
+						csr_instr <= `CSR_CODE_CSRRWI;
+						csr_addr <= instr[31:20];
+					end
+					`INSTR_CSRRSI: begin
+						reg_wr_en <= `REG_WR_EN;
+						reg_rs1_addr <= `REG_ADDR_ZERO;
+						reg_rs2_addr <= `REG_ADDR_ZERO;
+						reg_wr_addr <= addr_rd;
+				
+						jmp_flag <= `JMP_NOPE;
+						load_code <= `LOAD_NOPE;
+						store_code <= `STORE_NOPE;
+						
+						alu_add_sub <= `ALU_ADD_EN;
+						alu_shift <= `ALU_SHIFT_L;
+						word_intercept <= `INTERCEPT_DIS;
+						alu_operation <= `ALU_ADD;
+						alu_op_num1	<= {58'b0,instr[19:15]};
+						alu_op_num2	<= `ZERO_DOUBLE;
+						jmp_op_num1	<= `ZERO_DOUBLE;
+						jmp_op_num2	<= `ZERO_DOUBLE;
+						decode_except <= `EXCEPT_NOPE;
+						except_cause <= `EXCEPT_NONE;
+						csr_instr <= `CSR_CODE_CSRRSI;
+						csr_addr <= instr[31:20];
+					end
+					`INSTR_CSRRCI: begin
+						reg_wr_en <= `REG_WR_EN;
+						reg_rs1_addr <= `REG_ADDR_ZERO;
+						reg_rs2_addr <= `REG_ADDR_ZERO;
+						reg_wr_addr <= addr_rd;
+				
+						jmp_flag <= `JMP_NOPE;
+						load_code <= `LOAD_NOPE;
+						store_code <= `STORE_NOPE;
+						
+						alu_add_sub <= `ALU_ADD_EN;
+						alu_shift <= `ALU_SHIFT_L;
+						word_intercept <= `INTERCEPT_DIS;
+						alu_operation <= `ALU_ADD;
+						alu_op_num1	<= {58'b0,instr[19:15]};
+						alu_op_num2	<= `ZERO_DOUBLE;
+						jmp_op_num1	<= `ZERO_DOUBLE;
+						jmp_op_num2	<= `ZERO_DOUBLE;
+						decode_except <= `EXCEPT_NOPE;
+						except_cause <= `EXCEPT_NONE;
+						csr_instr <= `CSR_CODE_CSRRCI;
+						csr_addr <= instr[31:20];
+					end
+					default: begin
+						reg_wr_en <= `REG_WR_DIS;
+						reg_rs1_addr <= `REG_ADDR_ZERO;
+						reg_rs2_addr <= `REG_ADDR_ZERO;
+						reg_wr_addr <= `REG_ADDR_ZERO;
+
+						jmp_flag <= `JMP_NOPE;
+						load_code <= `LOAD_NOPE;
+						store_code <= `STORE_NOPE;
+
+						alu_add_sub <= `ALU_ADD_EN;
+						alu_shift <= `ALU_SHIFT_L;
+						word_intercept <= `INTERCEPT_DIS;
+						alu_operation <= `ALU_ADD;
+						alu_op_num1	<= `ZERO_DOUBLE;
+						alu_op_num2	<= `ZERO_DOUBLE;
+						jmp_op_num1	<= `ZERO_DOUBLE;
+						jmp_op_num2	<= `ZERO_DOUBLE;
+						decode_except <= `EXCEPT_ACT;
+						except_cause <= `EXCEPT_ID_ILLEGAL;
+						csr_instr <= `CSR_CODE_NOPE;
+						csr_addr <= `CSR_ADDR_ZERO;
+					end
+				endcase
+			end
 
 			`OPERATION_NOP: begin
 				reg_wr_en <= `REG_WR_DIS;
@@ -949,6 +1285,9 @@ module decoder(
 				jmp_op_num1	<= `ZERO_DOUBLE;
 				jmp_op_num2	<= `ZERO_DOUBLE;
 				decode_except <= `EXCEPT_NOPE;
+				except_cause <= `EXCEPT_NONE;
+				csr_instr <= `CSR_CODE_NOPE;
+				csr_addr <= `CSR_ADDR_ZERO;
 			end
 
 			default: begin
@@ -970,6 +1309,9 @@ module decoder(
 				jmp_op_num1	<= `ZERO_DOUBLE;
 				jmp_op_num2	<= `ZERO_DOUBLE;
 				decode_except <= `EXCEPT_ACT;
+				except_cause <= `EXCEPT_ID_ILLEGAL;
+				csr_instr <= `CSR_CODE_NOPE;
+				csr_addr <= `CSR_ADDR_ZERO;
 			end
 		endcase
 	end

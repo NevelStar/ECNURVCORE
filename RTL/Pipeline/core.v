@@ -2,7 +2,7 @@
 //Pipeline CPU
 //Created by Chesed
 //2021.07.23
-//Edited in 2021.08.13
+//Edited in 2021.08.16
 
 `include "define.v"
 
@@ -32,6 +32,8 @@ module core(
 	
 	wire fetch_except;
 	wire decode_except;
+	wire [`BUS_EXCEPT_CAUSE] except_cause_if_o;
+	wire [`BUS_EXCEPT_CAUSE] except_cause_id_o;
 	
 	wire jmp_en_pc_i;
 	wire [`BUS_ADDR_MEM] jmp_to_pc_i;
@@ -65,6 +67,8 @@ module core(
 	wire [`BUS_DATA_REG] alu_op_num2_id_o;
 	wire [`BUS_DATA_REG] jmp_op_num1_id_o;
 	wire [`BUS_DATA_REG] jmp_op_num2_id_o;
+	wire [`BUS_CSR_CODE] csr_instr_id_o;
+	wire [`BUS_CSR_IMM]	 csr_addr_id_o;
 	wire [`BUS_JMP_FLAG] jmp_flag_id_o;	
 	wire load_bypass_id_o;
 
@@ -193,6 +197,7 @@ module core(
 		.pc_i 			(pc_if_i),
 		
 		.fetch_except_o	(fetch_except),
+		.except_cause_o	(except_cause_if_o),
 		.instr_rd_o 	(instr_rd_if_o),
 		.instr_rd_en_o	(instr_rd_en_if_o)
 	);
@@ -231,8 +236,11 @@ module core(
 		.alu_op_num2_o	(alu_op_num2_id_o),
 		.jmp_op_num1_o	(jmp_op_num1_id_o),
 		.jmp_op_num2_o	(jmp_op_num2_id_o),	
+		.csr_instr_o	(csr_instr_id_o),
+		.csr_addr_o		(csr_addr_id_o),
 		.jmp_flag_o		(jmp_flag_id_o),
 		.decode_except_o(decode_except),
+		.except_cause_o	(except_cause_id_o),
 		.load_bypass_o	(load_bypass_id_o)
 	);
 

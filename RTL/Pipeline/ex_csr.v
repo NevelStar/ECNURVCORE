@@ -14,9 +14,9 @@ module ex_csr
 //	input	[`BUS_DATA_REG]		data_rs2_i		,
 	input	[`BUS_ADDR_REG]		addr_reg_wr_i	,	
 	
-	input	[`BUS_ALU_OP]		csr_instr_i		,	//csr的指令(6条之一)
-	input	[`BUS_CSR_IMM]		csr_addr_i		,	//索引CSR寄存器的12位地址
-	input	[`BUS_CSR_IMMEX]	csr_imm_i		,	//零扩展后的立即数
+	input	[`BUS_CSR_CODE]		csr_instr_i		,	//csr的指令(6条之一)			csr_instr
+	input	[`BUS_CSR_IMM]		csr_addr_i		,	//索引CSR寄存器的12位地址		csr_addr
+	input	[`BUS_CSR_IMMEX]	csr_imm_i		,	//零扩展后的立即数			alu_op_num1[31:0]
 	
 	input						ext_irq_i		,	//外部中断请求
 	input						sft_irq_i		,	//软件中断请求

@@ -2,7 +2,7 @@
 //Pipline CPU
 //Created by Chesed
 //2021.07.19
-//Edited in 2021.08.08
+//Edited in 2021.08.16
 
 
 //the initial data
@@ -20,6 +20,7 @@
 
 `define MEM_ADDR_ZERO		64'h0000_0000_0000_0000
 `define REG_ADDR_ZERO		5'h00
+`define CSR_ADDR_ZERO		12'h000
 
 `define AXI_ID_ZERO			4'b0000
 `define AXI_LEN_ZERO		8'h00
@@ -62,6 +63,8 @@
 `define BUS_PRE_STATE		1:0
 `define BUS_CSR_IMM			11:0
 `define BUS_CSR_IMMEX		31:0
+`define BUS_EXCEPT_CAUSE	2:0
+`define BUS_CSR_CODE		5:0
 
 //AXI bus
 `define BUS_AXI_AWID		3:0
@@ -142,6 +145,17 @@
 //type I JALR
 `define INSTR_JALR			3'b000
 
+//type I SYSTEM			
+`define INSTR_IRQ			3'b000
+`define INSTR_CSRRW			3'b001
+`define INSTR_CSRRS			3'b010
+`define INSTR_CSRRC			3'b011
+`define INSTR_CSRRWI		3'b101
+`define INSTR_CSRRSI		3'b110
+`define INSTR_CSRRCI		3'b111
+
+
+
 //LOAD
 `define INSTR_LB			3'b000
 `define INSTR_LH			3'b001
@@ -151,6 +165,15 @@
 `define INSTR_LHU			3'b101
 `define INSTR_LWU			3'b110
 `define LOAD_NOPE			3'b111
+
+
+
+
+//irq instruction
+`define INSTR_EBREAK 		32'h00100073
+`define INSTR_ECALL 		32'h00000073
+
+
 
 //funct7 code
 `define FUNCT7_ADD			7'b0000000
@@ -243,3 +266,22 @@
 `define STATE_W_HOLD		2'b01
 `define STATE_W_JMP			2'b10
 `define STATE_S_JMP			2'b11
+
+//exception cause
+`define EXCEPT_NONE			3'b000
+`define EXCEPT_PC_OVER		3'b001
+`define EXCEPT_PC_ALIGN		3'b010
+`define EXCEPT_ID_ILLEGAL	3'b011
+`define EXCEPT_ECALL		3'b100
+`define EXCEPT_EBREAK		3'b101
+
+
+
+//CSR operation code
+`define CSR_CODE_NOPE				6'h00
+`define CSR_CODE_CSRRW				6'h01
+`define CSR_CODE_CSRRS				6'h02
+`define CSR_CODE_CSRRC				6'h04
+`define CSR_CODE_CSRRWI			6'h08
+`define CSR_CODE_CSRRSI			6'h10
+`define CSR_CODE_CSRRCI			6'h20

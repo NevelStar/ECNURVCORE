@@ -24,6 +24,9 @@ module id_ex(
 	input	[`BUS_ALU_OP]		alu_operation_i	,
 	input	[`BUS_DATA_REG]		alu_op_num1_i	,
 	input	[`BUS_DATA_REG]		alu_op_num2_i	,
+	input	[`BUS_CSR_CODE]		csr_instr_i		,
+	input	[`BUS_CSR_IMM]		csr_addr_i		,
+
 
 	input						hold_n			,
 
@@ -41,7 +44,9 @@ module id_ex(
 	output						word_intercept_o,
 	output	[`BUS_ALU_OP]		alu_operation_o	,
 	output	[`BUS_DATA_REG]		alu_op_num1_o	,
-	output	[`BUS_DATA_REG]		alu_op_num2_o	
+	output	[`BUS_DATA_REG]		alu_op_num2_o	,
+	output	[`BUS_CSR_CODE]		csr_instr_o		,
+	output	[`BUS_CSR_IMM]		csr_addr_o		
 	
 );
 	gnrl_dff # (.DW(`DATA_WIDTH)) dff_data_rs1(
@@ -159,6 +164,26 @@ module id_ex(
 		.data_r_ini	(`ZERO_DOUBLE),
 
 		.data_out	(alu_op_num2_o)
+	);
+
+	gnrl_dff # (.DW(6)) dff_csr_instr(
+		.clk		(clk),
+		.rst_n		(rst_n),
+		.wr_en		(hold_n),
+		.data_in	(csr_instr_i),
+		.data_r_ini	(`CSR_CODE_NOPE),
+
+		.data_out	(csr_instr_o)
+	);
+
+	gnrl_dff # (.DW(12)) dff_csr_addr(
+		.clk		(clk),
+		.rst_n		(rst_n),
+		.wr_en		(hold_n),
+		.data_in	(csr_addr_i),
+		.data_r_ini	(`CSR_ADDR_ZERO),
+
+		.data_out	(csr_addr_o)
 	);
 
 

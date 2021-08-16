@@ -69,3 +69,6 @@ ver 1.3.7:
 ·Fetch except & Decoder except supported
 	Fetch except: pc is too small or too large or not aligned
 	Decoder except: illegal instruction
+
+ver 1.3.8:
+·CSR decoder supported

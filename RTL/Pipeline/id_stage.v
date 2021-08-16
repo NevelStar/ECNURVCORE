@@ -2,7 +2,7 @@
 //Pipeline CPU
 //Created by Chesed
 //2021.07.23
-//Edited in 2021.08.07
+//Edited in 2021.08.16
 
 `include "define.v"
 
@@ -39,6 +39,9 @@ module id_stage(
 	output	[`BUS_DATA_REG]		jmp_op_num2_o	,	
 	output	[`BUS_JMP_FLAG] 	jmp_flag_o		,
 	output						decode_except_o	,
+	output	[`BUS_EXCEPT_CAUSE] except_cause_o	,
+	output	[`BUS_CSR_CODE]		csr_instr_o		,
+	output	[`BUS_CSR_IMM]		csr_addr_o		,
 	output						load_bypass_o
 );
 	wire [`BUS_ALU_OP] alu_operation;
@@ -56,6 +59,9 @@ module id_stage(
 	wire alu_add_sub;
 	wire alu_shift;
 	wire word_intercept;
+
+	wire [`BUS_CSR_CODE] csr_instr;
+	wire [`BUS_CSR_IMM] csr_addr;	
 
 	wire hold_n;
 
@@ -97,6 +103,9 @@ module id_stage(
 		.reg_wr_addr	(reg_wr_addr),
 		.reg_wr_en		(reg_wr_en),
 		.decode_except	(decode_except_o),
+		.except_cause	(except_cause_o),
+		.csr_instr		(csr_instr),
+		.csr_addr		(csr_addr),
 		.load_bypass	(load_bypass_o)
 
 	);
@@ -120,6 +129,8 @@ module id_stage(
 		.alu_operation_i(alu_operation),
 		.alu_op_num1_i	(alu_op_num1),
 		.alu_op_num2_i	(alu_op_num2),
+		.csr_instr_i	(csr_instr),
+		.csr_addr_i		(csr_addr),
 
 		.hold_n			(hold_n),
 
@@ -136,7 +147,9 @@ module id_stage(
 		.word_intercept_o(word_intercept_o),
 		.alu_operation_o(alu_operation_o),
 		.alu_op_num1_o	(alu_op_num1_o),
-		.alu_op_num2_o	(alu_op_num2_o)
+		.alu_op_num2_o	(alu_op_num2_o),
+		.csr_instr_o	(csr_instr_o),
+		.csr_addr_o		(csr_addr_o)
 	);
 
 endmodule

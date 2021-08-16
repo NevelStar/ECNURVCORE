@@ -6,10 +6,90 @@
 `include "define.v"
 
 module top(
-	input	clk		,
-	input	rst_n	
-);
+	input						clk				,
+	input						rst_n			,
 
+//with bus
+
+	//address write
+
+	//handshake
+	input	      				awready_i		,
+	output 	      				awvalid_o		,
+
+	output	[`BUS_AXI_AWID]		awid_o 			,
+	output 	[`BUS_ADDR_MEM]		awaddr_o		,
+
+	//burst
+	output 	[`BUS_AXI_LEN] 		awlen_o			,
+	output 	[`BUS_AXI_SIZE] 	awsize_o		,
+	output 	[`BUS_AXI_BURST]	awburst_o		,
+
+	output	[`BUS_AXI_CACHE]	awcache_o		,
+	output						awprot_o		,
+	output						awqos_o			,
+	output						awregion_o		,
+
+
+
+	//data write
+
+	//handshake
+	input	      				wready_i		,
+	output 	      				wvalid_o		,
+
+	output 	[`BUS_DATA_MEM]		wdata_o			,
+	output 	[`BUS_AXI_STRB] 	wstrb_o			,
+
+	//burst
+	output 	      				wlast_o			,
+
+
+
+	//write response
+	input	[`BUS_AXI_BID]		bid_i_o 		,
+	input	[`BUS_AXI_RESP]		bresp_i			,
+
+	//handshake
+	input						bvalid_i		,
+	output						bready_o		,
+			
+
+
+	//address read
+
+	//handshake
+	input	      				arready_i		,
+	output 	      				arvalid_o		,
+
+	output	[`BUS_AXI_ARID]		arid_o 			,
+	output 	[`BUS_ADDR_MEM]		araddr_o		,
+
+	//burst
+	output 	[`BUS_AXI_LEN] 		arlen_o			,
+	output 	[`BUS_AXI_SIZE] 	arsize_o		,
+	output 	[`BUS_AXI_BURST]	arburst_o		,
+
+	output	[`BUS_AXI_CACHE]	arcache_o		,
+	output						arprot_o		,
+	output						arqos_o			,
+	output						arregion_o		,
+
+
+
+	//data read
+	input	[`BUS_AXI_RID] 		rid_i 			,
+	input	[`BUS_DATA_MEM]		rdata_i			,
+	input	[`BUS_AXI_RESP]		rresp_i			,
+
+	//burst
+	input	      				rlast_i			,
+	
+	//handshake
+	input						rvalid_i 		,
+	output						rready_o
+
+);
 	wire [`BUS_DATA_MEM] data_mem_wr;
 	wire [`BUS_DATA_MEM] data_mem_rd;
 	wire [`BUS_ADDR_MEM] addr_mem_wr;
@@ -26,33 +106,6 @@ module top(
 	wire instr_rd_en;
 
 
-
-	wire wready;
-	wire wvalid;
-	wire awready;
-	wire awvalid;
-	wire arready;
-	wire arvalid;
-	wire rvalid;
-	wire rready;
-	wire bready;
-	wire wlast;
-	wire [`BUS_ADDR_MEM] awaddr;
-	wire [`BUS_ADDR_MEM] araddr;
-	wire [`BUS_DATA_MEM] wdata;
-	wire [`BUS_DATA_MEM] rdata;
-	wire [`BUS_AXI_STRB] wstrb;
-	wire [3:0] awid;
-	wire [3:0] arid;
-	wire [3:0] bid;
-	wire [3:0] rid;
-	
-	wire [7:0] awlen;
-	wire [2:0] awsize;
-	wire [1:0] awburst;
-	wire [7:0] arlen;
-	wire [2:0] arsize;
-	wire [1:0] arburst;
 
 
 
@@ -91,123 +144,75 @@ module top(
 		.stall_store	(stall_store),
 	
 
-		.addr_mem_wr	(addr_mem_wr),	
-		.addr_mem_rd	(addr_mem_rd),	
-		.data_mem_wr	(data_mem_wr),	
-		.mem_wr_en		(mem_wr_en),	
-		.mem_rd_en		(mem_rd_en),					
+		.addr_mem_wr	(addr_mem_wr),
+		.addr_mem_rd	(addr_mem_rd),
+		.data_mem_wr	(data_mem_wr),
+		.mem_wr_en		(mem_wr_en),
+		.mem_rd_en		(mem_rd_en),			
 		.data_mem_rd	(data_mem_rd),
-		
-		
-		
 	    .pc				(pc),
 	    .instr_rd_en	(instr_rd_en),
 	    .instr 			(instr),
 	    .addr_instr		(addr_instr),
 
 
-		.awready		(awready),
-		.awvalid		(awvalid),
+		.awready		(awready_i),
+		.awvalid		(awvalid_o),
 
-		.awid 			(awid),
-		.awaddr			(awaddr),
-
-
-		.awlen			(awlen),
-		.awsize			(awsize),
-		.awburst		(awburst),
-
-		.awcache		(),
-		.awprot			(),
-		.awqos			(),
-		.awregion		(),
-
-		.wready			(wready),
-		.wvalid			(wvalid),
-
-		.wdata			(wdata),
-		.wstrb			(wstrb),
-
-		.wlast			(wlast),
-
-		.bid 			(bid),
-		.bresp			(),
-
-		.bvalid			(),
-		.bready			(bready),
-
-		.arready		(arready),
-		.arvalid		(arvalid),
-
-		.arid 			(arid),
-		.araddr			(araddr),
-
-		.arlen			(arlen),
-		.arsize			(arsize),
-		.arburst		(arburst),
-
-		.arcache		(),
-		.arprot			(),
-		.arqos			(),
-		.arregion		(),
+		.awid 			(awid_o),
+		.awaddr			(awaddr_o),
 
 
-		.rid 			(rid),
-		.rdata			(rdata),
-		.rresp			(),
+		.awlen			(awlen_o),
+		.awsize			(awsize_o),
+		.awburst		(awburst_o),
 
-		.rlast			(),
+		.awcache		(awcache_o),
+		.awprot			(awprot_o),
+		.awqos			(awqos_o),
+		.awregion		(awregion_o),
 
-		.rvalid 		(rvalid),
-		.rready 		(rready)
+		.wready			(wready_i),
+		.wvalid			(wvalid_o),
+
+		.wdata			(wdata_o),
+		.wstrb			(wstrb_o),
+
+		.wlast			(wlast_o),
+
+		.bid 			(bid_i_o),
+		.bresp			(bresp_i),
+
+		.bvalid			(bvalid_i),
+		.bready			(bready_o),
+
+		.arready		(arready_i),
+		.arvalid		(arvalid_o),
+
+		.arid 			(arid_o),
+		.araddr			(araddr_o),
+
+		.arlen			(arlen_o),
+		.arsize			(arsize_o),
+		.arburst		(arburst_o),
+
+		.arcache		(arcache_o),
+		.arprot			(arprot_o),
+		.arqos			(arqos_o),
+		.arregion		(arregion_o),
+
+
+		.rid 			(rid_i),
+		.rdata			(rdata_i),
+		.rresp			(rresp_i),
+
+		.rlast			(rlast_i),
+
+		.rvalid 		(rvalid_i ),
+		.rready 		(rready_o)
 
 );
 
-wire rsta_busy;
-wire rstb_busy;
-
-wire [1:0] s_axi_bresp;
-wire [1:0] s_axi_rresp;
-wire s_axi_rlast;
-wire s_axi_bvalid;
-
-
-
-blk_mem_gen_0 blk_mem_gen_0_u(
-    .rsta_busy(rsta_busy),
-    .rstb_busy(rstb_busy),
-    .s_aclk(clk),
-    .s_aresetn(rst_n),
-    .s_axi_awid(awid),
-    .s_axi_awaddr(awaddr),
-    .s_axi_awlen(awlen),
-    .s_axi_awsize(awsize),
-    .s_axi_awburst(awburst),
-    .s_axi_awvalid(awvalid),
-    .s_axi_awready(awready),
-    .s_axi_wdata(wdata),
-    .s_axi_wstrb(wstrb),
-    .s_axi_wlast(wlast),
-    .s_axi_wvalid(wvalid),
-    .s_axi_wready(wready),
-    .s_axi_bid(bid),
-    .s_axi_bresp(s_axi_bresp),
-    .s_axi_bvalid(s_axi_bvalid),
-    .s_axi_bready(bready),
-    .s_axi_arid(arid),
-    .s_axi_araddr(araddr),
-    .s_axi_arlen (arlen),
-    .s_axi_arsize(arsize),
-    .s_axi_arburst(arburst),
-    .s_axi_arvalid(arvalid),
-    .s_axi_arready(arready),
-    .s_axi_rid(rid),
-    .s_axi_rdata (rdata),
-    .s_axi_rresp (s_axi_rresp),
-    .s_axi_rlast (s_axi_rlast),
-    .s_axi_rvalid(rvalid),
-    .s_axi_rready(rready)
-  );
 
 
 endmodule
