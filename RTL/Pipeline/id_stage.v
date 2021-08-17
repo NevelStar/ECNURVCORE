@@ -25,6 +25,7 @@ module id_stage(
 	output	[`BUS_ADDR_REG]		addr_rs1_o		,
 	output	[`BUS_ADDR_REG]		addr_rs2_o		,
 	output	[`BUS_ADDR_REG]		addr_wr_o		,
+	output	[`BUS_ADDR_MEM]		addr_instr_o	,
 
 	output						reg_wr_en_o		,
 	output 	[`BUS_L_CODE] 		load_code_o		,
@@ -119,6 +120,7 @@ module id_stage(
 		.data_rs2_i		(data_rs2),
 		.addr_rd_i		(reg_wr_addr),
 		.reg_wr_en_i	(reg_wr_en),
+		.addr_instr_i	(addr_instr_i),
 
 		.load_code_i	(load_code),
 		.store_code_i	(store_code),
@@ -138,6 +140,7 @@ module id_stage(
 		.data_rs2_o		(data_rs2_o),
 		.addr_rd_o		(addr_wr_o),
 		.reg_wr_en_o	(reg_wr_en_o),
+		.addr_instr_o	(addr_instr_o),
 
 		.load_code_o	(load_code_o),
 		.store_code_o	(store_code_o),

@@ -14,6 +14,7 @@ module id_ex(
 	input	[`BUS_DATA_REG]		data_rs2_i		,
 	input	[`BUS_ADDR_REG]		addr_rd_i		,
 	input						reg_wr_en_i		,
+	input	[`BUS_ADDR_MEM]		addr_instr_i	,
 
 	input 	[`BUS_L_CODE]		load_code_i		,
 	input 	[`BUS_S_CODE]		store_code_i	,
@@ -34,6 +35,7 @@ module id_ex(
 	output	[`BUS_DATA_REG]		data_rs2_o		,
 	output	[`BUS_ADDR_REG]		addr_rd_o		,
 	output						reg_wr_en_o		,
+	output	[`BUS_ADDR_MEM]		addr_instr_o	,
 
 
 	output 	[`BUS_L_CODE]		load_code_o		,
@@ -186,6 +188,16 @@ module id_ex(
 		.data_out	(csr_addr_o)
 	);
 
+
+	gnrl_dff # (.DW(`DATA_WIDTH)) dff_addr_instr(
+		.clk		(clk),
+		.rst_n		(rst_n),
+		.wr_en		(hold_n),
+		.data_in	(addr_instr_i),
+		.data_r_ini	(`ZERO_DOUBLE),
+
+		.data_out	(addr_instr_o)
+	);
 
 
 
