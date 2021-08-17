@@ -278,10 +278,10 @@
 
 
 //CSR operation code
-`define CSR_CODE_NOPE				6'h00
-`define CSR_CODE_CSRRW				6'h01
-`define CSR_CODE_CSRRS				6'h02
-`define CSR_CODE_CSRRC				6'h04
-`define CSR_CODE_CSRRWI			6'h08
-`define CSR_CODE_CSRRSI			6'h10
-`define CSR_CODE_CSRRCI			6'h20
+`define CSR_CODE_NOPE		3'b000
+`define CSR_CODE_CSRRW		3'b001
+`define CSR_CODE_CSRRS		3'b010
+`define CSR_CODE_CSRRC		3'b011
+`define CSR_CODE_CSRRWI		3'b101
+`define CSR_CODE_CSRRSI		3'b110
+`define CSR_CODE_CSRRCI		3'b111

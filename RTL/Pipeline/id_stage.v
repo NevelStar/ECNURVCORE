@@ -61,7 +61,7 @@ module id_stage(
 	wire alu_shift;
 	wire word_intercept;
 
-	wire [`BUS_CSR_CODE] csr_instr;
+	wire [`BUS_ALU_OP] csr_instr;
 	wire [`BUS_CSR_IMM] csr_addr;	
 
 	wire hold_n;
