@@ -326,7 +326,7 @@ module core
 		.instr_mask_o	(instr_mask_ctrl_o),
 		.hold_code_o	(hold_code_ctrl_o)
 	);
-	
+
 	clint_top core_clint
 	(
 		.clk			(clk),
@@ -337,16 +337,16 @@ module core
 		.i_timer_l		(),			//定时器低32位寄存器
 		.i_timer_h		(),			//定时器高32位寄存器
 
-		.o_timer_l		(),			//输出现在的定时器低32位寄存器
-		.o_timer_h		(),			//输出现在的定时器高32位寄存器
+		.o_timer_l		(),			//输出现在的定时器??32位寄存器
+		.o_timer_h		(),			//输出现在的定时器??32位寄存器
 
 		.i_tcmp_l		(),			//比较定时器低32位寄存器
 		.i_tcmp_h		(),			//比较定时器高32位寄存器
 
-		.i_timer_valid	(),			//两个bit分别控制定时器的低/高32位寄存器
+		.i_timer_valid	(),			//两个bit分别控制定时器的??/??32位寄存器
 		.i_tm_ctrl		(),			//定时器控制寄存器
 
-		.o_mtip			(),			//输出定时器中断请求
+		.o_mtip			(),			//输出定时器中断请??
 		.o_msip			()			//输出软件中断请求
 );
 
