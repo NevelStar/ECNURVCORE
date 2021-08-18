@@ -280,7 +280,7 @@
 `define EXCEPT_ID_ILLEGAL	3'b011
 `define EXCEPT_ECALL		3'b100
 `define EXCEPT_EBREAK		3'b101
-
+`define EXCEPT_MRET			3'b110
 
 
 //CSR operation code
