@@ -11,6 +11,8 @@ module ctrl(
 	input					rst_n			,
 	input					stall_load		,
 	input					stall_store		,
+	input					irq_jmp_i		,
+	input [`BUS_ADDR_MEM]	irq_jmp_to_i	,
 	input [`BUS_ADDR_MEM]	jmp_num1_i		,
 	input [`BUS_ADDR_MEM]	jmp_num2_i		,
 	input [`BUS_ADDR_MEM]	pc_pred_i		,
@@ -58,9 +60,10 @@ module ctrl(
 		endcase
 	end
 
-	assign jmp_en_o = (prediction_result == `JMP_RIGHT) ? jmp_en_prediction : `JMP_EN;
-	assign jmp_to_o = (prediction_result == `JMP_RIGHT) ? jmp_to_prediction : (
-					  (jmp_en == `JMP_EN) ? jmp_to : pc_instr_i + 32'd4);
+	assign jmp_en_o = (irq_jmp_i == `JMP_EN) ? `JMP_EN : ((prediction_result == `JMP_RIGHT) ? jmp_en_prediction : `JMP_EN);
+	assign jmp_to_o = (irq_jmp_i == `JMP_EN) ? irq_jmp_to_i : (
+					  (prediction_result == `JMP_RIGHT) ? jmp_to_prediction : (
+					  (jmp_en == `JMP_EN) ? jmp_to : pc_instr_i + 32'd4));
 
 	assign instr_mask_o = prediction_result_t;
 

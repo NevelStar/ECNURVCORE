@@ -173,6 +173,12 @@
 `define INSTR_EBREAK 		32'h00100073
 `define INSTR_ECALL 		32'h00000073
 
+`define INSTR_URET			32'h00200073
+`define INSTR_SRET			32'h10200073
+`define INSTR_MRET			32'h30200073
+
+`define INSTR_WFI			32'h10500073
+
 
 
 //funct7 code

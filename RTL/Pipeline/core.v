@@ -312,6 +312,8 @@ module core
 		.rst_n			(rst_n),
 		.stall_load		(stall_load_ctrl_i),
 		.stall_store	(stall_store_ctrl_i),
+		.irq_jmp_i 		(),
+		.irq_jmp_to_i	(),
 		.jmp_num1_i		(jmp_num1_ctrl_i),
 		.jmp_num2_i		(jmp_num2_ctrl_i),
 		.pc_pred_i		(pc_prediction_ctrl_i),
