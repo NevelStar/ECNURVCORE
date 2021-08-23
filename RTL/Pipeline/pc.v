@@ -13,6 +13,7 @@ module pc(
 	input						clk			,
 	input						rst_n		,
 	input	[`BUS_HOLD_CODE]	hold_code	,
+	input						axi_idle_if	,
 
 	input						jmp_en		,
 	input	[`BUS_ADDR_MEM]		jmp_to		,
@@ -29,7 +30,7 @@ module pc(
 			addr_instr <= `BASE_PC;
 		end
 		else begin
-			if(!hold_n) begin
+			if((!hold_n) | (!axi_idle_if)) begin
 				addr_instr <= addr_instr;
 			end
 			else begin

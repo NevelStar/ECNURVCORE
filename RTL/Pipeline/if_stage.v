@@ -21,6 +21,6 @@ module if_stage(
 	assign except_cause_o = ((pc_i < `BASE_PC)|(pc_i > `PC_MAX)) ? `EXCEPT_PC_OVER : ((pc_i[1:0] != 2'b00) ? `EXCEPT_PC_ALIGN : `EXCEPT_NONE);
 	
 	assign instr_rd_en_o = (hold_code < `HOLD_CODE_IF) ? `INSTR_RD_EN : `INSTR_RD_DIS;
-	assign instr_rd_o = (instr_mask_i == `MASK_EN) ? `ZERO_WORD : instr_rd_i;
+	assign instr_rd_o = ((instr_mask_i == `MASK_EN)) ? `ZERO_WORD : instr_rd_i;
 
 endmodule

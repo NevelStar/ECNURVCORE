@@ -5,91 +5,52 @@
 
 `include "define.v"
 
-module top(
+module top_axi(
 	input						clk				,
 	input						rst_n			,
 
-//with bus
+//with slave
 
-	//address write
-
-	//handshake
-	input	      				awready_i		,
-	output 	      				awvalid_o		,
-
-	output	[`BUS_AXI_AWID]		awid_o 			,
-	output 	[`BUS_ADDR_MEM]		awaddr_o		,
-
-	//burst
-	output 	[`BUS_AXI_LEN] 		awlen_o			,
-	output 	[`BUS_AXI_SIZE] 	awsize_o		,
-	output 	[`BUS_AXI_BURST]	awburst_o		,
-
-	output	[`BUS_AXI_CACHE]	awcache_o		,
-	output						awprot_o		,
-	output						awqos_o			,
-	output						awregion_o		,
-
-
-
-	//data write
-
-	//handshake
-	input	      				wready_i		,
-	output 	      				wvalid_o		,
-
-	output 	[`BUS_DATA_MEM]		wdata_o			,
-	output 	[`BUS_AXI_STRB] 	wstrb_o			,
-
-	//burst
-	output 	      				wlast_o			,
-
-
-
-	//write response
-	input	[`BUS_AXI_BID]		bid_i     		,
-	input	[`BUS_AXI_RESP]		bresp_i			,
-
-	//handshake
-	input						bvalid_i		,
-	output						bready_o		,
-			
-
-
-	//address read
-
-	//handshake
-	input	      				arready_i		,
-	output 	      				arvalid_o		,
-
-	output	[`BUS_AXI_ARID]		arid_o 			,
-	output 	[`BUS_ADDR_MEM]		araddr_o		,
-
-	//burst
-	output 	[`BUS_AXI_LEN] 		arlen_o			,
-	output 	[`BUS_AXI_SIZE] 	arsize_o		,
-	output 	[`BUS_AXI_BURST]	arburst_o		,
-
-	output	[`BUS_AXI_CACHE]	arcache_o		,
-	output						arprot_o		,
-	output						arqos_o			,
-	output						arregion_o		,
-
-
-
-	//data read
-	input	[`BUS_AXI_RID] 		rid_i 			,
-	input	[`BUS_DATA_MEM]		rdata_i			,
-	input	[`BUS_AXI_RESP]		rresp_i			,
-
-	//burst
-	input	      				rlast_i			,
-	
-	//handshake
-	input						rvalid_i 		,
-	output						rready_o
+	input	      				awready_ram		,
+	output 	      				awvalid_ram		,
+	output	[`BUS_AXI_AWID]		awid_ram 		,
+	output 	[`BUS_ADDR_MEM]		awaddr_ram		,
+	output 	[`BUS_AXI_LEN] 		awlen_ram		,
+	output 	[`BUS_AXI_SIZE] 	awsize_ram		,
+	output 	[`BUS_AXI_BURST]	awburst_ram		,
+	output	[`BUS_AXI_CACHE]	awcache_ram		,
+	output						awprot_ram		,
+	output						awqos_ram		,
+	output						awregion_ram	,
+	input	      				wready_ram		,
+	output 	      				wvalid_ram		,
+	output 	[`BUS_DATA_MEM]		wdata_ram		,
+	output 	[`BUS_AXI_STRB] 	wstrb_ram		,
+	output 	      				wlast_ram		,
+	input	[`BUS_AXI_BID]		bid_ram			,
+	input	[`BUS_AXI_RESP]		bresp_ram		,
+	input						bvalid_ram		,
+	output						bready_ram		,
+	input	      				arready_ram		,
+	output 	      				arvalid_ram		,
+	output	[`BUS_AXI_ARID]		arid_ram		,
+	output 	[`BUS_ADDR_MEM]		araddr_ram		,
+	output 	[`BUS_AXI_LEN] 		arlen_ram		,
+	output 	[`BUS_AXI_SIZE] 	arsize_ram		,
+	output 	[`BUS_AXI_BURST]	arburst_ram		,
+	output	[`BUS_AXI_CACHE]	arcache_ram		,
+	output						arprot_ram		,
+	output						arqos_ram		,
+	output						arregion_ram	,
+	input	[`BUS_AXI_RID] 		rid_ram			,
+	input	[`BUS_DATA_MEM]		rdata_ram		,
+	input	[`BUS_AXI_RESP]		rresp_ram		,
+	input	      				rlast_ram		,
+	input						rvalid_ram 		,
+	output						rready_ram 		
 
 );
+
 
 	wire		      			awready_if;
 	wire	      				awvalid_if;
@@ -184,8 +145,6 @@ module top(
 
 	wire 						stall_if;
 	wire 						stall_mem;
-	wire 						axi_idle_if;
-
 
 
 
@@ -193,13 +152,12 @@ module top(
 		.clk			(clk),
 		.rst_n			(rst_n),
 
-		.stall_if		(stall_if),
-		.stall_mem	(stall_mem),
+		.stall_load		(stall_if),
+		.stall_store	(stall_mem),
 
 		.instr_i 		(instr),
 		.addr_instr_i 	(addr_instr),
 		.data_mem_i		(data_mem_rd),
-		.axi_idle_if_i	(axi_idle_if),
 
 
 
@@ -220,12 +178,10 @@ module top(
 	
 		.stall_if 		(stall_if),
 
-
 		.pc				(pc),
 		.instr_rd_en	(instr_rd_en),
 		.instr 			(instr),
 		.addr_instr		(addr_instr),
-		.axi_idle_if	(axi_idle_if),
 
 		.awready_if		(awready_if),
 		.awvalid_if		(awvalid_if),
@@ -267,15 +223,16 @@ module top(
 	);
 
 
-    mem_axi_interface mem_interface(
+    mem_axi_interface mem_axi(
 		.clk			(clk),
 		.rst_n			(rst_n),
 	
 		.stall_mem		(stall_mem),
 	
 
-		//with core
-		//store/load
+	//with core
+
+	//store/load
 		.addr_mem_wr	(addr_mem_wr),	
 		.addr_mem_rd	(addr_mem_rd),	
 		.data_mem_wr	(data_mem_wr),	
@@ -322,15 +279,13 @@ module top(
 		.rvalid_mem 	(rvalid_mem),
 		.rready_mem 	(rready_mem)
 
-	);
-
-
-
+);
 	axi_interconnect interconnect(
 		.clk			(clk),
 		.rst_n			(rst_n),
 
-
+		//with master
+	
 		//if
 		.awready_if		(awready_if),
 		.awvalid_if		(awvalid_if),
@@ -409,65 +364,47 @@ module top(
 		.rvalid_mem 	(rvalid_mem),
 		.rready_mem 	(rready_mem),
 
-         
-         
-		.awready_axi		(awready_i),
-		.awvalid_axi		(awvalid_o),
-         
-		.awid_axi 			(awid_o),
-		.awaddr_axi			(awaddr_o),
-         
-         
-		.awlen_axi			(awlen_o),
-		.awsize_axi			(awsize_o),
-		.awburst_axi		(awburst_o),
-         
-		.awcache_axi		(awcache_o),
-		.awprot_axi			(awprot_o),
-		.awqos_axi			(awqos_o),
-		.awregion_axi		(awregion_o),
-         
-		.wready_axi			(wready_i),
-		.wvalid_axi			(wvalid_o),
-         
-		.wdata_axi			(wdata_o),
-		.wstrb_axi			(wstrb_o),
-         
-		.wlast_axi			(wlast_o),
-         
-		.bid_axi			(bid_i_o),
-		.bresp_axi			(bresp_i),
-         
-		.bvalid_axi			(bvalid_i),
-		.bready_axi			(bready_o),
-         
-		.arready_axi		(arready_i),
-		.arvalid_axi		(arvalid_o),
-         
-		.arid_axi			(arid_o),
-		.araddr_axi			(araddr_o),
-         
-		.arlen_axi			(arlen_o),
-		.arsize_axi			(arsize_o),
-		.arburst_axi		(arburst_o),
-         
-		.arcache_axi		(arcache_o),
-		.arprot_axi			(arprot_o),
-		.arqos_axi			(arqos_o),
-		.arregion_axi		(arregion_o),
-         
-         
-		.rid_axi			(rid_i),
-		.rdata_axi			(rdata_i),
-		.rresp_axi			(rresp_i),
-         
-		.rlast_axi			(rlast_i),
-         
-		.rvalid_axi 		(rvalid_i),
-		.rready_axi 		(rready_o)
+		//with slave
 
-);
-
+		
+		.awready_ram	(awready_ram),
+		.awvalid_ram	(awvalid_ram),
+		.awid_ram 		(awid_ram),
+		.awaddr_ram		(awaddr_ram),
+		.awlen_ram		(awlen_ram),
+		.awsize_ram		(awsize_ram),
+		.awburst_ram	(awburst_ram),
+		.awcache_ram	(awcache_ram),
+		.awprot_ram		(awprot_ram),
+		.awqos_ram		(awqos_ram),
+		.awregion_ram	(awregion_ram),
+		.wready_ram		(wready_ram),
+		.wvalid_ram		(wvalid_ram),
+		.wdata_ram		(wdata_ram),
+		.wstrb_ram		(wstrb_ram),
+		.wlast_ram		(wlast_ram),
+		.bid_ram		(bid_ram),
+		.bresp_ram		(bresp_ram),
+		.bvalid_ram		(bvalid_ram),
+		.bready_ram		(bready_ram),
+		.arready_ram	(arready_ram),
+		.arvalid_ram	(arvalid_ram),
+		.arid_ram		(arid_ram),
+		.araddr_ram		(araddr_ram),
+		.arlen_ram		(arlen_ram),
+		.arsize_ram		(arsize_ram),
+		.arburst_ram	(arburst_ram),
+		.arcache_ram	(arcache_ram),
+		.arprot_ram		(arprot_ram),
+		.arqos_ram		(arqos_ram),
+		.arregion_ram	(arregion_ram),
+		.rid_ram		(rid_ram),
+		.rdata_ram		(rdata_ram),
+		.rresp_ram		(rresp_ram),
+		.rlast_ram		(rlast_ram),
+		.rvalid_ram 	(rvalid_ram),
+		.rready_ram 	(rready_ram)
+	);
 
 
 endmodule

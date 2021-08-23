@@ -2,7 +2,7 @@
 //Pipline CPU
 //Created by Chesed
 //2021.07.19
-//Edited in 2021.08.16
+//Edited in 2021.08.20
 
 
 //the initial data
@@ -34,6 +34,7 @@
 `define WR_STR_ALL			8'hff
 `define WR_STR_NONE			8'h00
 `define PC_STEP				64'd4
+`define ADDR_MAX_RAM		64'h0000_0001_0000_0000
 
 
 //AXI size code
@@ -46,6 +47,18 @@
 `define AXI_BURST_FIX		2'b00
 `define AXI_BURST_INCR		2'b01
 `define AXI_BURST_WRAP		2'b10
+
+//AXI ID
+//master
+`define AXI_ID_IF			4'b0000
+`define AXI_ID_MEM			4'b0001
+//slave
+`define AXI_ID_RAM			4'b0000
+
+//`define AXI_ID_MMIO			4'b0001
+
+
+
 
 
 
@@ -76,7 +89,7 @@
 `define BUS_AXI_LEN			7:0
 `define BUS_AXI_SIZE		2:0
 `define BUS_AXI_BURST		1:0
-`define BUS_AXI_RESP		1:0
+`define BUS_AXI_RESP		0:0
 
 
 
@@ -211,8 +224,8 @@
 
 
 //enable/disable
-`define INSTR_RD_EN 1'b1
-`define INSTR_RD_DIS 1'b0
+`define INSTR_RD_EN 		1'b1
+`define INSTR_RD_DIS		1'b0
 `define REG_WR_EN			1'b1
 `define REG_WR_DIS			1'b0
 `define JMP_EN				1'b1
@@ -251,6 +264,8 @@
 `define AXI_READY_DIS		1'b0
 `define AXI_VALID_EN		1'b1
 `define AXI_VALID_DIS		1'b0
+`define AXI_BUSY			1'b1
+`define AXI_IDLE			1'b0
 
 
 

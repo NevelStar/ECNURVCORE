@@ -2,15 +2,15 @@
 //Pipeline CPU
 //Created by Chesed
 //2021.07.23
-//Edited in 2021.08.03
+//Edited in 2021.08.22
 
 `include "define.v"
 
 module ctrl(
 	input					clk				,
 	input					rst_n			,
-	input					stall_load		,
-	input					stall_store		,
+	input					stall_if		,
+	input					stall_mem		,
 	input					irq_jmp_i		,
 	input [`BUS_ADDR_MEM]	irq_jmp_to_i	,
 	input [`BUS_ADDR_MEM]	jmp_num1_i		,
@@ -67,12 +67,14 @@ module ctrl(
 
 	assign instr_mask_o = prediction_result_t;
 
-	assign hold_code_o = (stall_store == `STALL_EN) ? `HOLD_CODE_EX : ((stall_load == `STALL_EN) ? `HOLD_CODE_IF : `HOLD_CODE_NOPE);
+	assign hold_code_o = (stall_mem == `STALL_EN) ? `HOLD_CODE_EX : ((stall_if == `STALL_EN) ? `HOLD_CODE_EX : `HOLD_CODE_NOPE);
+
+	assign hold_n = (hold_code_o == `HOLD_CODE_NOPE) ? `HOLD_DIS : `HOLD_EN;
 
 	gnrl_dff # (.DW(1)) dff_addr_reg_wr(
 			.clk		(clk),
 			.rst_n		(rst_n),
-			.wr_en		(`HOLD_DIS),
+			.wr_en		(hold_n),
 			.data_in	(prediction_result),
 			.data_r_ini	(`JMP_RIGHT),
 	
@@ -84,6 +86,7 @@ module ctrl(
 	btb_ctrl ctrl_prediction(
 		.clk				(clk),
 		.rst_n				(rst_n),
+		.hold_code 			(hold_code_o),
 		
 		.pc_i				(pc_pred_i),
 		.pc_jmp_i			(pc_instr_i),

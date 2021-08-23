@@ -1,0 +1,863 @@
+//ECNURVCORE
+//AXI Bus master-interconnect
+//Created by Chesed
+//2021.08.21
+
+`include "define.v"
+
+module axi_interconnect(
+	output reg						clk				,
+	output reg						rst_n			,
+	
+
+	//with master
+
+	//if
+	output		      				awready_if		,
+	input     	      				awvalid_if		,
+	input    	[`BUS_AXI_AWID]		awid_if 		,
+	input     	[`BUS_ADDR_MEM]		awaddr_if		,
+	input     	[`BUS_AXI_LEN] 		awlen_if		,
+	input     	[`BUS_AXI_SIZE] 	awsize_if		,
+	input     	[`BUS_AXI_BURST]	awburst_if		,
+	input    	[`BUS_AXI_CACHE]	awcache_if		,
+	input    						awprot_if		,
+	input    						awqos_if		,
+	input    						awregion_if		,
+	output 		      				wready_if		,
+	input     	      				wvalid_if		,
+	input     	[`BUS_DATA_MEM]		wdata_if		,
+	input     	[`BUS_AXI_STRB] 	wstrb_if		,
+	input     	      				wlast_if		,
+	output 		[`BUS_AXI_BID]		bid_if			,
+	output 		[`BUS_AXI_RESP]		bresp_if		,
+	output 							bvalid_if		,
+	input    						bready_if		,
+	output reg	      				arready_if		,
+	input     	      				arvalid_if		,
+	input    	[`BUS_AXI_ARID]		arid_if			,
+	input     	[`BUS_ADDR_MEM]		araddr_if		,
+	input     	[`BUS_AXI_LEN] 		arlen_if		,
+	input     	[`BUS_AXI_SIZE] 	arsize_if		,
+	input     	[`BUS_AXI_BURST]	arburst_if		,
+	input    	[`BUS_AXI_CACHE]	arcache_if		,
+	input    						arprot_if		,
+	input    						arqos_if		,
+	input    						arregion_if		,
+	output reg	[`BUS_AXI_RID] 		rid_if			,
+	output reg	[`BUS_DATA_MEM]		rdata_if		,
+	output reg	[`BUS_AXI_RESP]		rresp_if		,
+	output reg	      				rlast_if		,
+	output reg						rvalid_if 		,
+	input    						rready_if 		,
+	
+	//mem
+	output reg	      				awready_mem		,
+	input     	      				awvalid_mem		,
+	input    	[`BUS_AXI_AWID]		awid_mem		,
+	input     	[`BUS_ADDR_MEM]		awaddr_mem		,
+	input     	[`BUS_AXI_LEN] 		awlen_mem		,
+	input     	[`BUS_AXI_SIZE] 	awsize_mem		,
+	input     	[`BUS_AXI_BURST]	awburst_mem		,
+	input    	[`BUS_AXI_CACHE]	awcache_mem		,
+	input    						awprot_mem		,
+	input    						awqos_mem		,
+	input    						awregion_mem	,
+	output reg	      				wready_mem		,
+	input     	      				wvalid_mem		,
+	input     	[`BUS_DATA_MEM]		wdata_mem		,
+	input     	[`BUS_AXI_STRB] 	wstrb_mem		,
+	input     	      				wlast_mem		,
+	output reg	[`BUS_AXI_BID]		bid_mem			,
+	output reg	[`BUS_AXI_RESP]		bresp_mem		,
+	output reg						bvalid_mem		,
+	input    						bready_mem		,
+	output reg	      				arready_mem		,
+	input     	      				arvalid_mem		,
+	input    	[`BUS_AXI_ARID]		arid_mem		,
+	input     	[`BUS_ADDR_MEM]		araddr_mem		,
+	input     	[`BUS_AXI_LEN] 		arlen_mem		,
+	input     	[`BUS_AXI_SIZE] 	arsize_mem		,
+	input     	[`BUS_AXI_BURST]	arburst_mem		,
+	input    	[`BUS_AXI_CACHE]	arcache_mem		,
+	input    						arprot_mem		,
+	input    						arqos_mem		,
+	input    						arregion_mem	,
+	output reg	[`BUS_AXI_RID] 		rid_mem			,
+	output reg	[`BUS_DATA_MEM]		rdata_mem		,
+	output reg	[`BUS_AXI_RESP]		rresp_mem		,
+	output reg	      				rlast_mem		,
+	output reg						rvalid_mem 		,
+	input    						rready_mem 		,
+
+	//with slave
+
+	//ram
+	input    	      				awready_ram		,
+	output reg 	      				awvalid_ram		,
+	output reg	[`BUS_AXI_AWID]		awid_ram 		,
+	output reg 	[`BUS_ADDR_MEM]		awaddr_ram		,
+	output reg 	[`BUS_AXI_LEN] 		awlen_ram		,
+	output reg 	[`BUS_AXI_SIZE] 	awsize_ram		,
+	output reg 	[`BUS_AXI_BURST]	awburst_ram		,
+	output reg	[`BUS_AXI_CACHE]	awcache_ram		,
+	output reg						awprot_ram		,
+	output reg						awqos_ram		,
+	output reg						awregion_ram	,
+	input    	      				wready_ram		,
+	output reg 	      				wvalid_ram		,
+	output reg 	[`BUS_DATA_MEM]		wdata_ram		,
+	output reg 	[`BUS_AXI_STRB] 	wstrb_ram		,
+	output reg 	      				wlast_ram		,
+	input    	[`BUS_AXI_BID]		bid_ram			,
+	input    	[`BUS_AXI_RESP]		bresp_ram		,
+	input    						bvalid_ram		,
+	output reg						bready_ram		,
+	input    	      				arready_ram		,
+	output reg 	      				arvalid_ram		,
+	output reg	[`BUS_AXI_ARID]		arid_ram		,
+	output reg 	[`BUS_ADDR_MEM]		araddr_ram		,
+	output reg 	[`BUS_AXI_LEN] 		arlen_ram		,
+	output reg 	[`BUS_AXI_SIZE] 	arsize_ram		,
+	output reg 	[`BUS_AXI_BURST]	arburst_ram		,
+	output reg	[`BUS_AXI_CACHE]	arcache_ram		,
+	output reg						arprot_ram		,
+	output reg						arqos_ram		,
+	output reg						arregion_ram	,
+	input    	[`BUS_AXI_RID] 		rid_ram			,
+	input    	[`BUS_DATA_MEM]		rdata_ram		,
+	input    	[`BUS_AXI_RESP]		rresp_ram		,
+	input    	      				rlast_ram		,
+	input    						rvalid_ram 		,
+	output reg						rready_ram 		,
+
+
+	//mmio
+	input    	      				awready_mmio	,
+	output reg 	      				awvalid_mmio	,
+	output reg	[`BUS_AXI_AWID]		awid_mmio 		,
+	output reg 	[`BUS_ADDR_MEM]		awaddr_mmio		,
+	output reg 	[`BUS_AXI_LEN] 		awlen_mmio		,
+	output reg 	[`BUS_AXI_SIZE] 	awsize_mmio		,
+	output reg 	[`BUS_AXI_BURST]	awburst_mmio	,
+	output reg	[`BUS_AXI_CACHE]	awcache_mmio	,
+	output reg						awprot_mmio		,
+	output reg						awqos_mmio		,
+	output reg						awregion_mmio	,
+	input    	      				wready_mmio		,
+	output reg 	      				wvalid_mmio		,
+	output reg 	[`BUS_DATA_MEM]		wdata_mmio		,
+	output reg 	[`BUS_AXI_STRB] 	wstrb_mmio		,
+	output reg 	      				wlast_mmio		,
+	input    	[`BUS_AXI_BID]		bid_mmio		,
+	input    	[`BUS_AXI_RESP]		bresp_mmio		,
+	input    						bvalid_mmio		,
+	output reg						bready_mmio		,
+	input    	      				arready_mmio	,
+	output reg 	      				arvalid_mmio	,
+	output reg	[`BUS_AXI_ARID]		arid_mmio		,
+	output reg 	[`BUS_ADDR_MEM]		araddr_mmio		,
+	output reg 	[`BUS_AXI_LEN] 		arlen_mmio		,
+	output reg 	[`BUS_AXI_SIZE] 	arsize_mmio		,
+	output reg 	[`BUS_AXI_BURST]	arburst_mmio	,
+	output reg	[`BUS_AXI_CACHE]	arcache_mmio	,
+	output reg						arprot_mmio		,
+	output reg						arqos_mmio		,
+	output reg						arregion_mmio	,
+	input    	[`BUS_AXI_RID] 		rid_mmio		,
+	input    	[`BUS_DATA_MEM]		rdata_mmio		,
+	input    	[`BUS_AXI_RESP]		rresp_mmio		,
+	input    	      				rlast_mmio		,
+	input    						rvalid_mmio 	,
+	output reg						rready_mmio
+
+);
+
+	
+	//choose the slave
+
+	wire [`BUS_AXI_ARID] artarget_if;
+	wire [`BUS_AXI_AWID] awtarget_if;
+	wire [`BUS_AXI_ARID] artarget_mem;
+	wire [`BUS_AXI_AWID] awtarget_mem;
+
+	assign artarget_if = `AXI_ID_RAM;
+	assign awtarget_if = `AXI_ID_ZERO;
+	assign artarget_mem = (araddr_mem >= `ADDR_MAX_RAM) ? `AXI_ID_MMIO : `AXI_ID_RAM;
+	assign awtarget_mem = (awaddr_mem >= `ADDR_MAX_RAM) ? `AXI_ID_MMIO : `AXI_ID_RAM;
+
+	reg [`BUS_AXI_AWID] wtarget_mem;
+	reg [`BUS_AXI_ARID] rtarget_if;
+	reg [`BUS_AXI_ARID] rtarget_mem;
+
+	//wtarget_if is always 0
+	//if interface is read-only
+	assign awready_if = `AXI_READY_DIS;
+	assign wready_if = `AXI_READY_DIS;
+	assign bid_if = `AXI_ID_ZERO;
+	assign bresp_if = `AXI_VALID_DIS;
+	assign bvalid_if = `AXI_VALID_DIS;
+
+
+	//aw port
+
+	always@(*) begin
+		case(awtarget_mem)
+			`AXI_ID_RAM: begin
+				if((awready_ram == `AXI_READY_EN) & (awvalid_mem == `AXI_VALID_EN)) begin
+					awready_mem = awready_ram;
+
+					awvalid_ram = awvalid_mem;
+					awid_ram = awid_mem;
+					awaddr_ram = awaddr_mem;
+					awlen_ram = awlen_mem;
+					awsize_ram = awsize_mem;
+					awburst_ram = awburst_mem;
+					awcache_ram = awcache_mem;
+					awprot_ram = awprot_mem;
+					awqos_ram = awqos_mem;
+					awregion_ram = awregion_mem;
+
+					awvalid_mmio = `AXI_VALID_DIS;
+					awid_mmio = `AXI_ID_ZERO;
+					awaddr_mmio = `MEM_ADDR_ZERO;
+					awlen_mmio = awlen_mem;
+					awsize_mmio = awsize_mem;
+					awburst_mmio = awburst_mem;
+					awcache_mmio = awcache_mem;
+					awprot_mmio = awprot_mem;
+					awqos_mmio = awqos_mem;
+					awregion_mmio = awregion_mem;
+				end
+				else begin
+					awready_mem = `AXI_READY_DIS;
+
+					awvalid_ram = `AXI_VALID_DIS;
+					awid_ram = `AXI_ID_ZERO;
+					awaddr_ram = `MEM_ADDR_ZERO;
+					awlen_ram = awlen_mem;
+					awsize_ram = awsize_mem;
+					awburst_ram = awburst_mem;
+					awcache_ram = awcache_mem;
+					awprot_ram = awprot_mem;
+					awqos_ram = awqos_mem;
+					awregion_ram = awregion_mem;
+
+					awvalid_mmio = `AXI_VALID_DIS;
+					awid_mmio = `AXI_ID_ZERO;
+					awaddr_mmio = `MEM_ADDR_ZERO;
+					awlen_mmio = awlen_mem;
+					awsize_mmio = awsize_mem;
+					awburst_mmio = awburst_mem;
+					awcache_mmio = awcache_mem;
+					awprot_mmio = awprot_mem;
+					awqos_mmio = awqos_mem;
+					awregion_mmio = awregion_mem;
+				end
+			end
+			`AXI_ID_MMIO: begin
+				if((awready_ram == `AXI_READY_EN) & (awvalid_mem == `AXI_VALID_EN)) begin
+					awready_mem = awready_mmio;
+
+					awvalid_mmio = awvalid_mem;
+					awid_mmio = awid_mem;
+					awaddr_mmio = awaddr_mem - `ADDR_MAX_RAM;
+					awlen_mmio = awlen_mem;
+					awsize_mmio = awsize_mem;
+					awburst_mmio = awburst_mem;
+					awcache_mmio = awcache_mem;
+					awprot_mmio = awprot_mem;
+					awqos_mmio = awqos_mem;
+					awregion_mmio = awregion_mem;
+					
+					awvalid_ram = `AXI_VALID_DIS;
+					awid_ram = `AXI_ID_ZERO;
+					awaddr_ram = `MEM_ADDR_ZERO;
+					awlen_ram = awlen_mem;
+					awsize_ram = awsize_mem;
+					awburst_ram = awburst_mem;
+					awcache_ram = awcache_mem;
+					awprot_ram = awprot_mem;
+					awqos_ram = awqos_mem;
+					awregion_ram = awregion_mem;
+				end
+				else begin
+					awready_mem = `AXI_READY_DIS;
+
+					awvalid_ram = `AXI_VALID_DIS;
+					awid_ram = `AXI_ID_ZERO;
+					awaddr_ram = `MEM_ADDR_ZERO;
+					awlen_ram = awlen_mem;
+					awsize_ram = awsize_mem;
+					awburst_ram = awburst_mem;
+					awcache_ram = awcache_mem;
+					awprot_ram = awprot_mem;
+					awqos_ram = awqos_mem;
+					awregion_ram = awregion_mem;
+
+					awvalid_mmio = `AXI_VALID_DIS;
+					awid_mmio = `AXI_ID_ZERO;
+					awaddr_mmio = `MEM_ADDR_ZERO;
+					awlen_mmio = awlen_mem;
+					awsize_mmio = awsize_mem;
+					awburst_mmio = awburst_mem;
+					awcache_mmio = awcache_mem;
+					awprot_mmio = awprot_mem;
+					awqos_mmio = awqos_mem;
+					awregion_mmio = awregion_mem;
+				end
+			end
+			default: begin
+				awready_mem = `AXI_READY_DIS;
+
+				awvalid_ram = `AXI_VALID_DIS;
+				awid_ram = `AXI_ID_ZERO;
+				awaddr_ram = `MEM_ADDR_ZERO;
+				awlen_ram = awlen_mem;
+				awsize_ram = awsize_mem;
+				awburst_ram = awburst_mem;
+				awcache_ram = awcache_mem;
+				awprot_ram = awprot_mem;
+				awqos_ram = awqos_mem;
+				awregion_ram = awregion_mem;
+
+				awvalid_mmio = `AXI_VALID_DIS;
+				awid_mmio = `AXI_ID_ZERO;
+				awaddr_mmio = `MEM_ADDR_ZERO;
+				awlen_mmio = awlen_mem;
+				awsize_mmio = awsize_mem;
+				awburst_mmio = awburst_mem;
+				awcache_mmio = awcache_mem;
+				awprot_mmio = awprot_mem;
+				awqos_mmio = awqos_mem;
+				awregion_mmio = awregion_mem;
+			end
+		endcase
+	end
+
+	//w b port
+
+	always@(*) begin
+		case(wtarget_mem)
+			`AXI_ID_RAM: begin
+				if((wready_ram == `AXI_READY_EN) & (wvalid_mem == `AXI_VALID_EN)) begin
+					wready_mem = wready_ram;
+
+					wvalid_ram = wvalid_mem;
+					wdata_ram = wdata_mem;
+					wstrb_ram = wstrb_mem;
+					wlast_ram = wlast_mem;
+
+					wvalid_mmio = `AXI_VALID_DIS;
+					wdata_mmio = `ZERO_DOUBLE;
+					wstrb_mmio = `WR_STR_NONE;
+					wlast_mmio = wlast_mem;
+
+					bid_mem = bid_ram;
+					bresp_mem = bresp_ram;
+					bvalid_mem = bvalid_ram;
+
+					bready_ram = bready_mem;
+					bready_mmio = `AXI_READY_DIS;
+				end
+				else begin
+					wready_mem = `AXI_READY_DIS;
+
+					wvalid_ram = `AXI_VALID_DIS;
+					wdata_ram =	`ZERO_DOUBLE;
+					wstrb_ram = `WR_STR_NONE;
+					wlast_ram = wlast_mem;
+
+					wvalid_mmio = `AXI_VALID_DIS;
+					wdata_mmio = `ZERO_DOUBLE;
+					wstrb_mmio = `WR_STR_NONE;
+					wlast_mmio = wlast_mem;
+
+					bid_mem = `AXI_ID_ZERO;
+					bresp_mem = `AXI_VALID_DIS;
+					bvalid_mem = `AXI_VALID_DIS;
+
+					bready_ram = `AXI_READY_DIS;
+					bready_mmio = `AXI_READY_DIS;
+				end
+			end
+			`AXI_ID_MMIO: begin
+				if((wready_mmio == `AXI_READY_EN) & (wvalid_mem == `AXI_VALID_EN)) begin
+					wready_mem = wready_mmio;
+
+					wvalid_mmio = wvalid_mem;
+					wdata_mmio = wdata_mem;
+					wstrb_mmio = wstrb_mem;	
+					wlast_mmio = wlast_mem;
+
+					wvalid_ram = `AXI_VALID_DIS;
+					wdata_ram =	`ZERO_DOUBLE;
+					wstrb_ram = `WR_STR_NONE;
+					wlast_ram = wlast_mem;
+
+					bid_mem = bid_mmio;
+					bresp_mem = bresp_mmio;
+					bvalid_mem = bvalid_mmio;
+					bready_mmio = bready_mem;
+					
+					bready_ram = `AXI_READY_DIS;
+				end
+				else begin
+					wready_mem = `AXI_READY_DIS;
+
+					wvalid_mmio = `AXI_VALID_DIS;
+					wdata_mmio = `ZERO_DOUBLE;
+					wstrb_mmio = `WR_STR_NONE;
+					wlast_mmio = wlast_mem;
+
+					wvalid_ram = `AXI_VALID_DIS;
+					wdata_ram =	`ZERO_DOUBLE;
+					wstrb_ram = `WR_STR_NONE;
+					wlast_ram = wlast_mem;
+
+					bid_mem = `AXI_ID_ZERO;
+					bresp_mem = `AXI_VALID_DIS;
+					bvalid_mem = `AXI_VALID_DIS;
+
+					bready_ram = `AXI_READY_DIS;
+					bready_mmio = `AXI_READY_DIS;
+				end
+			end
+			default: begin
+				wready_mem = `AXI_READY_DIS;
+
+				wvalid_mmio = `AXI_VALID_DIS;
+				wdata_mmio = `ZERO_DOUBLE;
+				wstrb_mmio = `WR_STR_NONE;
+				wlast_mmio = wlast_mem;
+
+				wvalid_ram = `AXI_VALID_DIS;
+				wdata_ram =	`ZERO_DOUBLE;
+				wstrb_ram = `WR_STR_NONE;
+				wlast_ram = wlast_mem;
+
+				bid_mem = `AXI_ID_ZERO;
+				bresp_mem = `AXI_VALID_DIS;
+				bvalid_mem = `AXI_VALID_DIS;
+
+				bready_ram = `AXI_READY_DIS;
+				bready_mmio = `AXI_READY_DIS;
+			end
+		endcase
+	end
+
+
+	//ar port
+	always@(*) begin
+		case({arvalid_mmio,arvalid_ram})
+			{`AXI_VALID_EN,`AXI_VALID_EN}: begin
+				if(artarget_mem == artarget_if) begin
+					case(artarget_mem)
+						`AXI_ID_RAM: begin
+							arready_mem = arready_ram;
+							arready_if = `AXI_READY_DIS;
+							
+							arvalid_ram = arvalid_mem;
+							arid_ram = arid_mem;
+							araddr_ram = araddr_mem;
+							arlen_ram = arlen_mem;
+							arsize_ram = arsize_mem;
+							arburst_ram = arburst_mem;
+							arcache_ram = arcache_mem;
+							arprot_ram = arprot_mem;
+							arqos_ram = arqos_mem;
+							arregion_ram = arregion_mem;
+
+							arvalid_mmio = `AXI_VALID_DIS;
+							arid_mmio = `AXI_ID_ZERO;
+							araddr_mmio = `MEM_ADDR_ZERO;
+							arlen_mmio = arlen_mem;
+							arsize_mmio = arsize_mem;
+							arburst_mmio = arburst_mem;
+							arcache_mmio = arcache_mem;
+							arprot_mmio = arprot_mem;
+							arqos_mmio = arqos_mem;
+							arregion_mmio = arregion_mem;
+						end
+						`AXI_ID_MMIO: begin
+							arready_mem = arready_mmio;
+							arready_if = `AXI_READY_DIS;
+
+							arvalid_mmio = arvalid_mem;
+							arid_mmio = arid_mem;
+							araddr_mmio = araddr_mem - `ADDR_MAX_RAM;
+							arlen_mmio = arlen_mem;
+							arsize_mmio = arsize_mem;
+							arburst_mmio = arburst_mem;
+							arcache_mmio = arcache_mem;
+							arprot_mmio = arprot_mem;
+							arqos_mmio = arqos_mem;
+							arregion_mmio = arregion_mem;
+							
+							arvalid_ram = `AXI_VALID_DIS;
+							arid_ram = `AXI_ID_ZERO;
+							araddr_ram = `MEM_ADDR_ZERO;
+							arlen_ram = arlen_mem;
+							arsize_ram = arsize_mem;
+							arburst_ram = arburst_mem;
+							arcache_ram = arcache_mem;
+							arprot_ram = arprot_mem;
+							arqos_ram = arqos_mem;
+							arregion_ram = arregion_mem;
+						end
+					endcase
+				end
+				else begin					
+					case(artarget_if)
+						`AXI_ID_RAM: begin
+							arready_if = arready_ram;
+							arready_mem = arready_mmio;
+							
+							arvalid_ram = arvalid_if;
+							arid_ram = arid_if;
+							araddr_ram = araddr_if;
+							arlen_ram = arlen_if;
+							arsize_ram = arsize_if;
+							arburst_ram = arburst_if;
+							arcache_ram = arcache_if;
+							arprot_ram = arprot_if;
+							arqos_ram = arqos_if;
+							arregion_ram = arregion_if;
+
+							arvalid_mmio = arvalid_mem;
+							arid_mmio = arid_mem;
+							araddr_mmio = araddr_mem - `ADDR_MAX_RAM;
+							arlen_mmio = arlen_mem;
+							arsize_mmio = arsize_mem;
+							arburst_mmio = arburst_mem;
+							arcache_mmio = arcache_mem;
+							arprot_mmio = arprot_mem;
+							arqos_mmio = arqos_mem;
+							arregion_mmio = arregion_mem;
+						end
+						`AXI_ID_MMIO: begin
+							arready_if = arready_mmio;
+							arready_mem = arready_ram;
+
+							arvalid_mmio = arvalid_if;
+							arid_mmio = arid_if;
+							araddr_mmio = araddr_if - `ADDR_MAX_RAM;
+							arlen_mmio = arlen_if;
+							arsize_mmio = arsize_if;
+							arburst_mmio = arburst_if;
+							arcache_mmio = arcache_if;
+							arprot_mmio = arprot_if;
+							arqos_mmio = arqos_if;
+							arregion_mmio = arregion_if;
+							
+							arvalid_ram = arvalid_mem;
+							arid_ram = arid_mem;
+							araddr_ram = araddr_mem;
+							arlen_ram = arlen_mem;
+							arsize_ram = arsize_mem;
+							arburst_ram = arburst_mem;
+							arcache_ram = arcache_mem;
+							arprot_ram = arprot_mem;
+							arqos_ram = arqos_mem;
+							arregion_ram = arregion_mem;
+						end
+					endcase
+				end
+			end
+		endcase
+	end
+
+	//r port
+
+	always@(*) begin
+		case({rready_mem,rready_if})
+			{`AXI_READY_EN,`AXI_READY_EN}: begin
+				if(rtarget_mem == rtarget_if) begin
+					case(rtarget_mem)
+						`AXI_ID_RAM: begin
+							rid_mem = rid_ram;
+							rdata_mem = rdata_ram;
+							rresp_mem = rresp_ram;
+							rlast_mem = rlast_ram;
+							rvalid_mem = rvalid_ram;
+
+							rready_ram = rready_mem;
+							rready_mmio = `AXI_READY_DIS;
+
+							rid_if = `AXI_ID_ZERO;
+							rdata_if = `ZERO_DOUBLE;
+							rresp_if = `AXI_VALID_DIS;
+							rlast_if = `AXI_VALID_DIS;
+							rvalid_if = `AXI_VALID_DIS;
+						end
+						`AXI_ID_MMIO: begin
+							rid_mem = rid_mmio;
+							rdata_mem = rdata_mmio;
+							rresp_mem = rresp_mmio;
+							rlast_mem = rlast_mmio;
+							rvalid_mem = rvalid_mmio;
+
+							rready_ram = `AXI_READY_DIS;
+							rready_mmio = rready_mem;
+
+							rid_if = `AXI_ID_ZERO;
+							rdata_if = `ZERO_DOUBLE;
+							rresp_if = `AXI_VALID_DIS;
+							rlast_if = `AXI_VALID_DIS;
+							rvalid_if = `AXI_VALID_DIS;
+						end
+						default: begin
+							rid_mem = `AXI_ID_ZERO;
+							rdata_mem = `ZERO_DOUBLE;
+							rresp_mem = `AXI_VALID_DIS;
+							rlast_mem = `AXI_VALID_DIS;
+							rvalid_mem = `AXI_VALID_DIS;
+
+							rready_ram = `AXI_READY_DIS;
+							rready_mmio = `AXI_READY_DIS;
+
+							rid_if = `AXI_ID_ZERO;
+							rdata_if = `ZERO_DOUBLE;
+							rresp_if = `AXI_VALID_DIS;
+							rlast_if = `AXI_VALID_DIS;
+							rvalid_if = `AXI_VALID_DIS;
+						end
+					endcase
+				end
+				else begin
+
+				end
+			end
+		endcase
+	end
+
+
+
+	always@(posedge clk or negedge rst_n) begin
+		if(!rst_n) begin
+			wtarget_mem <= `AXI_ID_ZERO;
+		end
+		else begin
+			if(awvalid_mem == `AXI_VALID_EN) begin
+				case(awtarget_mem)
+					`AXI_ID_RAM: begin
+						if(awready_ram == `AXI_READY_EN) begin
+							wtarget_mem <= `AXI_ID_RAM;
+						end
+						else begin
+							wtarget_mem <= wtarget_mem;
+						end
+					end
+					`AXI_ID_MMIO: begin
+						if(awready_mmio == `AXI_READY_EN) begin
+							wtarget_mem <= `AXI_ID_MMIO;
+						end
+						else begin
+							wtarget_mem <= wtarget_mem;
+						end
+					end
+					default: begin
+						wtarget_mem <= wtarget_mem;
+					end
+				endcase
+			end
+			else begin
+				case(wtarget_mem)
+					`AXI_ID_RAM: begin
+						if((bready_mem == `AXI_READY_EN) & (bvalid_ram == `AXI_VALID_EN) & (bresp_ram == `AXI_VALID_EN)) begin
+							wtarget_mem <= `AXI_ID_ZERO;
+						end
+						else begin
+							wtarget_mem <= wtarget_mem;
+						end
+					end
+					`AXI_ID_MMIO: begin
+						if((bready_mem == `AXI_READY_EN) & (bvalid_mmio == `AXI_VALID_EN) & (bresp_mmio == `AXI_VALID_EN)) begin
+							wtarget_mem <= `AXI_ID_ZERO;
+						end
+						else begin
+							wtarget_mem <= wtarget_mem;
+						end
+					end
+					default: begin
+						wtarget_mem <= wtarget_mem;
+					end
+				endcase
+			end
+		end
+	end
+
+	always@(posedge clk or negedge rst_n) begin
+		if(!rst_n) begin
+			rtarget_if <= `AXI_ID_ZERO;
+			rtarget_mem <= `AXI_ID_ZERO;
+		end
+		else begin
+			case({arvalid_mem,arvalid_if})
+				{`AXI_VALID_EN,`AXI_VALID_EN}: begin
+					if(artarget_mem == artarget_if) begin
+						rtarget_if <= rtarget_if;
+						case(artarget_mem)
+							`AXI_ID_RAM: begin
+								if(arready_ram == `AXI_READY_EN) begin
+									rtarget_mem <= `AXI_ID_RAM;
+								end
+								else begin
+									rtarget_mem <= rtarget_mem;
+								end
+							end
+							`AXI_ID_MMIO: begin
+								if(arready_mmio == `AXI_READY_EN) begin
+									rtarget_mem <= `AXI_ID_MMIO;
+								end
+								else begin
+									rtarget_mem <= rtarget_mem;
+								end
+							end
+							default: begin
+								rtarget_mem <= rtarget_mem;
+							end
+						endcase
+					end
+					else begin
+						case(artarget_if)
+							`AXI_ID_RAM: begin
+								if(arready_ram == `AXI_READY_EN) begin
+									rtarget_if <= `AXI_ID_RAM;
+								end
+								else begin
+									rtarget_if <= rtarget_if;
+								end
+							end
+							`AXI_ID_MMIO: begin
+								if(arready_mmio == `AXI_READY_EN) begin
+									rtarget_if <= `AXI_ID_MMIO;
+								end
+								else begin
+									rtarget_if <= rtarget_if;
+								end
+							end
+							default: begin
+								rtarget_if <= rtarget_if;
+							end
+						endcase
+						case(artarget_mem)
+							`AXI_ID_RAM: begin
+								if(arready_ram == `AXI_READY_EN) begin
+									rtarget_mem <= `AXI_ID_RAM;
+								end
+								else begin
+									rtarget_mem <= rtarget_mem;
+								end
+							end
+							`AXI_ID_MMIO: begin
+								if(arready_mmio == `AXI_READY_EN) begin
+									rtarget_mem <= `AXI_ID_MMIO;
+								end
+								else begin
+									rtarget_mem <= rtarget_mem;
+								end
+							end
+							default: begin
+								rtarget_mem <= rtarget_mem;
+							end
+						endcase
+					end
+				end
+				{`AXI_VALID_EN,`AXI_VALID_DIS}: begin
+					rtarget_if <= rtarget_if;
+					case(artarget_mem)
+						`AXI_ID_RAM: begin
+							if(arready_ram == `AXI_READY_EN) begin
+								rtarget_mem <= `AXI_ID_RAM;
+							end
+							else begin
+								rtarget_mem <= rtarget_mem;
+							end
+						end
+						`AXI_ID_MMIO: begin
+							if(arready_mmio == `AXI_READY_EN) begin
+								rtarget_mem <= `AXI_ID_MMIO;
+							end
+							else begin
+								rtarget_mem <= rtarget_mem;
+							end
+						end
+						default: begin
+							rtarget_mem <= rtarget_mem;
+						end
+					endcase
+				end
+				{`AXI_VALID_DIS,`AXI_VALID_EN}: begin
+					case(artarget_if)
+						`AXI_ID_RAM: begin
+							if(arready_ram == `AXI_READY_EN) begin
+								rtarget_if <= `AXI_ID_RAM;
+							end
+							else begin
+								rtarget_if <= rtarget_if;
+							end
+						end
+						`AXI_ID_MMIO: begin
+							if(arready_mmio == `AXI_READY_EN) begin
+								rtarget_if <= `AXI_ID_MMIO;
+							end
+							else begin
+								rtarget_if <= rtarget_if;
+							end
+						end
+						default: begin
+							rtarget_if <= rtarget_if;
+						end
+					endcase
+					rtarget_mem <= rtarget_mem;
+				end
+				default: begin
+					case(rtarget_if)
+						`AXI_ID_RAM: begin
+							if((rready_if == `AXI_READY_EN) & (rvalid_ram == `AXI_VALID_EN)) begin
+								rtarget_if <= `AXI_ID_ZERO;
+							end
+							else begin
+								rtarget_if <= rtarget_if;
+							end
+						end
+						`AXI_ID_MMIO: begin
+							if((rready_if == `AXI_READY_EN) & (rvalid_mmio == `AXI_VALID_EN)) begin
+								rtarget_if <= `AXI_ID_ZERO;
+							end
+							else begin
+								rtarget_if <= rtarget_if;
+							end
+						end
+						default: begin
+							rtarget_if <= rtarget_if;
+						end
+					endcase
+					case(rtarget_mem)
+						`AXI_ID_RAM: begin
+							if((rready_mem == `AXI_READY_EN) & (rvalid_ram == `AXI_VALID_EN)) begin
+								rtarget_mem <= `AXI_ID_ZERO;
+							end
+							else begin
+								rtarget_mem <= rtarget_mem;
+							end
+						end
+						`AXI_ID_MMIO: begin
+							if((rready_mem == `AXI_READY_EN) & (rvalid_mmio == `AXI_VALID_EN)) begin
+								rtarget_mem <= `AXI_ID_ZERO;
+							end
+							else begin
+								rtarget_mem <= rtarget_mem;
+							end
+						end
+						default: begin
+							rtarget_mem <= rtarget_mem;
+						end
+					endcase
+				end
+			endcase
+		end
+	end
+
+endmodule

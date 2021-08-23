@@ -9,6 +9,9 @@
 module btb_ctrl(
 	input						clk					,
 	input						rst_n				,
+
+
+	input	[`BUS_HOLD_CODE]	hold_code			,
 	
 	input	[`BUS_ADDR_MEM]		pc_i				,
 	input	[`BUS_ADDR_MEM]		pc_jmp_i			,
@@ -73,9 +76,16 @@ module btb_ctrl(
 			pc_match_t <= `PC_MISMATCH;
 		end
 		else begin
-			jmp_prediction_t <= jmp_prediction_o;
-			target_prediction_t <= target_pc_o;
-			pc_match_t <= pc_match;
+			if(hold_code == `HOLD_CODE_NOPE) begin
+				jmp_prediction_t <= jmp_prediction_o;
+				target_prediction_t <= target_pc_o;
+				pc_match_t <= pc_match;
+			end
+			else begin
+				jmp_prediction_t <= jmp_prediction_t;
+				target_prediction_t <= target_prediction_t;
+				pc_match_t <= pc_match_t;
+			end
 		end
 	end
 

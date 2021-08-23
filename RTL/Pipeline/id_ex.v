@@ -103,7 +103,7 @@ module id_ex(
 	gnrl_dff # (.DW(3)) dff_load_code(
 		.clk		(clk),
 		.rst_n		(rst_n),
-		.wr_en		(`HOLD_DIS),
+		.wr_en		(hold_n),
 		.data_in	(load_code_i),
 		.data_r_ini	(`LOAD_NOPE),
 

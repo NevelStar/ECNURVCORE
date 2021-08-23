@@ -11,12 +11,13 @@ module core
 	input						clk				,
 	input						rst_n			,
 
-	input						stall_load		,
-	input						stall_store		,
+	input						stall_if		,
+	input						stall_mem		,
 
 	input	[`BUS_DATA_INSTR] 	instr_i 		,
 	input	[`BUS_ADDR_MEM] 	addr_instr_i 	,
 	input	[`BUS_DATA_MEM]		data_mem_i		,
+	input						axi_idle_if_i		,
 
 
 
@@ -107,8 +108,8 @@ module core
 	wire [`BUS_DATA_REG] data_rd1_reg_o;
 	wire [`BUS_DATA_REG] data_rd2_reg_o;
 
-	wire [`BUS_ADDR_MEM] stall_load_ctrl_i;
-	wire [`BUS_ADDR_MEM] stall_store_ctrl_i;
+	wire [`BUS_ADDR_MEM] stall_if_ctrl_i;
+	wire [`BUS_ADDR_MEM] stall_mem_ctrl_i;
 	wire [`BUS_ADDR_MEM] jmp_num1_ctrl_i;
 	wire [`BUS_ADDR_MEM] jmp_num2_ctrl_i;
 	wire [`BUS_ADDR_MEM] pc_prediction_ctrl_i;
@@ -161,14 +162,15 @@ module core
 	assign addr_wr_ex_i = addr_wr_id_o;
 	assign reg_wr_en_ex_i = reg_wr_en_id_o;
 
+	//assign wr_en_reg_i = wr_en_ex_o & (hold_code_ctrl_o < `HOLD_CODE_EX);
 	assign wr_en_reg_i = wr_en_ex_o;
 	assign addr_wr_reg_i = addr_wr_ex_o;
 	assign addr_rd1_reg_i = addr_rs1_id_o;
 	assign addr_rd2_reg_i = addr_rs2_id_o;
 	assign data_wr_reg_i = data_wr_ex_o;
 
-	assign stall_load_ctrl_i = stall_load;
-	assign stall_store_ctrl_i = stall_store;
+	assign stall_if_ctrl_i = stall_if;
+	assign stall_mem_ctrl_i = stall_mem;
 	assign jmp_num1_ctrl_i = jmp_op_num1_id_o;
 	assign jmp_num2_ctrl_i = jmp_op_num2_id_o;
 	assign pc_prediction_ctrl_i = pc_o;
@@ -187,6 +189,7 @@ module core
 		.clk		(clk),
 		.rst_n		(rst_n),
 		.hold_code 	(hold_code),
+		.axi_idle_if(axi_idle_if_i),
 	
 		.jmp_en		(jmp_en_pc_i),
 		.jmp_to		(jmp_to_pc_i),
@@ -310,10 +313,10 @@ module core
 	(
 		.clk			(clk),
 		.rst_n			(rst_n),
-		.stall_load		(stall_load_ctrl_i),
-		.stall_store	(stall_store_ctrl_i),
-		.irq_jmp_i 		(),
-		.irq_jmp_to_i	(),
+		.stall_if		(stall_if_ctrl_i),
+		.stall_mem	(stall_mem_ctrl_i),
+		.irq_jmp_i 		(1'b0),
+		.irq_jmp_to_i	(1'b0),
 		.jmp_num1_i		(jmp_num1_ctrl_i),
 		.jmp_num2_i		(jmp_num2_ctrl_i),
 		.pc_pred_i		(pc_prediction_ctrl_i),
@@ -328,7 +331,7 @@ module core
 		.instr_mask_o	(instr_mask_ctrl_o),
 		.hold_code_o	(hold_code_ctrl_o)
 	);
-
+/*
 	clint_top core_clint
 	(
 		.clk			(clk),
@@ -351,7 +354,7 @@ module core
 		.o_mtip			(),			//输出定时器中断请??
 		.o_msip			()			//输出软件中断请求
 );
-
+*/
 
 
 endmodule

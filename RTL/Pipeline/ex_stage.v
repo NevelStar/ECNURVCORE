@@ -89,7 +89,7 @@ module ex_stage(
 		.data_reg_wr_o 	(data_reg_wr_o),
 		.reg_wr_en_o	(reg_wr_en_o)	
 	);
-
+/*
 	ex_csr U_ex_csr
 	(
 		.clk			(clk),
@@ -125,5 +125,5 @@ module ex_stage(
 		.glb_irq_o		()
 	);
 
-
+*/
 endmodule
