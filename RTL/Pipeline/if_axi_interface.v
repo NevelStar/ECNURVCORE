@@ -144,7 +144,7 @@ module if_axi_interface(
 	assign wdata_if = `ZERO_DOUBLE;
 	assign wstrb_if = `WR_STR_NONE;
 
-	assign axi_idle_if = 1'b0;
+	assign axi_idle_if = 1'b1;
 
 
 	
