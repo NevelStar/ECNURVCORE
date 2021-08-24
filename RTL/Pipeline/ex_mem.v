@@ -20,6 +20,7 @@ module ex_mem(
 
 	output	[`BUS_ADDR_REG]		addr_reg_wr_o	,
 	output	[`BUS_DATA_REG]		data_reg_wr_o 	,
+	output	[`BUS_DATA_REG]		alu_reg_wr_o	,
 	output						reg_wr_en_o		
 	
 
@@ -28,6 +29,7 @@ module ex_mem(
 	reg [`BUS_DATA_REG] data_reg_wr; 
 
 
+	assign alu_reg_wr_o = data_reg_wr;
 
 	always@(*) begin
 		case(load_code_i)

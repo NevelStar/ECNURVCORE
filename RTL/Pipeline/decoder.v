@@ -69,8 +69,8 @@ module decoder
 	assign bypass_en2 = (reg_rs2_addr == reg_rd_addr_t) ? `BYPASS_EN : `BYPASS_DIS;
 	assign bypass_act = bypass_en1 | bypass_en2;
 
-	assign data_rs1 = (bypass_en1 == `BYPASS_EN) ? data_bypass : data_rs1_reg;
-	assign data_rs2 = (bypass_en2 == `BYPASS_EN) ? data_bypass : data_rs2_reg;
+	assign data_rs1 = ((bypass_en1 == `BYPASS_EN)) ? data_bypass : data_rs1_reg;
+	assign data_rs2 = ((bypass_en2 == `BYPASS_EN)) ? data_bypass : data_rs2_reg;
 
 	assign load_bypass = bypass_act & (load_code_t != `LOAD_NOPE);
 

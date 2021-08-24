@@ -50,7 +50,6 @@ module ex_stage(
 	wire hold_n;
 
 	assign hold_n = (hold_code >= `HOLD_CODE_EX) ? `HOLD_EN : `HOLD_DIS;
-	assign alu_result_o = alu_result;
 
 	ex ex_alu(
 		.data_rs1		(data_rs1_i),
@@ -84,7 +83,7 @@ module ex_stage(
 		.reg_wr_en_i	(reg_wr_en_i),
 		.load_code_i	(load_code_i),
 
-
+		.alu_reg_wr_o	(alu_result_o),
 		.addr_reg_wr_o	(addr_reg_wr_o),
 		.data_reg_wr_o 	(data_reg_wr_o),
 		.reg_wr_en_o	(reg_wr_en_o)	

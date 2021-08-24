@@ -189,7 +189,7 @@ module core
 		.clk		(clk),
 		.rst_n		(rst_n),
 		.hold_code 	(hold_code),
-		.axi_idle_if(axi_idle_if_i),
+		.axi_idle_if(!mem_rd_en_o),
 	
 		.jmp_en		(jmp_en_pc_i),
 		.jmp_to		(jmp_to_pc_i),
