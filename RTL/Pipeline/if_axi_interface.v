@@ -1,7 +1,7 @@
 //ECNURVCORE
 //AXI Bus master-interconnect
 //Created by Chesed
-//2021.08.20
+//2021.08.25
 
 `include "define.v"
 
@@ -117,7 +117,8 @@ module if_axi_interface(
 	wire [`BUS_DATA_MEM] rdata_act;
 	reg [`BUS_ADDR_MEM] pc_t;
 	reg [`BUS_DATA_MEM] rdata_act_t;
-
+	reg if_wait;
+	reg idle_t;
 
     //id set
     assign awid_if = `AXI_ID_IF;
@@ -144,7 +145,7 @@ module if_axi_interface(
 	assign wdata_if = `ZERO_DOUBLE;
 	assign wstrb_if = `WR_STR_NONE;
 
-	assign axi_idle_if = 1'b1;
+	assign axi_idle_if = idle_t;
 
 
 	
@@ -193,9 +194,35 @@ module if_axi_interface(
 	always@(posedge clk or negedge rst_n) begin
 		if(!rst_n) begin
 			instr_t <= `ZERO_WORD;
+			idle_t <= 1'b0;
 		end
 		else begin
 			instr_t <= instr;
+			idle_t <= if_wait | arready_if;
+		end
+	end		
+
+	always@(posedge clk or negedge rst_n) begin
+		if(!rst_n) begin
+			if_wait <= 1'b0;
+		end
+		else begin
+			if(if_wait == 1'b0) begin
+				if(arready_if&arvalid_if) begin
+					if_wait <= 1'b1;
+				end
+				else begin
+					if_wait <= if_wait;
+				end
+			end
+			else begin
+				if(rlast_if) begin
+					if_wait <= 1'b0;
+				end
+				else begin
+					if_wait <= if_wait;
+				end
+			end
 		end
 	end	
 

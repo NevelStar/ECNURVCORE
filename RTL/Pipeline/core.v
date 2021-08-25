@@ -2,7 +2,7 @@
 //Pipeline CPU
 //Created by Chesed
 //2021.07.23
-//Edited in 2021.08.16
+//Edited in 2021.08.25
 
 `include "define.v"
 
@@ -162,8 +162,8 @@ module core
 	assign addr_wr_ex_i = addr_wr_id_o;
 	assign reg_wr_en_ex_i = reg_wr_en_id_o;
 
-	//assign wr_en_reg_i = wr_en_ex_o & (hold_code_ctrl_o < `HOLD_CODE_EX);
-	assign wr_en_reg_i = wr_en_ex_o;
+	assign wr_en_reg_i = wr_en_ex_o & (hold_code_ctrl_o < `HOLD_CODE_EX);
+	//assign wr_en_reg_i = wr_en_ex_o;
 	assign addr_wr_reg_i = addr_wr_ex_o;
 	assign addr_rd1_reg_i = addr_rs1_id_o;
 	assign addr_rd2_reg_i = addr_rs2_id_o;
@@ -189,7 +189,7 @@ module core
 		.clk		(clk),
 		.rst_n		(rst_n),
 		.hold_code 	(hold_code),
-		.axi_idle_if(!mem_rd_en_o),
+		.axi_idle_if(axi_idle_if_i),
 	
 		.jmp_en		(jmp_en_pc_i),
 		.jmp_to		(jmp_to_pc_i),
@@ -202,7 +202,7 @@ module core
 	(
 		.hold_code 		(hold_code),
 		.instr_rd_i 	(instr_rd_if_i),
-		.instr_mask_i	(instr_mask_if_i),
+		.instr_mask_i	(instr_mask_if_i | (!axi_idle_if_i)),
 		.pc_i 			(pc_if_i),
 		
 		.fetch_except_o	(fetch_except),
