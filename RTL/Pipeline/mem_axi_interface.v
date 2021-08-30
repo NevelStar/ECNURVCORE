@@ -2,7 +2,7 @@
 //AXI Bus master-slave
 //Created by Chesed
 //2021.08.12
-//Edited in 2021.08.19
+//Edited in 2021.08.30
 
 `include "define.v"
 
@@ -20,7 +20,8 @@ module mem_axi_interface(
 	input	[`BUS_ADDR_MEM]		addr_mem_rd		,	
 	input	[`BUS_DATA_MEM]		data_mem_wr		,	
 	input						mem_wr_en		,	
-	input						mem_rd_en		,					
+	input						mem_rd_en		,
+	input 						strb_mem_wr		,			
 	output	[`BUS_DATA_MEM]		data_mem_rd		,
 
 
@@ -106,7 +107,6 @@ module mem_axi_interface(
 	//handshake
 	input						rvalid_mem 		,
 	output						rready_mem
-
 );
 
 
@@ -148,7 +148,7 @@ module mem_axi_interface(
 
 	assign awaddr_mem = addr_mem_wr + `BASE_MEM;
 	assign wdata_mem = (mem_wr_en == `MEM_WR_EN) ? data_mem_wr : data_wr ;
-	assign wstrb_mem = `WR_STR_ALL;
+	assign wstrb_mem = strb_mem_wr;
 
 
 	

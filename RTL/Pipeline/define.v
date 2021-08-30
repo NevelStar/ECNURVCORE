@@ -32,6 +32,9 @@
 `define DATA_WIDTH			64
 
 `define WR_STR_ALL			8'hff
+`define WR_STR_WORD			8'h0f
+`define WR_STR_HALF			8'h03
+`define WR_STR_BYTE			8'h01
 `define WR_STR_NONE			8'h00
 `define PC_STEP				64'd4
 `define ADDR_MAX_RAM		64'h0000_0001_0000_0000

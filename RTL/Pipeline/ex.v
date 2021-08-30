@@ -2,7 +2,7 @@
 //Pipeline CPU
 //Created by Chesed
 //2021.07.21
-//Edited in 2021.08.07
+//Edited in 2021.08.30
 
 `include "define.v"
 
@@ -25,6 +25,7 @@ module ex(
 
 	output reg 	[`BUS_DATA_REG]	alu_result		,
 	output reg 	[`BUS_DATA_MEM]	data_mem_wr		,
+	output reg 	[`BUS_AXI_STRB]	strb_mem_wr		,
 	output reg 	[`BUS_ADDR_MEM]	addr_mem_wr		,
 	output reg 	[`BUS_ADDR_MEM]	addr_mem_rd		,
 	output reg 					mem_wr_en		,
@@ -128,21 +129,25 @@ module ex(
 		case(store_code)
 			`INSTR_SB: begin
 				data_mem_wr <= {56'd0,data_rs2[7:0]};
+				strb_mem_wr <= `WR_STR_BYTE;
 				addr_mem_wr <= alu_result;
 				mem_wr_en <= `MEM_WR_EN;
 			end
 			`INSTR_SH: begin
 				data_mem_wr <= {48'd0,data_rs2[15:0]};
+				strb_mem_wr <= `WR_STR_HALF;
 				addr_mem_wr <= alu_result;
 				mem_wr_en <= `MEM_WR_EN;
 			end
 			`INSTR_SW: begin
 				data_mem_wr <= {32'd0,data_rs2[31:0]};
+				strb_mem_wr <= `WR_STR_WORD;
 				addr_mem_wr <= alu_result;
 				mem_wr_en <= `MEM_WR_EN;
 			end
 			`INSTR_SD: begin
 				data_mem_wr <= data_rs2;
+				strb_mem_wr <= `WR_STR_ALL;
 				addr_mem_wr <= alu_result;
 				mem_wr_en <= `MEM_WR_EN;
 			end

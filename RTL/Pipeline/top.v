@@ -128,6 +128,7 @@ module top(
 	wire	      				rlast_if;
 	wire						rvalid_if;
 	wire						rready_if;
+	wire 	[`BUS_AXI_STRB]		strb_mem_wr;
 
 
 	wire	[`BUS_ADDR_MEM]		pc;
@@ -207,6 +208,7 @@ module top(
 		.mem_rd_en_o	(mem_rd_en),
 		.instr_rd_en_o	(instr_rd_en),
 		.data_mem_wr_o	(data_mem_wr),	
+		.strb_mem_wr_o	(strb_mem_wr),
 		.addr_mem_wr_o	(addr_mem_wr),	
 		.addr_mem_rd_o	(addr_mem_rd),	
 		.pc_o			(pc)
@@ -279,6 +281,7 @@ module top(
 		.addr_mem_wr	(addr_mem_wr),	
 		.addr_mem_rd	(addr_mem_rd),	
 		.data_mem_wr	(data_mem_wr),	
+		.strb_mem_wr	(strb_mem_wr),
 		.mem_wr_en		(mem_wr_en),
 		.mem_rd_en		(mem_rd_en),				
 		.data_mem_rd	(data_mem_rd),

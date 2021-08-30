@@ -41,6 +41,7 @@ module ex_stage(
 	output						mem_wr_en_o		,
 	output						mem_rd_en_o		,
 	output 	[`BUS_DATA_MEM] 	data_mem_wr_o	,	
+	output 	[`BUS_AXI_STRB]		strb_mem_wr		,
 	output 	[`BUS_ADDR_MEM] 	addr_mem_wr_o	,	
 	output 	[`BUS_ADDR_MEM] 	addr_mem_rd_o	
 
@@ -66,6 +67,7 @@ module ex_stage(
 
 		.alu_result		(alu_result),
 		.data_mem_wr	(data_mem_wr_o),
+		.strb_mem_wr	(strb_mem_wr_o),
 		.addr_mem_wr	(addr_mem_wr_o),
 		.addr_mem_rd	(addr_mem_rd_o),
 		.mem_wr_en		(mem_wr_en_o),

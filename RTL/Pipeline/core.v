@@ -2,7 +2,7 @@
 //Pipeline CPU
 //Created by Chesed
 //2021.07.23
-//Edited in 2021.08.25
+//Edited in 2021.08.30
 
 `include "define.v"
 
@@ -25,6 +25,7 @@ module core
 	output						mem_rd_en_o		,
 	output						instr_rd_en_o	,
 	output	[`BUS_DATA_MEM]		data_mem_wr_o	,	
+	output 	[`BUS_AXI_STRB]		strb_mem_wr_o	,
 	output	[`BUS_ADDR_MEM]		addr_mem_wr_o	,	
 	output	[`BUS_ADDR_MEM]		addr_mem_rd_o	,	
 	output 	[`BUS_ADDR_MEM]		pc_o			
@@ -92,6 +93,7 @@ module core
 	wire reg_wr_en_ex_i;
 	wire [`BUS_DATA_REG] alu_result_ex_o;
 	wire [`BUS_DATA_MEM] data_mem_wr_ex_o;	
+	wire [`BUS_AXI_STRB] strb_mem_wr_ex_o;
 	wire [`BUS_ADDR_MEM] addr_mem_wr_ex_o;	
 	wire [`BUS_ADDR_MEM] addr_mem_rd_ex_o;	
 	wire mem_wr_en_ex_o;
@@ -153,6 +155,7 @@ module core
 	assign alu_op_num1_ex_i = alu_op_num1_id_o;
 	assign alu_op_num2_ex_i = alu_op_num2_id_o;
 	assign data_mem_wr_o = data_mem_wr_ex_o;
+	assign strb_mem_wr_o = strb_mem_wr_ex_o;
 	assign mem_wr_en_o = mem_wr_en_ex_o;
 	assign mem_rd_en_o = mem_rd_en_ex_o;
 	assign addr_mem_wr_o = addr_mem_wr_ex_o;
@@ -282,6 +285,7 @@ module core
 
 		.alu_result_o	(alu_result_ex_o),
 		.data_mem_wr_o	(data_mem_wr_ex_o),
+		.strb_mem_wr_o	(strb_mem_wr_ex_o),
 		.addr_mem_wr_o	(addr_mem_wr_ex_o),
 		.addr_mem_rd_o	(addr_mem_rd_ex_o),
 		.mem_wr_en_o	(mem_wr_en_ex_o),
