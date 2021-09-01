@@ -2,7 +2,7 @@
 //Pipeline CPU
 //Created by Chesed
 //2021.07.23
-//Edited in 2021.08.30
+//Edited in 2021.08.31
 
 `include "define.v"
 
@@ -205,7 +205,7 @@ module core
 	(
 		.hold_code 		(hold_code),
 		.instr_rd_i 	(instr_rd_if_i),
-		.instr_mask_i	(instr_mask_if_i | (!axi_idle_if_i)),
+		.instr_mask_i	(instr_mask_if_i),
 		.pc_i 			(pc_if_i),
 		
 		.fetch_except_o	(fetch_except),

@@ -1,7 +1,7 @@
 //ECNURVCORE
 //AXI Bus master-interconnect
 //Created by Chesed
-//2021.08.25
+//2021.09.01
 
 `include "define.v"
 
@@ -128,11 +128,11 @@ module if_axi_interface(
 	//burst set
 	assign awlen_if = `AXI_LEN_ZERO;
 	assign awsize_if = `AXI_SIZE_DOUBLE;
-	assign awburst_if = `AXI_BURST_FIX;
+	assign awburst_if = `AXI_BURST_INCR;
 
 	assign arlen_if = `AXI_LEN_ZERO;
 	assign arsize_if = `AXI_SIZE_DOUBLE;
-	assign arburst_if = `AXI_BURST_FIX;
+	assign arburst_if = `AXI_BURST_INCR;
 
 
 	//read-only

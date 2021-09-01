@@ -79,3 +79,7 @@ ver 1.4.0:
 	The bypass result will come from the input of write-back pipeline registers
 	The mem stage will be syncronized with ex stage by the mux
 	If pipeline hold, new data are not allowed to be written in general registers
+
+verr 1.4.1:
+·AXI improve:
+	Unaligned memory access supported

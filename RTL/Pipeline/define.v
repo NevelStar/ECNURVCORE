@@ -2,7 +2,7 @@
 //Pipline CPU
 //Created by Chesed
 //2021.07.19
-//Edited in 2021.08.20
+//Edited in 2021.08.31
 
 
 //the initial data
@@ -38,6 +38,7 @@
 `define WR_STR_NONE			8'h00
 `define PC_STEP				64'd4
 `define ADDR_MAX_RAM		64'h0000_0001_0000_0000
+`define AXI_OVER_PAGE		8'h01
 
 
 //AXI size code
@@ -269,6 +270,8 @@
 `define AXI_VALID_DIS		1'b0
 `define AXI_BUSY			1'b1
 `define AXI_IDLE			1'b0
+`define AXI_ADDR_ALIGN		1'b1
+`define AXI_ADDR_UNALIGN	1'b0
 
 
 
@@ -309,3 +312,9 @@
 `define CSR_CODE_CSRRWI		3'b101
 `define CSR_CODE_CSRRSI		3'b110
 `define CSR_CODE_CSRRCI		3'b111
+
+
+`define UART_BASE               64'h10000000
+`define CLINT                   64'h20000000
+`define CLINT_MTIMECMP(hartid)  `CLINT + 0x4000 + 4*(hartid)
+`define CLINT_MTIME             `CLINT + 0xBFF8            // cycles since boot.

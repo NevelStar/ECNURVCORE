@@ -2,7 +2,7 @@
 //Pipeline CPU
 //Created by Chesed
 //2021.07.21
-//Edited in 2021.08.30
+//Edited in 2021.09.01
 
 `include "define.v"
 
@@ -153,6 +153,7 @@ module ex(
 			end
 			default: begin
 				data_mem_wr <= `ZERO_WORD;
+				strb_mem_wr <= `WR_STR_NONE;
 				addr_mem_wr <= `MEM_ADDR_ZERO;
 				mem_wr_en <= `MEM_WR_DIS;
 			end

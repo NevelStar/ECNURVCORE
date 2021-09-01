@@ -2,7 +2,7 @@
 //Pipeline CPU
 //Created by Chesed
 //2021.07.26
-//Edited in 2021.08.07
+//Edited in 2021.08.31
 
 `include "define.v"
 
@@ -41,7 +41,7 @@ module ex_stage(
 	output						mem_wr_en_o		,
 	output						mem_rd_en_o		,
 	output 	[`BUS_DATA_MEM] 	data_mem_wr_o	,	
-	output 	[`BUS_AXI_STRB]		strb_mem_wr		,
+	output 	[`BUS_AXI_STRB]		strb_mem_wr_o		,
 	output 	[`BUS_ADDR_MEM] 	addr_mem_wr_o	,	
 	output 	[`BUS_ADDR_MEM] 	addr_mem_rd_o	
 
