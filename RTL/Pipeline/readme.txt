@@ -82,4 +82,4 @@ ver 1.4.0:
 
 verr 1.4.1:
 ·AXI improve:
-	Unaligned memory access supported
+	Unaligned memory access(store/load) supported

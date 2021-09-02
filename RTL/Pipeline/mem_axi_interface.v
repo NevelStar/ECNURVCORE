@@ -110,12 +110,22 @@ module mem_axi_interface(
 );
 
 
-	reg mem_awhandshake_t;
 	reg bvalid_t;
 	reg rlast_t;
 	reg mem_rd_wait;
 	reg mem_rd_aligned;
-	reg [2:0] mem_addr_bias;
+	reg [2:0] mem_rd_addr_bias;
+	reg mem_wr_wait;
+	reg mem_wr_aligned;
+	reg [2:0] mem_wr_addr_bias;
+
+	reg data_wr_valid;
+	reg data_act_page;//0~first 1~second
+
+	reg [`BUS_DATA_MEM] data_wr_act_first;
+	reg [`BUS_DATA_MEM] data_wr_act_second;
+	reg [`BUS_AXI_STRB] strb_wr_act_first;
+	reg [`BUS_AXI_STRB] strb_wr_act_second;
 
 
 	reg [`BUS_DATA_MEM] data_rd_t;
@@ -135,13 +145,13 @@ module mem_axi_interface(
 
 
     //id set
-    assign awid_mem = `AXI_ID_MEM;
-    assign arid_mem = `AXI_ID_MEM;
-    
+	assign awid_mem = `AXI_ID_MEM;
+	assign arid_mem = `AXI_ID_MEM;
+		
     
 	//burst set
-	//assign awlen_mem = (mem_aligned_aw == `AXI_ADDR_ALIGN) ? `AXI_LEN_ZERO : `AXI_OVER_PAGE;
-	assign awlen_mem = `AXI_LEN_ZERO;
+	assign awlen_mem = (mem_aligned_aw == `AXI_ADDR_ALIGN) ? `AXI_LEN_ZERO : `AXI_OVER_PAGE;
+	//assign awlen_mem = `AXI_LEN_ZERO;
 	assign awsize_mem = `AXI_SIZE_DOUBLE;
 	assign awburst_mem = `AXI_BURST_INCR;
 
@@ -155,17 +165,16 @@ module mem_axi_interface(
 	assign awvalid_mem = mem_wr_en & (!bvalid_t);
 	assign mem_awhandshake = awvalid_mem & awready_mem;
 
-	assign wvalid_mem = mem_awhandshake_t;
-    assign wlast_mem = wvalid_mem;
+    assign wlast_mem = wvalid_mem & data_act_page;
     assign bready_mem = `AXI_READY_EN;
-	assign stall_mem = (awvalid_mem & (~awready_mem)) | (arvalid_mem & (~arready_mem));
+	assign stall_mem = mem_wr_wait | mem_rd_wait;
 
 
 	assign awaddr_mem = {addr_mem_wr[63:3],3'b000} + `BASE_MEM;
-	assign wdata_mem = (mem_wr_en == `MEM_WR_EN) ? data_mem_wr : data_wr ;
-	assign wstrb_mem = strb_mem_wr;
 
-
+	assign wvalid_mem = data_wr_valid;
+	assign wdata_mem = data_act_page ? data_wr_act_second : data_wr_act_first ;
+	assign wstrb_mem = data_act_page ? strb_wr_act_second : strb_wr_act_first ;
 	
 	//type-l
 
@@ -177,17 +186,75 @@ module mem_axi_interface(
 	assign data_mem_rd = mem_rd_wait ? data_mem_rd_act : data_mem_rd_t;
 
 	always@(*) begin
-		case(mem_addr_bias)
-			3'b000:	data_mem_rd_act = rdata_act;
-			3'b001:	data_mem_rd_act = {rdata_act[7:0],data_rd_t[63:8]};
-			3'b010:	data_mem_rd_act = {rdata_act[15:0],data_rd_t[63:16]};
-			3'b011:	data_mem_rd_act = {rdata_act[23:0],data_rd_t[63:24]};
-			3'b100:	data_mem_rd_act = {rdata_act[31:0],data_rd_t[63:32]};
-			3'b101:	data_mem_rd_act = {rdata_act[39:0],data_rd_t[63:40]};
-			3'b110:	data_mem_rd_act = {rdata_act[47:0],data_rd_t[63:48]};
-			3'b111:	data_mem_rd_act = {rdata_act[55:0],data_rd_t[63:56]};
+		case(mem_rd_addr_bias)
+			3'b000:		data_mem_rd_act = rdata_act;
+			3'b001:		data_mem_rd_act = {rdata_act[7:0],data_rd_t[63:8]};
+			3'b010:		data_mem_rd_act = {rdata_act[15:0],data_rd_t[63:16]};
+			3'b011:		data_mem_rd_act = {rdata_act[23:0],data_rd_t[63:24]};
+			3'b100:		data_mem_rd_act = {rdata_act[31:0],data_rd_t[63:32]};
+			3'b101:		data_mem_rd_act = {rdata_act[39:0],data_rd_t[63:40]};
+			3'b110:		data_mem_rd_act = {rdata_act[47:0],data_rd_t[63:48]};
+			3'b111:		data_mem_rd_act = {rdata_act[55:0],data_rd_t[63:56]};
 			default:	data_mem_rd_act = rdata_act;
-		endcase
+		endcase	
+	end
+	always@(*) begin
+		case(mem_wr_addr_bias)
+			3'b000: begin	
+				data_wr_act_first = data_wr;
+				data_wr_act_second = `ZERO_DOUBLE;
+				strb_wr_act_first = strb_mem_wr;
+				strb_wr_act_second = `WR_STR_NONE;
+			end
+			3'b001: begin
+				data_wr_act_first = {data_wr[55:0],8'h0};
+				data_wr_act_second = {56'h0,data_wr[63:56]};
+				strb_wr_act_first = strb_mem_wr << 1;
+				strb_wr_act_second = {7'b0,strb_mem_wr[7]};
+			end
+			3'b010: begin
+				data_wr_act_first = {data_wr[47:0],16'h0};
+				data_wr_act_second = {48'h0,data_wr[63:48]};
+				strb_wr_act_first = strb_mem_wr << 2;
+				strb_wr_act_second = {6'b0,strb_mem_wr[7:6]};
+			end
+			3'b011: begin
+				data_wr_act_first = {data_wr[39:0],24'h0};
+				data_wr_act_second = {40'h0,data_wr[63:40]};
+				strb_wr_act_first = strb_mem_wr << 3;
+				strb_wr_act_second = {5'b0,strb_mem_wr[7:5]};
+			end
+			3'b100: begin
+				data_wr_act_first = {data_wr[31:0],32'h0};
+				data_wr_act_second = {32'h0,data_wr[63:32]};
+				strb_wr_act_first = strb_mem_wr << 4;
+				strb_wr_act_second = {4'b0,strb_mem_wr[7:4]};
+			end
+			3'b101: begin
+				data_wr_act_first = {data_wr[23:0],40'h0};
+				data_wr_act_second = {24'h0,data_wr[63:24]};
+				strb_wr_act_first = strb_mem_wr << 5;
+				strb_wr_act_second = {3'b0,strb_mem_wr[7:3]};
+			end
+			3'b110: begin
+				data_wr_act_first = {data_wr[15:0],48'h0};
+				data_wr_act_second = {16'h0,data_wr[63:16]};
+				strb_wr_act_first = strb_mem_wr << 6;
+				strb_wr_act_second = {2'b0,strb_mem_wr[7:2]};
+			end
+			3'b111: begin
+				data_wr_act_first = {data_wr[7:0],56'h0};
+				data_wr_act_second = {8'h0,data_wr[63:8]};
+				strb_wr_act_first = strb_mem_wr << 7;
+				strb_wr_act_second = {1'b0,strb_mem_wr[7:1]};
+			end
+			default: begin
+				data_wr_act_first = data_wr;
+				data_wr_act_second = `ZERO_DOUBLE;
+				strb_wr_act_first = strb_mem_wr;
+				strb_wr_act_second = `WR_STR_NONE;
+			end
+		endcase	
 	end
 
 
@@ -195,13 +262,11 @@ module mem_axi_interface(
 
 	always@(posedge clk or negedge rst_n) begin
 		if(!rst_n) begin
-			mem_awhandshake_t <= `HANDSHAKE_DIS;
 			bvalid_t <= `AXI_VALID_DIS;
 			rlast_t <= `AXI_VALID_DIS;
 			data_mem_rd_t <= `ZERO_DOUBLE;
 		end
 		else begin
-			mem_awhandshake_t <= mem_awhandshake;	
 			bvalid_t <= bvalid_mem;
 			rlast_t <= rlast_mem;
 			data_mem_rd_t <= data_mem_rd;
@@ -211,63 +276,123 @@ module mem_axi_interface(
 		if(!rst_n) begin
 			mem_rd_wait <= 1'b0;
 			mem_rd_aligned <= `AXI_ADDR_ALIGN;
-			mem_addr_bias <= 3'b000;
+			mem_rd_addr_bias <= 3'b000;
 		end
 		else begin
 			if(mem_rd_wait == 1'b0) begin
 				if(arready_mem&arvalid_mem) begin
 				  	mem_rd_wait <= 1'b1;
 					mem_rd_aligned <= mem_aligned_ar;
-					mem_addr_bias <= addr_mem_rd[2:0];
+					mem_rd_addr_bias <= addr_mem_rd[2:0];
 				end
 				else begin
 					mem_rd_wait <= mem_rd_wait;
 					mem_rd_aligned <= mem_rd_aligned;
-					mem_addr_bias <= mem_addr_bias;
+					mem_rd_addr_bias <= mem_rd_addr_bias;
 				end
 			end	
 			else begin
 				if(rlast_mem) begin
 					mem_rd_wait <= 1'b0;
 					mem_rd_aligned <= `AXI_ADDR_ALIGN;
-					mem_addr_bias <= 3'b000;
+					mem_rd_addr_bias <= 3'b000;
 				end
 				else begin
 					mem_rd_wait <= mem_rd_wait;
 					mem_rd_aligned <= mem_rd_aligned;
-					mem_addr_bias <= mem_addr_bias;
+					mem_rd_addr_bias <= mem_rd_addr_bias;
+				end
+			end
+		end
+	end
+	always@(posedge clk or negedge rst_n) begin
+		if(!rst_n) begin
+			mem_wr_wait <= 1'b0;
+			mem_wr_aligned <= `AXI_ADDR_ALIGN;
+			mem_wr_addr_bias <= 3'b000;
+		end
+		else begin
+			if(mem_wr_wait == 1'b0) begin
+				if(mem_awhandshake) begin
+				  	mem_wr_wait <= 1'b1;
+					mem_wr_aligned <= mem_aligned_aw;
+					mem_wr_addr_bias <= addr_mem_wr[2:0];
+				end
+				else begin
+					mem_wr_wait <= mem_wr_wait;
+					mem_wr_aligned <= mem_wr_aligned;
+					mem_wr_addr_bias <= mem_wr_addr_bias;
+				end
+			end	
+			else begin
+				if(bvalid_mem) begin
+					mem_wr_wait <= 1'b0;
+					mem_wr_aligned <= `AXI_ADDR_ALIGN;
+					mem_wr_addr_bias <= 3'b000;
+				end
+				else begin
+					mem_wr_wait <= mem_wr_wait;
+					mem_wr_aligned <= mem_wr_aligned;
+					mem_wr_addr_bias <= mem_wr_addr_bias;
 				end
 			end
 		end
 	end
 
 
-
 	always@(posedge clk or negedge rst_n) begin
 		if(!rst_n) begin
-		  	data_wr <= `ZERO_DOUBLE;
+			data_wr <= `ZERO_DOUBLE;
 		end
 		else begin
-		  if(mem_wr_en == `MEM_WR_EN) begin
-		      data_wr <= data_mem_wr;
-		  end
-		  else begin
-		      data_wr <= data_wr;
-		  end
+			if(mem_wr_en == `MEM_WR_EN) begin
+				data_wr <= data_mem_wr;
+			end
+			else begin
+				data_wr <= data_wr;
+			end
 		end
     end
 	always@(posedge clk or negedge rst_n) begin
 		if(!rst_n) begin
-		  	data_rd_t <= `ZERO_DOUBLE;
+			data_rd_t <= `ZERO_DOUBLE;
 		end
 		else begin
-		  if(mem_rd_wait & rvalid_mem) begin
-		      data_rd_t <= rdata_act;
-		  end
-		  else begin
-		      data_rd_t <= data_rd_t;
-		  end
+			if(mem_rd_wait & rvalid_mem) begin
+				data_rd_t <= rdata_act;
+			end
+			else begin
+				data_rd_t <= data_rd_t;
+			end
 		end
     end
-
+	always@(posedge clk or negedge rst_n) begin
+		if(!rst_n) begin
+			data_wr_valid <= `AXI_VALID_DIS;
+			data_act_page <= 1'b0;
+		end
+		else begin
+			if(mem_wr_wait == 1'b0) begin
+				data_wr_valid <= `AXI_VALID_DIS;
+				data_act_page <= 1'b0;
+			end
+			else begin
+				if(data_wr_valid == `AXI_VALID_EN) begin
+					if(data_act_page==1'b0) begin
+						data_act_page <= 1'b1;
+						data_wr_valid <= `AXI_VALID_DIS;
+					end
+					else begin
+						data_act_page <= data_act_page;
+						data_wr_valid <= `AXI_VALID_DIS;
+					end
+				end
+				else begin
+					data_act_page <= data_act_page;
+					data_wr_valid <= wready_mem ? `AXI_VALID_EN : `AXI_VALID_DIS;
+				end
+			end
+		end
+	end
+	
 endmodule

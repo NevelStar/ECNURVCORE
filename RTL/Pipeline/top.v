@@ -1,7 +1,7 @@
 //ECNURVCORE
 //Pipeline CPU
 //Created by Chesed
-//2021.09.01
+//2021.09.02
 
 `include "define.v"
 
@@ -278,8 +278,8 @@ module top(
 
 		//with core
 		//store/load
-		.addr_mem_wr	(addr_mem_wr),	
-		.addr_mem_rd	(addr_mem_rd+64'd1),//to test the unaligned	
+		.addr_mem_wr	(addr_mem_wr+64'd1),	
+		.addr_mem_rd	(addr_mem_rd),//to test the unaligned	
 		.data_mem_wr	(data_mem_wr),	
 		.strb_mem_wr	(strb_mem_wr),
 		.mem_wr_en		(mem_wr_en),
