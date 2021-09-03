@@ -2,7 +2,7 @@
 //Pipeline CPU
 //Created by Chesed
 //2021.07.20
-//Edited in 2021.08.16
+//Edited in 2021.09.02
 
 `include "define.v"
 
