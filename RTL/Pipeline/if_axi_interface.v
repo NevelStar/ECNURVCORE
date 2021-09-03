@@ -21,7 +21,6 @@ module if_axi_interface(
 	input						instr_rd_en		,
 	output	[`BUS_DATA_INSTR]	instr 			,
 	output	reg [`BUS_ADDR_MEM]	addr_instr		,
-	output						axi_idle_if		,
 
 
 
@@ -118,7 +117,6 @@ module if_axi_interface(
 	reg [`BUS_ADDR_MEM] pc_t;
 	reg [`BUS_DATA_MEM] rdata_act_t;
 	reg if_wait;
-	reg idle_t;
 
     //id set
     assign awid_if = `AXI_ID_IF;
@@ -145,7 +143,6 @@ module if_axi_interface(
 	assign wdata_if = `ZERO_DOUBLE;
 	assign wstrb_if = `WR_STR_NONE;
 
-	assign axi_idle_if = idle_t;
 
 
 	
@@ -194,11 +191,9 @@ module if_axi_interface(
 	always@(posedge clk or negedge rst_n) begin
 		if(!rst_n) begin
 			instr_t <= `ZERO_WORD;
-			idle_t <= 1'b0;
 		end
 		else begin
 			instr_t <= instr;
-			idle_t <= if_wait | arready_if;
 		end
 	end		
 

@@ -965,7 +965,7 @@ module decoder
 						word_intercept <= `INTERCEPT_DIS;
 						alu_op_num1 <= addr_instr;
 						alu_op_num2 <= `PC_STEP;
-						jmp_op_num1	<= addr_rs1;
+						jmp_op_num1	<= data_rs1;
 						jmp_op_num2	<= {{52{instr[31]}},instr[31:20]};
 
 						jmp_flag <= `JMP_J;

@@ -185,7 +185,6 @@ module top(
 
 	wire 						stall_if;
 	wire 						stall_mem;
-	wire 						axi_idle_if;
 
 
 
@@ -200,7 +199,6 @@ module top(
 		.instr_i 		(instr),
 		.addr_instr_i 	(addr_instr),
 		.data_mem_i		(data_mem_rd),
-		.axi_idle_if_i	(axi_idle_if),
 
 
 
@@ -227,7 +225,6 @@ module top(
 		.instr_rd_en	(instr_rd_en),
 		.instr 			(instr),
 		.addr_instr		(addr_instr),
-		.axi_idle_if	(axi_idle_if),
 
 		.awready_if		(awready_if),
 		.awvalid_if		(awvalid_if),
@@ -278,7 +275,7 @@ module top(
 
 		//with core
 		//store/load
-		.addr_mem_wr	(addr_mem_wr+64'd1),	
+		.addr_mem_wr	(addr_mem_wr),	
 		.addr_mem_rd	(addr_mem_rd),//to test the unaligned	
 		.data_mem_wr	(data_mem_wr),	
 		.strb_mem_wr	(strb_mem_wr),

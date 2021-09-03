@@ -17,7 +17,6 @@ module core
 	input	[`BUS_DATA_INSTR] 	instr_i 		,
 	input	[`BUS_ADDR_MEM] 	addr_instr_i 	,
 	input	[`BUS_DATA_MEM]		data_mem_i		,
-	input						axi_idle_if_i		,
 
 
 
@@ -192,7 +191,6 @@ module core
 		.clk		(clk),
 		.rst_n		(rst_n),
 		.hold_code 	(hold_code),
-		.axi_idle_if(axi_idle_if_i),
 	
 		.jmp_en		(jmp_en_pc_i),
 		.jmp_to		(jmp_to_pc_i),
