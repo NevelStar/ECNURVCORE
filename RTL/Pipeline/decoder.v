@@ -15,6 +15,7 @@ module decoder
 	input	[`BUS_DATA_INSTR]		instr			,
 	input	[`BUS_ADDR_MEM]			addr_instr		,
 	input 	[`BUS_L_CODE]			load_code_t		,
+	input		 					reg_wr_en_t		,
 
 	output	[`BUS_DATA_REG]			data_rs1		,
 	output	[`BUS_DATA_REG]			data_rs2		,
@@ -65,8 +66,8 @@ module decoder
 	assign funct7 = instr[`FUNCT7];
 	assign funct7_w = instr[`FUNCT7_W];
 
-	assign bypass_en1 = (reg_rs1_addr == reg_rd_addr_t) ? `BYPASS_EN : `BYPASS_DIS;
-	assign bypass_en2 = (reg_rs2_addr == reg_rd_addr_t) ? `BYPASS_EN : `BYPASS_DIS;
+	assign bypass_en1 = ((reg_rs1_addr == reg_rd_addr_t) & (reg_wr_en_t == `REG_WR_EN)) ? `BYPASS_EN : `BYPASS_DIS;
+	assign bypass_en2 = ((reg_rs2_addr == reg_rd_addr_t) & (reg_wr_en_t == `REG_WR_EN)) ? `BYPASS_EN : `BYPASS_DIS;
 	assign bypass_act = bypass_en1 | bypass_en2;
 
 	assign data_rs1 = ((bypass_en1 == `BYPASS_EN)) ? data_bypass : data_rs1_reg;

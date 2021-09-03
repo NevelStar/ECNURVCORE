@@ -83,6 +83,7 @@ module id_stage(
 		.instr			(instr_i),
 		.addr_instr		(addr_instr_i),
 		.load_code_t	(load_code_o),
+		.reg_wr_en_t	(reg_wr_en_o),
 	
 		.data_rs1		(data_rs1),
 		.data_rs2		(data_rs2),
