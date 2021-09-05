@@ -319,6 +319,7 @@
 `define CLINT                   64'h20000000
 `define CLINT_MTIMECMP(hartid)  `CLINT + 0x4000 + 4*(hartid)
 `define CLINT_MTIME             `CLINT + 0xBFF8            // cycles since boot.
+`define IRQ_ENTRY_ADDR          64'h12345678
 
 // CSR reg addr
 `define CSR_MHARTID 12'hf14

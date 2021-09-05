@@ -323,28 +323,29 @@ module core
 	);
 	
 /*
-	csr_reg u_csr_reg
+	reg_csr U_reg_csr
 	(
         .clk		(clk),
         .rst_n		(rst_n),
 		
-        .we_i(ex_csr_we_o),
-        .raddr_i(id_csr_raddr_o),
-        .waddr_i(ex_csr_waddr_o),
-        .data_i(ex_csr_wdata_o),
-        .data_o(csr_data_o),
-        .global_int_en_o(csr_global_int_en_o),
-        .clint_we_i(clint_we_o),
-        .clint_raddr_i(clint_raddr_o),
-        .clint_waddr_i(clint_waddr_o),
-        .clint_data_i(clint_data_o),
-        .clint_data_o(csr_clint_data_o),
-        .clint_csr_mtvec(csr_clint_csr_mtvec),
-        .clint_csr_mepc(csr_clint_csr_mepc),
-        .clint_csr_mstatus(csr_clint_csr_mstatus)
+		.global_int_en_o	(csr_global_int_en_o),
+		
+        .ex_we_i			(ex_csr_we_o),
+        .ex_raddr_i			(id_csr_raddr_o),
+        .ex_waddr_i			(ex_csr_waddr_o),
+        .ex_data_i			(ex_csr_wdata_o),
+        .ex_data_o			(csr_data_o),
+		
+        .clt_we_i			(clint_we_o),
+        .clt_addr_i			(clint_addr_o),
+        .clt_data_i			(clint_data_o),
+        .clt_data_o			(csr_clint_data_o)
+		
+//		.clt_csr_mtvec		(csr_clint_csr_mtvec),
+//		.clt_csr_mepc		(csr_clint_csr_mepc),
+//		.clt_csr_mstatus	(csr_clint_csr_mstatus)
     );
 */
-
 
 	ctrl core_ctrl
 	(
@@ -352,8 +353,8 @@ module core
 		.rst_n			(rst_n),
 		.stall_if		(stall_if_ctrl_i),
 		.stall_mem		(stall_mem_ctrl_i),
-		.irq_jmp_i 		(1'b0),
-		.irq_jmp_to_i	(1'b0),
+		.irq_jmp_i 		(irq_jmp_ctrl_i),
+		.irq_jmp_to_i	(irq_jmp_to_ctrl_i),
 		.jmp_num1_i		(jmp_num1_ctrl_i),
 		.jmp_num2_i		(jmp_num2_ctrl_i),
 		.pc_pred_i		(pc_prediction_ctrl_i),
@@ -368,6 +369,7 @@ module core
 		.instr_mask_o	(instr_mask_ctrl_o),
 		.hold_code_o	(hold_code_ctrl_o)
 	);
+	
 /*
 	clint_top core_clint
 	(
@@ -385,10 +387,13 @@ module core
 		.except_src_ex		(mem_except),
 		.except_cus_ex		(except_cause_ex_o),
 		
-		.csr_rdata_i		(),
-		
 		.irq_assert_o		(irq_assert_clint_o),
-		.irq_addr_o			(irq_addr_clint_o)
+		.irq_addr_o			(irq_addr_clint_o),
+		
+		.csr_we_o			(),
+		.csr_addr_o			(),
+		.csr_data_i			(),
+		.csr_data_o			()
 );
 */
 

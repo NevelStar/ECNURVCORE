@@ -1078,6 +1078,7 @@ module decoder
 								csr_instr <= `CSR_CODE_NOPE;
 								csr_addr <= `CSR_ADDR_ZERO;
 							end
+
 							`INSTR_MRET: begin
 								reg_wr_en <= `REG_WR_DIS;
 								reg_rs1_addr <= `REG_ADDR_ZERO;

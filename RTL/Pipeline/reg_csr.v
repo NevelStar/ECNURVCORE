@@ -10,24 +10,23 @@ module reg_csr
 	input						clk				,
 	input						rst_n			,
 	
-	input	[`BUS_ADDR_MEM]		pc_i			,
-	input	[`BUS_DATA_INSTR]	instr_i			,
+//	input	[`BUS_ADDR_MEM]		pc_i			,
+//	input	[`BUS_DATA_INSTR]	instr_i			,
 	
-	input						ext_irq_i		,	//外部中断请求
-	input						sft_irq_i		,	//软件中断请求
-	input						tmr_irq_i		,	//计时器中断请求
-	input  						irq_src_i		,	//中断源
-	input  						exp_src_i		,	//异常源
+//	input						ext_irq_i		,
+//	input						sft_irq_i		,
+//	input						tmr_irq_i		,
+//	input  						irq_src_i		,
+//	input  						exp_src_i		,
 	
 	output	[`BUS_ADDR_MEM]		irq_pc_o		,	//中断入口地址
 	output	[`BUS_ADDR_MEM]		mepc_o			,   //中断返回后需要执行的PC
 	input  						mret_ena_i		,	//中断返回使能
 	
-	input						csr_rden_i		,
-	input	[`BUS_CSR_IMM]		csr_addr_i		,
-	input	[`BUS_DATA_REG]		csr_val_i 		,
-	input						csr_wen_i 		,
-	output	[`BUS_DATA_REG]		csr_val_o 		,
+	input						clt_we_i 		,
+	input	[`BUS_CSR_IMM]		clt_addr_i		,
+	input	[`BUS_DATA_REG]		clt_data_i 		,
+	output	[`BUS_DATA_REG]		clt_data_o 		,
 	
 	output						meie_o			,	//外部中断使能
 	output						msie_o			,	//软件中断使能
@@ -39,7 +38,7 @@ module reg_csr
 	assign o_csr_val = csr_reh_sel;  //CSR寄存器读出来的值
 	
 	always @(*) begin
-		case (csr_addr_i & {12{i_csr_rden}})
+		case (clt_addr_i & {12{i_csr_rden}})
 	
 			12'h300: csr_reh_sel = w_mstatus;
 			12'h301: csr_reh_sel = w_misa;
@@ -83,11 +82,11 @@ module reg_csr
 	wire	[31:0]	mtvec_nxt;
 	wire	[31:0]	mtvec_r;
 	
-//	wire wbck_csr_wen = csr_wen_i;
-	assign mtvec_sel = csr_addr_i == 12'h305;
-//	wire wr_mtvec = sel_mtvec & csr_wen_i;          //确认该寄存器既可写，又的确是mtvec
-	assign mtvec_ena = mtvec_sel & csr_wen_i;		//确认mtvec寄存器可写
-	assign mtvec_nxt = {csr_val_i[63:2],2'b00}; //中断入口地址都是基地址， MODE == 2'b00
+//	wire wbck_csr_wen = clt_we_i;
+	assign mtvec_sel = clt_addr_i == 12'h305;
+//	wire wr_mtvec = sel_mtvec & clt_we_i;          //确认该寄存器既可写，又的确是mtvec
+	assign mtvec_ena = mtvec_sel & clt_we_i;		//确认mtvec寄存器可写
+	assign mtvec_nxt = {clt_data_i[63:2],2'b00}; //中断入口地址都是基地址， MODE == 2'b00
 	
 	gnrl_dff # (.DW(`DATA_WIDTH)) dff_mtvec
 	(
@@ -107,8 +106,8 @@ module reg_csr
 	wire			mstatus_sel,mstatus_ena;
 	wire	[31:0]	mstatus_r;
 	
-	wire mstatus_sel = (csr_addr_i == 12'h300);
-	wire mstatus_ena = mstatus_sel & csr_wen_i;
+	wire mstatus_sel = (clt_addr_i == 12'h300);
+	wire mstatus_ena = mstatus_sel & clt_we_i;
 	
 	wire			mstatus_mpie_ena,mstatus_mpie_nxt,mstatus_mpie_r;
 	wire			mstatus_mie_ena ,mstatus_mie_nxt ,mstatus_mie_r ;
@@ -118,7 +117,7 @@ module reg_csr
 	assign mstatus_mpie_nxt = mstatus_ena_i ?						//中断来时，MPIE位更新为MIE位
 						      mstatus_mie_r : i_mret_ena ?			// 中断返回时，MPIE设置成1
 						      1'b1 : mstatus_ena ?					// CSR指令写入
-						      csr_val_i[7] : mstatus_mpie_r;		// MPIE是mstatus寄存器的bit 7
+						      clt_data_i[7] : mstatus_mpie_r;		// MPIE是mstatus寄存器的bit 7
 	
 	gnrl_dff # (.DW(1)) dff_mstatus_mpie
 	(
@@ -134,7 +133,7 @@ module reg_csr
 	assign mstatus_mie_nxt = mstatus_ena_i ?						// 中断来临时，MIE将值给MPIE，然后自己清零
 							 1'b0 : i_mret_ena ? 					// 中断返回时，MIE得到存储在MPIE中的值
 							 mstatus_mpie_r : mstatus_ena ? 		// CSR指令写入
-							 csr_val_i[3] : mstatus_mie_r;			// MIE是mstatus寄存器的bit 3
+							 clt_data_i[3] : mstatus_mie_r;			// MIE是mstatus寄存器的bit 3
 	
 	gnrl_dff # (.DW(1)) dff_mstatus_mie
 	(
@@ -169,8 +168,8 @@ module reg_csr
 	wire	[31:0]	mtval_r;
 	
 	assign mtval_sel = (i_csr_addr == 12'h343);
-	assign mtval_ena = mtval_sel & csr_wen_i;
-	assign mtval_nxt = trap_mtval_ena ? i_trap_mtval_val : csr_val_i;	//如果是中断/异常，存储相关的信息，不然由CSR指令写入
+	assign mtval_ena = mtval_sel & clt_we_i;
+	assign mtval_nxt = trap_mtval_ena ? i_trap_mtval_val : clt_data_i;	//如果是中断/异常，存储相关的信息，不然由CSR指令写入
 	
 	gnrl_dff # (.DW(`DATA_WIDTH)) dff_mtvec
 	(
