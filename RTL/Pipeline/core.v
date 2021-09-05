@@ -32,8 +32,10 @@ module core
 	
 	wire fetch_except;
 	wire decode_except;
+	wire mem_except;
 	wire [`BUS_EXCEPT_CAUSE] except_cause_if_o;
 	wire [`BUS_EXCEPT_CAUSE] except_cause_id_o;
+	wire [`BUS_EXCEPT_CAUSE] except_cause_ex_o;
 	
 	wire jmp_en_pc_i;
 	wire [`BUS_ADDR_MEM] jmp_to_pc_i;
@@ -291,7 +293,10 @@ module core
 
 		.addr_reg_wr_o	(addr_wr_ex_o),
 		.data_reg_wr_o 	(data_wr_ex_o),
-		.reg_wr_en_o	(wr_en_ex_o)	
+		.reg_wr_en_o	(wr_en_ex_o),
+		
+		.mem_except_o	(mem_except),
+		.except_cause_o	(except_cause_ex_o)
 	);
 
 

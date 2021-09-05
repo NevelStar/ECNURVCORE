@@ -41,9 +41,11 @@ module ex_stage(
 	output						mem_wr_en_o		,
 	output						mem_rd_en_o		,
 	output 	[`BUS_DATA_MEM] 	data_mem_wr_o	,	
-	output 	[`BUS_AXI_STRB]		strb_mem_wr_o		,
+	output 	[`BUS_AXI_STRB]		strb_mem_wr_o	,
 	output 	[`BUS_ADDR_MEM] 	addr_mem_wr_o	,	
-	output 	[`BUS_ADDR_MEM] 	addr_mem_rd_o	
+	output 	[`BUS_ADDR_MEM] 	addr_mem_rd_o	,
+	output						mem_except_o	,
+	output	[`BUS_EXCEPT_CAUSE]	except_cause_o	
 
 );
 
@@ -71,7 +73,9 @@ module ex_stage(
 		.addr_mem_wr	(addr_mem_wr_o),
 		.addr_mem_rd	(addr_mem_rd_o),
 		.mem_wr_en		(mem_wr_en_o),
-		.mem_rd_en		(mem_rd_en_o)
+		.mem_rd_en		(mem_rd_en_o),
+		.mem_except		(mem_except_o),
+		.except_cause	(except_cause_o),
 	);
 
 	ex_mem core_pipeline_ex_mem(
