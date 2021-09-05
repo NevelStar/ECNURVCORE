@@ -302,6 +302,7 @@
 `define EXCEPT_ECALL		3'b100
 `define EXCEPT_EBREAK		3'b101
 `define EXCEPT_MRET			3'b110
+`define EXCEPT_MEM_ALIGN	3'b111
 
 
 //CSR operation code

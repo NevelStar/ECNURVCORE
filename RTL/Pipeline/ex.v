@@ -29,7 +29,9 @@ module ex(
 	output reg 	[`BUS_ADDR_MEM]	addr_mem_wr		,
 	output reg 	[`BUS_ADDR_MEM]	addr_mem_rd		,
 	output reg 					mem_wr_en		,
-	output reg 					mem_rd_en		
+	output reg 					mem_rd_en		,
+	output						mem_except		,
+	output	[`BUS_EXCEPT_CAUSE]	except_cause	,
 	
 );
 	
@@ -117,10 +119,14 @@ module ex(
 			`INSTR_LB,`INSTR_LH,`INSTR_LW,`INSTR_LD,`INSTR_LBU,`INSTR_LHU,`INSTR_LWU: begin
 				addr_mem_rd <= alu_result;
 				mem_rd_en <= `MEM_RD_EN;
+				mem_except <= (alu_result[2:0] == 3'b000) ? `EXCEPT_NOPE : `EXCEPT_ACT;
+				except_cause <= (alu_result[2:0] == 3'b000) ? `EXCEPT_NONE : `EXCEPT_MEM_ALIGN;
 			end
 			default: begin
 				addr_mem_rd <= `MEM_ADDR_ZERO;
 				mem_rd_en <= `MEM_RD_DIS;
+				mem_except <= `EXCEPT_NOPE;
+				except_cause <= `EXCEPT_NONE;
 			end
 		endcase
 	end
@@ -132,30 +138,40 @@ module ex(
 				strb_mem_wr <= `WR_STR_BYTE;
 				addr_mem_wr <= alu_result;
 				mem_wr_en <= `MEM_WR_EN;
+				mem_except <= (alu_result[2:0] == 3'b000) ? `EXCEPT_NOPE : `EXCEPT_ACT;
+				except_cause <= (alu_result[2:0] == 3'b000) ? `EXCEPT_NONE : `EXCEPT_MEM_ALIGN;
 			end
 			`INSTR_SH: begin
 				data_mem_wr <= {48'd0,data_rs2[15:0]};
 				strb_mem_wr <= `WR_STR_HALF;
 				addr_mem_wr <= alu_result;
 				mem_wr_en <= `MEM_WR_EN;
+				mem_except <= (alu_result[2:0] == 3'b000) ? `EXCEPT_NOPE : `EXCEPT_ACT;
+				except_cause <= (alu_result[2:0] == 3'b000) ? `EXCEPT_NONE : `EXCEPT_MEM_ALIGN;
 			end
 			`INSTR_SW: begin
 				data_mem_wr <= {32'd0,data_rs2[31:0]};
 				strb_mem_wr <= `WR_STR_WORD;
 				addr_mem_wr <= alu_result;
 				mem_wr_en <= `MEM_WR_EN;
+				mem_except <= (alu_result[2:0] == 3'b000) ? `EXCEPT_NOPE : `EXCEPT_ACT;
+				except_cause <= (alu_result[2:0] == 3'b000) ? `EXCEPT_NONE : `EXCEPT_MEM_ALIGN;
 			end
 			`INSTR_SD: begin
 				data_mem_wr <= data_rs2;
 				strb_mem_wr <= `WR_STR_ALL;
 				addr_mem_wr <= alu_result;
 				mem_wr_en <= `MEM_WR_EN;
+				mem_except <= (alu_result[2:0] == 3'b000) ? `EXCEPT_NOPE : `EXCEPT_ACT;
+				except_cause <= (alu_result[2:0] == 3'b000) ? `EXCEPT_NONE : `EXCEPT_MEM_ALIGN;
 			end
 			default: begin
 				data_mem_wr <= `ZERO_WORD;
 				strb_mem_wr <= `WR_STR_NONE;
 				addr_mem_wr <= `MEM_ADDR_ZERO;
 				mem_wr_en <= `MEM_WR_DIS;
+				mem_except <= `EXCEPT_NOPE;
+				except_cause <= `EXCEPT_NONE;
 			end
 		endcase
 	end
