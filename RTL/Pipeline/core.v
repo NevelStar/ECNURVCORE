@@ -321,7 +321,7 @@ module core
 		.clk			(clk),
 		.rst_n			(rst_n),
 		.stall_if		(stall_if_ctrl_i),
-		.stall_mem	(stall_mem_ctrl_i),
+		.stall_mem		(stall_mem_ctrl_i),
 		.irq_jmp_i 		(1'b0),
 		.irq_jmp_to_i	(1'b0),
 		.jmp_num1_i		(jmp_num1_ctrl_i),

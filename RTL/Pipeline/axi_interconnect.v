@@ -131,48 +131,58 @@ module axi_interconnect(
 	input							rvalid_axi 		,
 	output	reg						rready_axi 		,
 	
-	input	      					awready_clint	,
-	output	reg 	      			awvalid_clint	,
-	output	reg	[`BUS_AXI_AWID]		awid_clint 		,
-	output	reg	[`BUS_ADDR_MEM]		awaddr_clint	,
-	output	reg	[`BUS_AXI_LEN] 		awlen_clint		,
-	output	reg	[`BUS_AXI_SIZE] 	awsize_clint	,
-	output	reg	[`BUS_AXI_BURST]	awburst_clint	,
-	output	reg	[`BUS_AXI_CACHE]	awcache_clint	,
-	output	reg						awprot_clint	,
-	output	reg						awqos_clint		,
-	output	reg						awregion_clint	,
-	input	      					wready_clint	,
-	output	reg	      				wvalid_clint	,
-	output	reg	[`BUS_DATA_MEM]		wdata_clint		,
-	output	reg	[`BUS_AXI_STRB] 	wstrb_clint		,
-	output	reg	      				wlast_clint		,
-	input	[`BUS_AXI_BID]			bid_clint		,
-	input	[`BUS_AXI_RESP]			bresp_clint		,
-	input							bvalid_clint	,
-	output	reg						bready_clint	,
-	input	      					arready_clint	,
-	output	reg	      				arvalid_clint	,
-	output	reg	[`BUS_AXI_ARID]		arid_clint		,
-	output	reg	[`BUS_ADDR_MEM]		araddr_clint	,
-	output	reg	[`BUS_AXI_LEN] 		arlen_clint		,
-	output	reg	[`BUS_AXI_SIZE] 	arsize_clint	,
-	output	reg	[`BUS_AXI_BURST]	arburst_clint	,
-	output	reg	[`BUS_AXI_CACHE]	arcache_clint	,
-	output	reg						arprot_clint	,
-	output	reg						arqos_clint		,
-	output	reg						arregion_clint	,
-	input	[`BUS_AXI_RID] 			rid_clint		,
-	input	[`BUS_DATA_MEM]			rdata_clint		,
-	input	[`BUS_AXI_RESP]			rresp_clint		,
-	input	      					rlast_clint		,
-	input							rvalid_clint 	,
-	output	reg						rready_clint 		
+	input	      					awready_timer	,
+	output	reg 	      			awvalid_timer	,
+	output	reg	[`BUS_AXI_AWID]		awid_timer 		,
+	output	reg	[`BUS_ADDR_MEM]		awaddr_timer	,
+	output	reg	[`BUS_AXI_LEN] 		awlen_timer		,
+	output	reg	[`BUS_AXI_SIZE] 	awsize_timer	,
+	output	reg	[`BUS_AXI_BURST]	awburst_timer	,
+	output	reg	[`BUS_AXI_CACHE]	awcache_timer	,
+	output	reg						awprot_timer	,
+	output	reg						awqos_timer		,
+	output	reg						awregion_timer	,
+	input	      					wready_timer	,
+	output	reg	      				wvalid_timer	,
+	output	reg	[`BUS_DATA_MEM]		wdata_timer		,
+	output	reg	[`BUS_AXI_STRB] 	wstrb_timer		,
+	output	reg	      				wlast_timer		,
+	input	[`BUS_AXI_BID]			bid_timer		,
+	input	[`BUS_AXI_RESP]			bresp_timer		,
+	input							bvalid_timer	,
+	output	reg						bready_timer	,
+	input	      					arready_timer	,
+	output	reg	      				arvalid_timer	,
+	output	reg	[`BUS_AXI_ARID]		arid_timer		,
+	output	reg	[`BUS_ADDR_MEM]		araddr_timer	,
+	output	reg	[`BUS_AXI_LEN] 		arlen_timer		,
+	output	reg	[`BUS_AXI_SIZE] 	arsize_timer	,
+	output	reg	[`BUS_AXI_BURST]	arburst_timer	,
+	output	reg	[`BUS_AXI_CACHE]	arcache_timer	,
+	output	reg						arprot_timer	,
+	output	reg						arqos_timer		,
+	output	reg						arregion_timer	,
+	input	[`BUS_AXI_RID] 			rid_timer		,
+	input	[`BUS_DATA_MEM]			rdata_timer		,
+	input	[`BUS_AXI_RESP]			rresp_timer		,
+	input	      					rlast_timer		,
+	input							rvalid_timer 	,
+	output	reg						rready_timer 		
 
 );
 
 	reg axi_wbusy;
 	reg axi_rbusy;
+
+	wire timer_cs_ar;
+	wire timer_cs_aw;
+	reg timer_cs_r;
+	reg timer_cs_w;
+
+	assign timer_cs_ar = (araddr_mem >= `ADDR_TIMER_MIN) & (araddr_mem <= `ADDR_TIMER_MIN);
+	assign timer_cs_ar = (awaddr_mem >= `ADDR_TIMER_MIN) & (awaddr_mem <= `ADDR_TIMER_MIN);
+
+
 
 
 	reg [`BUS_DATA_MEM] rdata_if_t;
@@ -200,22 +210,27 @@ module axi_interconnect(
 	always@(posedge clk or negedge rst_n) begin
 		if(!rst_n) begin
 			axi_wbusy <= `AXI_IDLE;
+			timer_cs_w <= 1'b0;
 		end
 		else begin
 			if(axi_wbusy == `AXI_IDLE) begin
 				if((awvalid_mem == `AXI_VALID_EN) & (awready_axi == `AXI_READY_EN)) begin
 					axi_wbusy <= `AXI_BUSY;
+					timer_cs_w <= timer_cs_aw;
 				end
 				else begin
 					axi_wbusy <= axi_wbusy;
+					timer_cs_w <= timer_cs_w;
 				end
 			end
 			else begin
 				if(bvalid_axi == `AXI_VALID_EN) begin
 					axi_wbusy <= `AXI_IDLE;
+					timer_cs_w <= 1'b0;
 				end
 				else begin
 					axi_wbusy <= axi_wbusy;
+					timer_cs_w <= timer_cs_w;
 				end
 			end
 		end
@@ -226,22 +241,27 @@ module axi_interconnect(
 	always@(posedge clk or negedge rst_n) begin
 		if(!rst_n) begin
 			axi_rbusy <= `AXI_IDLE;
+			timer_cs_r <= 1'b0;
 		end
 		else begin
 			if(axi_rbusy == `AXI_IDLE) begin
 				if((arvalid_mem == `AXI_VALID_EN) | (arvalid_if == `AXI_VALID_EN)) begin
 					axi_rbusy <= `AXI_BUSY;
+					timer_cs_r <= timer_cs_ar;
 				end
 				else begin
 					axi_rbusy <= axi_rbusy;
+					timer_cs_r <= timer_cs_r;
 				end
 			end
 			else begin
 				if(rlast_axi == `AXI_VALID_EN) begin
 					axi_rbusy <= `AXI_IDLE;
+					timer_cs_r <= 1'b0;
 				end
 				else begin
 					axi_rbusy <= axi_rbusy;
+					timer_cs_r <= timer_cs_r;
 				end
 			end
 		end
