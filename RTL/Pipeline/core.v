@@ -113,6 +113,8 @@ module core
 
 	wire [`BUS_ADDR_MEM] stall_if_ctrl_i;
 	wire [`BUS_ADDR_MEM] stall_mem_ctrl_i;
+	wire				 irq_jmp_ctrl_i;
+	wire [`BUS_ADDR_MEM] irq_jmp_to_ctrl_i
 	wire [`BUS_ADDR_MEM] jmp_num1_ctrl_i;
 	wire [`BUS_ADDR_MEM] jmp_num2_ctrl_i;
 	wire [`BUS_ADDR_MEM] pc_prediction_ctrl_i;
@@ -127,6 +129,9 @@ module core
 	wire [`BUS_HOLD_CODE] hold_code_ctrl_o;
 
 	wire [`BUS_HOLD_CODE] hold_code;
+	
+	wire				   irq_assert_clint_o;
+	wire [`BUS_DATA_INSTR] irq_addr_clint_o
 
 	assign jmp_en_pc_i = jmp_en_ctrl_o;
 	assign jmp_to_pc_i = jmp_to_ctrl_o;
@@ -187,6 +192,8 @@ module core
 	assign hold_code = hold_code_ctrl_o;
 	assign instr_rd_en_o = instr_rd_en_if_o;
 
+	assign irq_jmp_ctrl_i = irq_assert_clint_o;
+	assign irq_jmp_to_ctrl_i = irq_addr_clint_o;
 
 	pc core_pc
 	(
@@ -314,6 +321,29 @@ module core
 		.data_rd1	(data_rd1_reg_o),
 		.data_rd2	(data_rd2_reg_o)
 	);
+	
+/*
+	csr_reg u_csr_reg
+	(
+        .clk		(clk),
+        .rst_n		(rst_n),
+		
+        .we_i(ex_csr_we_o),
+        .raddr_i(id_csr_raddr_o),
+        .waddr_i(ex_csr_waddr_o),
+        .data_i(ex_csr_wdata_o),
+        .data_o(csr_data_o),
+        .global_int_en_o(csr_global_int_en_o),
+        .clint_we_i(clint_we_o),
+        .clint_raddr_i(clint_raddr_o),
+        .clint_waddr_i(clint_waddr_o),
+        .clint_data_i(clint_data_o),
+        .clint_data_o(csr_clint_data_o),
+        .clint_csr_mtvec(csr_clint_csr_mtvec),
+        .clint_csr_mepc(csr_clint_csr_mepc),
+        .clint_csr_mstatus(csr_clint_csr_mstatus)
+    );
+*/
 
 
 	ctrl core_ctrl
@@ -341,25 +371,24 @@ module core
 /*
 	clint_top core_clint
 	(
-		.clk			(clk),
-		.l_clk			(),			//低频时钟
-		.rst_n			(rst_n),
+		.clk				(clk),
+		.rst_n				(rst_n),
 	
-		.i_sft_int_v	(),
-		.i_timer_l		(),			//定时器低32位寄存器
-		.i_timer_h		(),			//定时器高32位寄存器
-
-		.o_timer_l		(),			//输出现在的定时器??32位寄存器
-		.o_timer_h		(),			//输出现在的定时器??32位寄存器
-
-		.i_tcmp_l		(),			//比较定时器低32位寄存器
-		.i_tcmp_h		(),			//比较定时器高32位寄存器
-
-		.i_timer_valid	(),			//两个bit分别控制定时器的??/??32位寄存器
-		.i_tm_ctrl		(),			//定时器控制寄存器
-
-		.o_mtip			(),			//输出定时器中断请??
-		.o_msip			()			//输出软件中断请求
+		.except_src_if		(fetch_except),
+		.except_cus_if		(except_cause_if_o),
+	
+		.except_src_id		(decode_except),
+		.except_cus_id		(except_cause_id_o),
+		.instr_id_i			(instr_id_i),
+		.addr_instr_id_i	(addr_instr_id_i),
+		
+		.except_src_ex		(mem_except),
+		.except_cus_ex		(except_cause_ex_o),
+		
+		.csr_rdata_i		(),
+		
+		.irq_assert_o		(irq_assert_clint_o),
+		.irq_addr_o			(irq_addr_clint_o)
 );
 */
 
