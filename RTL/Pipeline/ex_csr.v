@@ -79,43 +79,5 @@ module ex_csr
 //	wire csr_wen  = i_EXE_vld & i_SYSTEM & (i_csr_addr[11:10] != 2'b11);
 //	wire csr_rden = i_EXE_vld & i_SYSTEM;
 
-	
-	reg_csr U_reg_csr
-	(
-		.clk        	(clk),
-		.rst_n          (rst_n),
- 
-		.mret_ena_i     (mret_ena_i),
- 
-//		.i_EXE_vld      (i_EXE_vld),
-		
-		//中断请求和中断源
-		.ext_irq_i      (ext_irq_i),
-		.sft_irq_i      (sft_irq_i),
-		.tmr_irq_i      (tmr_irq_i),
-		.irq_src_i      (irq_src_i & glb_irq_o),
-  
-		//异常源，异常PC和异常指令  
-		.exp_src_i      (exp_src_i),
-		.exe_pc_i       (pc_i),
-		.ir_i           (instr_i),
-		
-		//中断PC和中断入口地址
-		.irq_pc_o       (irq_pc_o),
-		.mepc_o         (mepc_o),
- 
-		//CSR指令相关信号    
-		.csr_rden_i     (csr_rden),
-		.csr_addr_i     (csr_addr_i),
-		.csr_val_i      (reg_csr_val),
-		.csr_wen_i      (csr_wen),
-		.csr_val_o      (w_csr_val),
-	
-		//由mie，mstatus寄存器输出的中断使能信号
-		.o_meie         (o_meie),
-		.o_msie         (o_msie),
-		.o_mtie         (o_mtie),
-		.o_glb_irq      (o_glb_irq)
-	);
 
 endmodule

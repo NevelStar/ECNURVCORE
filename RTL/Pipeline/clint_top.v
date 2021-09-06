@@ -1,7 +1,7 @@
 
 `include "defines.v"
 
-module clint_top
+module clirq_top
 (
 	input							clk,
 	input							rst_n,
@@ -11,14 +11,14 @@ module clint_top
 	input	[`BUS_EXCEPT_CAUSE]		except_cus_if		,
 	
 	// from id
-	input							except_src_id		,
-	input	[`BUS_EXCEPT_CAUSE]		except_cus_id		,
-	input	[`BUS_DATA_INSTR]		instr_id_i			,
-	input	[`BUS_ADDR_MEM]			addr_instr_id_i		,
+	input							except_src_id,
+	input	[`BUS_EXCEPT_CAUSE]		except_cus_id,
+	input	[`BUS_DATA_INSTR]		instr_id_i,
+	input	[`BUS_ADDR_MEM]			addr_instr_id_i,
 	
 	// from ex
-	input							except_src_ex		,
-	input	[`BUS_EXCEPT_CAUSE]		except_cus_ex		,
+	input							except_src_ex,
+	input	[`BUS_EXCEPT_CAUSE]		except_cus_ex,
 //	input							jump_flag_i,
 //	input	[`InstAddrBus] 			jump_addr_i,
 //	input							div_started_i,
@@ -32,17 +32,17 @@ module clint_top
 	
 	// to ctrl
 //	output 							wire hold_flag_o,
-	output	reg						int_assert_o,
-	output	reg	[`BUS_ADDR_MEM]		int_addr_o,
+	output							irq_assert_o,
+	output	reg	[`BUS_ADDR_MEM]		irq_addr_o,
 	
 	// from/to csr_reg
-	output	reg						csr_we_o		,                         
-	output	reg	[`BUS_CSR_IMM]		csr_addr_o		,
-	input		[`BUS_DATA_MEM]		csr_data_i		,
-	output	reg	[`BUS_DATA_MEM] 	csr_data_o
-//	input	[`BUS_DATA_MEM]			csr_mtvec,  
-//	input	[`BUS_DATA_MEM]			csr_mepc,   
-//	input	[`BUS_DATA_MEM]			csr_mstatus
+	output	reg						csr_we_o,                         
+	output	reg	[`BUS_CSR_IMM]		csr_addr_o,
+	input		[`BUS_DATA_REG]		csr_data_i,
+	output	reg	[`BUS_DATA_REG] 	csr_data_o,
+	input		[`BUS_DATA_REG]		csr_mtvec,  
+	input		[`BUS_DATA_REG]		csr_mepc,   
+	input		[`BUS_DATA_REG]		csr_mstatus
 
 );
 
@@ -53,14 +53,15 @@ module clint_top
 	localparam CSR_MSTATUS_MRET    = 5'b01000;
 	localparam CSR_MCAUSE          = 5'b10000;
 
-	reg		[4:0]	cur_csr_state;
-	reg		[4:0]	nxt_csr_state;
-	reg		[31:0] 	cause;
+	reg		[4:0]				cur_csr_state;
+	reg		[4:0]				nxt_csr_state;
+	reg		[`BUS_EXCEPT_CAUSE]	except_cus_reg;
 
-	wire 	except_src_assert;
-	wire	mret_assert;
-	wire	except_sync,except_mret;
-	wire	except_async;
+	wire 						except_src_assert;
+	wire						mret_assert;
+	wire						except_sync,except_mret;
+	wire						except_async;
+	wire	[`BUS_EXCEPT_CAUSE]	except_cus;
 
 //	assign hold_flag_o = ((exc_state != EXCEPT_IDLE) | (csr_state != CSR_IDLE))? `HoldEnable: `HoldDisable;
 
@@ -70,6 +71,13 @@ module clint_top
 	assign except_sync  = except_src_assert & (~mret_assert);
 	assign except_async = tmr_irq_i | ext_irq_i;
 	assign except_mret  = except_src_assert &   mret_assert ;
+	
+	assign irq_assert_o = except_src_assert;
+	
+	assign except_cus = except_src_if ? except_cus_if : (
+						except_src_id ? except_cus_id : (
+						except_src_ex ? except_cus_id : 3'b0
+						));
 
 	always @(posedge clk) begin
 		if (!rst_n)
@@ -80,52 +88,73 @@ module clint_top
 
 	always @(*) begin
 		if (!rst_n) begin
+			irq_addr_o    = `ZERO_DOUBLE;
 			nxt_csr_state = CSR_IDLE;
 		end 
 		else begin
 			nxt_csr_state = cur_csr_state;
 			case (cur_csr_state)
 				CSR_IDLE: begin
-					if (except_sync | except_async) begin   
-						nxt_csr_state <= CSR_MEPC;
+					if (except_sync | except_async) begin
+						irq_addr_o    = csr_mtvec;
+						nxt_csr_state = CSR_MEPC;
 					end 
 					else if (except_mret) begin
-						nxt_csr_state <= CSR_MSTATUS_MRET;
+						irq_addr_o    = csr_mepc;
+						nxt_csr_state = CSR_MSTATUS_MRET;
 					end
 				end
 
-				CSR_MEPC: nxt_csr_state <= CSR_MSTATUS;
+				CSR_MEPC: begin
+					irq_addr_o    = `ZERO_DOUBLE;
+					nxt_csr_state = CSR_MCAUSE;
+				end
 
-				CSR_MSTATUS: nxt_csr_state <= CSR_MCAUSE;
+				CSR_MCAUSE: begin
+					irq_addr_o    = `ZERO_DOUBLE;
+					nxt_csr_state = CSR_MSTATUS;
+				end
 
-				CSR_MCAUSE: nxt_csr_state <= CSR_IDLE;
+				CSR_MSTATUS: begin
+					irq_addr_o    = `ZERO_DOUBLE;
+					nxt_csr_state = CSR_IDLE;
+				end
 
-				CSR_MSTATUS_MRET: nxt_csr_state <= CSR_IDLE;
+				CSR_MSTATUS_MRET: begin
+					irq_addr_o    = `ZERO_DOUBLE;
+					nxt_csr_state = CSR_IDLE;
+				end
 
-				default: nxt_csr_state <= CSR_IDLE;
+				default: begin
+					irq_addr_o    = `ZERO_DOUBLE;
+					nxt_csr_state = CSR_IDLE;
+				end
+				
 			endcase
 		end
 	end
 
-	always @ (posedge clk) begin
+	always @(posedge clk) begin
 		if (!rst_n) begin
 			csr_we_o <= `WriteDisable;
 			csr_addr_o <= `ZERO_DOUBLE;
 			csr_data_o <= `ZERO_DOUBLE;
 		end 
 		else begin
-			case (nxt_csr_state)
+			case(nxt_csr_state)
 
 				CSR_MEPC: begin
 					csr_we_o   <= `WriteEnable;
 					csr_addr_o <= `CSR_MEPC;
-					csr_data_o <= `IRQ_ENTRY_ADDR;
+					csr_data_o <= addr_instr_id_i;
+					
+					except_cus_reg <= except_cus;
 				end
 
 				CSR_MCAUSE: begin
 					csr_we_o   <= `WriteEnable;
 					csr_addr_o <= `CSR_MCAUSE;
-					csr_data_o <= cause;
+					csr_data_o <= {61'b0,except_cus_reg};
 				end
 
 				CSR_MSTATUS: begin
@@ -142,36 +171,39 @@ module clint_top
 				
 				default: begin
 					csr_we_o   <= `WriteDisable;
-					csr_addr_o <= `ZeroWord;
-					csr_data_o <= `ZeroWord;
+					csr_addr_o <= `ZERO_DOUBLE;
+					csr_data_o <= `ZERO_DOUBLE;
 				end
 
 			endcase
 		end
 	end
 
-	always @ (posedge clk) begin
-		if (!rst_n) begin
-			int_assert_o <= `INT_DEASSERT;
-			int_addr_o <= `ZeroWord;
-		end else begin
-			case (csr_state)
-				// 发出中断进入信号.写完mcause寄存器才能发
-				CSR_MCAUSE: begin
-					int_assert_o <= `INT_ASSERT;
-					int_addr_o <= csr_mtvec;
-				end
-				// 发出中断返回信号
-				CSR_MSTATUS_MRET: begin
-					int_assert_o <= `INT_ASSERT;
-					int_addr_o <= csr_mepc;
-				end
-				default: begin
-					int_assert_o <= `INT_DEASSERT;
-					int_addr_o <= `ZeroWord;
-				end
-			endcase
-		end
-	end
+//	always @(posedge clk) begin
+//		if (!rst_n) begin
+//			irq_assert_o <= `INT_DEASSERT;
+//			irq_addr_o <= `ZeroWord;
+//		end 
+//		else begin
+//			case(cur_csr_state)
+//
+//				CSR_MCAUSE: begin
+//					irq_assert_o <= `INT_ASSERT;
+//					irq_addr_o <= csr_mtvec;
+//				end
+//
+//				CSR_MSTATUS_MRET: begin
+//					irq_assert_o <= `INT_ASSERT;
+//					irq_addr_o <= csr_mepc;
+//				end
+//				
+//				default: begin
+//					irq_assert_o <= `INT_DEASSERT;
+//					irq_addr_o <= `ZeroWord;
+//				end
+//				
+//			endcase
+//		end
+//	end
 
 endmodule
