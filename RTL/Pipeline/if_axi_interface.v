@@ -155,8 +155,7 @@ module if_axi_interface(
 	assign rdata_act = (rvalid_if == `AXI_VALID_EN) ? rdata_if : `ZERO_DOUBLE;
 
 	//assign instr = (arready_if==`AXI_READY_DIS) ? instr_t : (addr_instr[2] ? rdata_act[63:32] : rdata_act[31:0]);
-	assign instr = (arready_if==`AXI_READY_DIS) ? (addr_instr[2] ? rdata_act_t[63:32] : rdata_act_t[31:0]) : (addr_instr[2] ? rdata_act[63:32] : rdata_act[31:0]);
-
+	assign instr = (arready_if==`AXI_READY_EN) ? (addr_instr[2] ? rdata_act[63:32] : rdata_act[31:0]) : instr_t ;
 	
 
 
@@ -187,15 +186,19 @@ module if_axi_interface(
 			end
 		end
 	end	
-
-	always@(posedge clk or negedge rst_n) begin
+    always@(posedge clk or negedge rst_n) begin
 		if(!rst_n) begin
 			instr_t <= `ZERO_WORD;
 		end
 		else begin
-			instr_t <= instr;
+			if(arready_if) begin
+				instr_t <= instr;
+			end
+			else begin
+				instr_t <= instr_t;
+			end
 		end
-	end		
+	end	
 
 	always@(posedge clk or negedge rst_n) begin
 		if(!rst_n) begin
