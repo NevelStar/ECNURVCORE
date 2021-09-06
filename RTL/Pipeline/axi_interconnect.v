@@ -275,18 +275,68 @@ module axi_interconnect(
 
 	always@(*) begin
 		if((awvalid_mem == `AXI_VALID_EN) & (axi_wbusy == `AXI_IDLE)) begin
-			awready_mem = rst_n ? `AXI_READY_EN : `AXI_READY_DIS;
+			if(timer_cs_aw) begin
+				awready_mem = rst_n ? `AXI_READY_EN : `AXI_READY_DIS;
 
-			awvalid_axi = awvalid_mem;
-			awid_axi = awid_mem;
-			awaddr_axi = awaddr_mem;
-			awlen_axi = awlen_mem;
-			awsize_axi = awsize_mem;
-			awburst_axi = awburst_mem;
-			awcache_axi = awcache_mem;
-			awprot_axi = awprot_mem;
-			awqos_axi = awqos_mem;
-			awregion_axi = awregion_mem;
+				awvalid_axi = awvalid_mem;
+				awid_axi = awid_mem;
+				awaddr_axi = awaddr_mem;
+				awlen_axi = awlen_mem;
+				awsize_axi = awsize_mem;
+				awburst_axi = awburst_mem;
+				awcache_axi = awcache_mem;
+				awprot_axi = awprot_mem;
+				awqos_axi = awqos_mem;
+				awregion_axi = awregion_mem;
+
+				awvalid_timer = awvalid_mem;
+				awid_timer = awid_mem;
+				awaddr_timer = awaddr_mem;
+				awlen_timer = awlen_mem;
+				awsize_timer = awsize_mem;
+				awburst_timer = awburst_mem;
+				awcache_timer = awcache_mem;
+				awprot_timer = awprot_mem;
+				awqos_timer = awqos_mem;
+				awregion_timer = awregion_mem;
+
+				awvalid_axi = `AXI_VALID_DIS;
+				awid_axi = `AXI_ID_ZERO;
+				awaddr_axi = `MEM_ADDR_ZERO;
+				awlen_axi = `AXI_LEN_ZERO;
+				awsize_axi = `AXI_SIZE_DOUBLE;
+				awburst_axi = `AXI_BURST_INCR;
+				awcache_axi = awcache_mem;
+				awprot_axi = awprot_mem;
+				awqos_axi = awqos_mem;
+				awregion_axi = awregion_mem;
+			end
+			else begin
+			
+				awready_mem = rst_n ? `AXI_READY_EN : `AXI_READY_DIS;
+
+				awvalid_axi = awvalid_mem;
+				awid_axi = awid_mem;
+				awaddr_axi = awaddr_mem;
+				awlen_axi = awlen_mem;
+				awsize_axi = awsize_mem;
+				awburst_axi = awburst_mem;
+				awcache_axi = awcache_mem;
+				awprot_axi = awprot_mem;
+				awqos_axi = awqos_mem;
+				awregion_axi = awregion_mem;
+
+				awvalid_timer = `AXI_VALID_DIS;
+				awid_timer = `AXI_ID_ZERO;
+				awaddr_timer = `MEM_ADDR_ZERO;
+				awlen_timer = `AXI_LEN_ZERO;
+				awsize_timer = `AXI_SIZE_DOUBLE;
+				awburst_timer = `AXI_BURST_INCR;
+				awcache_timer = awcache_mem;
+				awprot_timer = awprot_mem;
+				awqos_timer = awqos_mem;
+				awregion_timer = awregion_mem;
+			end
 		end
 		else begin
 			awready_mem = rst_n ? !axi_wbusy : `AXI_READY_DIS;
@@ -294,30 +344,72 @@ module axi_interconnect(
 			awvalid_axi = `AXI_VALID_DIS;
 			awid_axi = `AXI_ID_ZERO;
 			awaddr_axi = `MEM_ADDR_ZERO;
-			awlen_axi = awlen_mem;
-			awsize_axi = awsize_mem;
-			awburst_axi = awburst_mem;
+			awlen_axi = `AXI_LEN_ZERO;
+			awsize_axi = `AXI_SIZE_DOUBLE;
+			awburst_axi = `AXI_BURST_INCR;
 			awcache_axi = awcache_mem;
 			awprot_axi = awprot_mem;
 			awqos_axi = awqos_mem;
 			awregion_axi = awregion_mem;
+
+			awvalid_timer = `AXI_VALID_DIS;
+			awid_timer = `AXI_ID_ZERO;
+			awaddr_timer = `MEM_ADDR_ZERO;
+			awlen_timer = `AXI_LEN_ZERO;
+			awsize_timer = `AXI_SIZE_DOUBLE;
+			awburst_timer = `AXI_BURST_INCR;
+			awcache_timer = awcache_mem;
+			awprot_timer = awprot_mem;
+			awqos_timer = awqos_mem;
+			awregion_timer = awregion_mem;
 		end
 	end
 
 
 	always@(*) begin
 		if(axi_wbusy == `AXI_BUSY) begin
-			wready_mem = wready_axi;
+			if(timer_cs_w) begin
+				wready_mem = wready_timer;
 
-			wvalid_axi = wvalid_mem;
-			wdata_axi = wdata_mem;
-			wstrb_axi = wstrb_mem;
-			wlast_axi = wlast_mem;
+				wvalid_timer = wvalid_mem;
+				wdata_timer = wdata_mem;
+				wstrb_timer = wstrb_mem;
+				wlast_timer = wlast_mem;
 
-			bid_mem = bid_axi;
-			bresp_mem = bresp_axi;
-			bvalid_mem = bvalid_axi;
-			bready_axi = bready_mem;
+				wvalid_axi = `AXI_VALID_DIS;
+				wdata_axi = `ZERO_DOUBLE;
+				wstrb_axi = `WR_STR_NONE;
+				wlast_axi = `AXI_VALID_DIS;
+
+				bid_mem = bid_timer;
+				bresp_mem = bresp_timer;
+				bvalid_mem = bvalid_timer;
+
+				bready_timer = bready_mem;
+
+				bready_axi = `AXI_READY_DIS;
+			end
+			else begin
+				wready_mem = wready_axi;
+
+				wvalid_axi = wvalid_mem;
+				wdata_axi = wdata_mem;
+				wstrb_axi = wstrb_mem;
+				wlast_axi = wlast_mem;
+
+				wvalid_timer = `AXI_VALID_DIS;
+				wdata_timer = `ZERO_DOUBLE;
+				wstrb_timer = `WR_STR_NONE;
+				wlast_timer = `AXI_VALID_DIS;
+
+				bid_mem = bid_axi;
+				bresp_mem = bresp_axi;
+				bvalid_mem = bvalid_axi;
+
+				bready_axi = bready_mem;	
+
+				bready_timer = `AXI_READY_DIS;		
+			end
 		end
 		else begin
 			wready_mem = `AXI_READY_DIS;
@@ -327,10 +419,18 @@ module axi_interconnect(
 			wstrb_axi = `WR_STR_NONE;
 			wlast_axi = wlast_mem;
 
+			wvalid_timer = `AXI_VALID_DIS;
+			wdata_timer = `ZERO_DOUBLE;
+			wstrb_timer = `WR_STR_NONE;
+			wlast_timer = `AXI_VALID_DIS;
+
 			bid_mem = `AXI_ID_ZERO;
 			bresp_mem = `AXI_VALID_DIS;
 			bvalid_mem = `AXI_VALID_DIS;
+
 			bready_axi = `AXI_READY_DIS;
+				
+			bready_timer = `AXI_READY_DIS;	
 		end
 	end
 
