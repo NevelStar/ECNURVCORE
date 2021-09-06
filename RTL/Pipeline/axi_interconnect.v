@@ -291,7 +291,7 @@ module axi_interconnect(
 
 				awvalid_timer = awvalid_mem;
 				awid_timer = awid_mem;
-				awaddr_timer = awaddr_mem;
+				awaddr_timer = awaddr_mem - `ADDR_TIMER_MIN;
 				awlen_timer = awlen_mem;
 				awsize_timer = awsize_mem;
 				awburst_timer = awburst_mem;
