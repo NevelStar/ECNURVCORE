@@ -1,38 +1,36 @@
 `include "define.v"
+
 module timer
-#(
-	parameter AXI_ADDRESS_WIDTH = 64, AXI_DATA_WIDTH = 64
-)
 (
     input wire clk,
     input wire rst,
 	
 	//write address channel
-	input wire [AXI_ADDRESS_WIDTH-1:0] saxi_awaddr,
+	input wire [`ADDR_WIDTH-1:0] saxi_awaddr,
 	input wire saxi_awvaild,
 	output wire saxi_awready,
 	
 	//read address channel
-	input wire [AXI_ADDRESS_WIDTH-1:0] saxi_araddr,
+	input wire [`ADDR_WIDTH-1:0] saxi_araddr,
 	input wire saxi_arvaild,
 	output wire saxi_arready,
 	
 	//write data channel
 	input wire saxi_wvaild,
 	input wire saxi_wready,
-	input wire [AXI_DATA_WIDTH-1:0] saxi_wdata,
+	input wire [`DATA_WIDTH-1:0] saxi_wdata,
 	
 	//read data channel
 	output wire saxi_rvaild,
 	input wire saxi_rready,
-	output wire [AXI_DATA_WIDTH-1:0] saxi_rdata,
+	output wire [`DATA_WIDTH-1:0] saxi_rdata,
 	
 	//write response channel
 	output wire saxi_bvaild,
 	input wire saxi_bready,
 
-    output wire[AXI_DATA_WIDTH:0] mtime_o,
-	output wire[AXI_DATA_WIDTH:0] mtimecmp_o,
+    output wire[`DATA_WIDTH:0] mtime_o,
+	output wire[`DATA_WIDTH:0] mtimecmp_o,
 
     output time_irq_o
 );
@@ -48,8 +46,8 @@ module timer
 `define CLINT_MTIMECMP 64'h0000000002004000
 `define CLINT_MTIME    64'h000000000200BFF8
 
-reg [AXI_DATA_WIDTH-1:0] mtime;
-reg [AXI_DATA_WIDTH-1:0] mtimecmp;
+reg [`DATA_WIDTH-1:0] mtime;
+reg [`DATA_WIDTH-1:0] mtimecmp;
 
 assign mtime_o = mtime;
 assign mtimecmp_o = mtimecmp;
@@ -71,7 +69,7 @@ begin
 	end
 end
 
-reg [AXI_ADDRESS_WIDTH-1:0] axi_awaddr_buf; //Reg for address need to be wirtten
+reg [`ADDR_WIDTH-1:0] axi_awaddr_buf; //Reg for address need to be wirtten
 
 
 always @(posedge clk)
@@ -87,7 +85,7 @@ begin
 	end
 end
 
-reg [AXI_ADDRESS_WIDTH-1:0] axi_waddr; // the address need to be wirtten
+reg [`ADDR_WIDTH-1:0] axi_waddr; // the address need to be wirtten
 
 always@(*)
 begin
@@ -169,14 +167,14 @@ begin
 	end
 end
 
-reg [AXI_ADDRESS_WIDTH-1:0] axi_raddr; // the address need to be wirtten
+reg [`ADDR_WIDTH-1:0] axi_raddr; // the address need to be wirtten
 reg axi_need_read; //A read operation, need 
 
 always @(posedge clk)
 begin
 	if (rst == `RstEnable)
 	begin
-		axi_raddr <= (`AXI_ADDRESS_WIDTH)'b0;
+		axi_raddr <= {`ADDR_WIDTH{1'b0}};
 		axi_need_read <= 1'b0;
 	end
 	else begin
@@ -192,13 +190,13 @@ end
 
 //AXI read data section
 reg axi_wait_for_read; //read wait mode,waiting for master ready signal
-ref [AXI_DATA_WIDTH-1:0]axi_data_to_read;
+reg [`DATA_WIDTH-1:0]axi_data_to_read;
 always @(posedge clk)
 begin
 	if (rst == `RstEnable)
 	begin
 		saxi_rvaild <= 1'b0;
-		saxi_rdata <= (`AXI_DATA_WIDTH)'b0;
+		saxi_rdata <= {`DATA_WIDTH{1'b0}};
 		axi_wait_for_read <=1'b0;
 	end
 	else begin
@@ -216,7 +214,7 @@ begin
 			saxi_rvaild <= 1'b0;				
 		end
 		else begin
-			saxi_rvaild <= (`AXI_DATA_WIDTH)'b0;
+			saxi_rvaild <= {`DATA_WIDTH{1'b0}};
 		end
 	end
 end
@@ -227,7 +225,7 @@ begin
 	case(axi_raddr)
 		(`CLINT_MTIME): 	axi_data_to_read <= mtime;
 		(`CLINT_MTIMECMP): 	axi_data_to_read <= mtimecmp;
-	default: axi_data_to_read = (`AXI_DATA_WIDTH)'b0;
+	default: axi_data_to_read = {`DATA_WIDTH{1'b0}};
 	endcase
 	
 end
