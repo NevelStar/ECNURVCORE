@@ -96,7 +96,8 @@
 `define BUS_AXI_LEN			7:0
 `define BUS_AXI_SIZE		2:0
 `define BUS_AXI_BURST		1:0
-`define BUS_AXI_RESP		0:0
+`define BUS_AXI_RESP		1:0
+`define BUS_AXI_ADDR		31:0
 
 
 

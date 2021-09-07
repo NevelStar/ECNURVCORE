@@ -16,78 +16,64 @@ module top(
 	//handshake
 	input	      				awready_i		,
 	output 	      				awvalid_o		,
-
 	output	[`BUS_AXI_AWID]		awid_o 			,
-	output 	[`BUS_ADDR_MEM]		awaddr_o		,
-
-	//burst
+	output 	[`BUS_AXI_ADDR]		awaddr_o		,
 	output 	[`BUS_AXI_LEN] 		awlen_o			,
 	output 	[`BUS_AXI_SIZE] 	awsize_o		,
 	output 	[`BUS_AXI_BURST]	awburst_o		,
-
-	output	[`BUS_AXI_CACHE]	awcache_o		,
-	output						awprot_o		,
-	output						awqos_o			,
-	output						awregion_o		,
-
-
-
-	//data write
-
-	//handshake
 	input	      				wready_i		,
 	output 	      				wvalid_o		,
-
 	output 	[`BUS_DATA_MEM]		wdata_o			,
 	output 	[`BUS_AXI_STRB] 	wstrb_o			,
-
-	//burst
 	output 	      				wlast_o			,
-
-
-
-	//write response
 	input	[`BUS_AXI_BID]		bid_i     		,
 	input	[`BUS_AXI_RESP]		bresp_i			,
-
-	//handshake
 	input						bvalid_i		,
 	output						bready_o		,
-			
-
-
-	//address read
-
-	//handshake
 	input	      				arready_i		,
 	output 	      				arvalid_o		,
-
 	output	[`BUS_AXI_ARID]		arid_o 			,
-	output 	[`BUS_ADDR_MEM]		araddr_o		,
-
-	//burst
+	output 	[`BUS_AXI_ADDR]		araddr_o		,
 	output 	[`BUS_AXI_LEN] 		arlen_o			,
 	output 	[`BUS_AXI_SIZE] 	arsize_o		,
 	output 	[`BUS_AXI_BURST]	arburst_o		,
-
-	output	[`BUS_AXI_CACHE]	arcache_o		,
-	output						arprot_o		,
-	output						arqos_o			,
-	output						arregion_o		,
-
-
-
-	//data read
 	input	[`BUS_AXI_RID] 		rid_i 			,
 	input	[`BUS_DATA_MEM]		rdata_i			,
 	input	[`BUS_AXI_RESP]		rresp_i			,
-
-	//burst
 	input	      				rlast_i			,
-	
-	//handshake
 	input						rvalid_i 		,
-	output						rready_o
+	output						rready_o		,
+
+	//axi dma slave port
+	output		      				io_slave_awready	,
+	input     	      				io_slave_awvalid	,
+	input     	[`BUS_AXI_ADDR]		io_slave_awaddr		,
+	input    	[`BUS_AXI_AWID]		io_slave_awid 		,
+	input     	[`BUS_AXI_LEN] 		io_slave_awlen		,
+	input     	[`BUS_AXI_SIZE] 	io_slave_awsize		,
+	input     	[`BUS_AXI_BURST]	io_slave_awburst	,
+	output 		      				io_slave_wready		,
+	input     	      				io_slave_wvalid		,
+	input     	[`BUS_DATA_MEM]		io_slave_wdata		,
+	input     	[`BUS_AXI_STRB] 	io_slave_wstrb		,
+	input     	      				io_slave_wlast		,
+	input    						io_slave_bready		,
+	output 							io_slave_bvalid		,
+	output 		[`BUS_AXI_RESP]		io_slave_bresp		,
+	output 		[`BUS_AXI_BID]		io_slave_bid		,
+	output 		      				io_slave_arready	,
+	input  		      				io_slave_arvalid	,
+	input  		[`BUS_AXI_ADDR]		io_slave_araddr		,
+	input  		[`BUS_AXI_ARID]		io_slave_arid		,
+	input  		[`BUS_AXI_LEN] 		io_slave_arlen		,
+	input  		[`BUS_AXI_SIZE] 	io_slave_arsize		,
+	input  		[`BUS_AXI_BURST]	io_slave_arburst	,
+	input    						io_slave_rready 	,
+	output 							io_slave_rvalid 	,
+	output 		      				io_slave_rlast		,
+	output 		[`BUS_AXI_RESP]		io_slave_rresp		,
+	output 		[`BUS_DATA_MEM]		io_slave_rdata		,
+	output 		[`BUS_AXI_RID] 		io_slave_rid		
 
 );
 
@@ -98,10 +84,6 @@ module top(
 	wire	[`BUS_AXI_LEN] 		awlen_if;
 	wire	[`BUS_AXI_SIZE] 	awsize_if;
 	wire	[`BUS_AXI_BURST]	awburst_if;
-	wire	[`BUS_AXI_CACHE]	awcache_if;
-	wire						awprot_if;
-	wire						awqos_if;
-	wire						awregion_if;
 	wire	      				wready_if;
 	wire	      				wvalid_if;
 	wire	[`BUS_DATA_MEM]		wdata_if;
@@ -118,10 +100,6 @@ module top(
 	wire	[`BUS_AXI_LEN] 		arlen_if;
 	wire	[`BUS_AXI_SIZE] 	arsize_if;
 	wire	[`BUS_AXI_BURST]	arburst_if;
-	wire	[`BUS_AXI_CACHE]	arcache_if;
-	wire						arprot_if;
-	wire						arqos_if;
-	wire						arregion_if;
 	wire	[`BUS_AXI_RID] 		rid_if;
 	wire	[`BUS_DATA_MEM]		rdata_if;
 	wire	[`BUS_AXI_RESP]		rresp_if;
@@ -150,10 +128,6 @@ module top(
 	wire 	[`BUS_AXI_LEN] 		awlen_mem;
 	wire 	[`BUS_AXI_SIZE] 	awsize_mem;
 	wire 	[`BUS_AXI_BURST]	awburst_mem;
-	wire	[`BUS_AXI_CACHE]	awcache_mem;
-	wire						awprot_mem;
-	wire						awqos_mem;
-	wire						awregion_mem;
 	wire	      				wready_mem;
 	wire 	      				wvalid_mem;
 	wire 	[`BUS_DATA_MEM]		wdata_mem;
@@ -170,10 +144,6 @@ module top(
 	wire 	[`BUS_AXI_LEN] 		arlen_mem;
 	wire 	[`BUS_AXI_SIZE] 	arsize_mem;
 	wire 	[`BUS_AXI_BURST]	arburst_mem;
-	wire	[`BUS_AXI_CACHE]	arcache_mem;
-	wire						arprot_mem;
-	wire						arqos_mem;
-	wire						arregion_mem;
 	wire	[`BUS_AXI_RID] 		rid_mem;
 	wire	[`BUS_DATA_MEM]		rdata_mem;
 	wire	[`BUS_AXI_RESP]		rresp_mem;
@@ -185,6 +155,12 @@ module top(
 
 	wire 						stall_if;
 	wire 						stall_mem;
+
+	wire [`BUS_ADDR_MEM] araddr;
+	wire [`BUS_ADDR_MEM] awaddr;
+	
+	assign awaddr_o = awaddr[31:0];
+	assign araddr_o = araddr[31:0];
 
 
 
@@ -233,10 +209,6 @@ module top(
 		.awlen_if		(awlen_if),
 		.awsize_if		(awsize_if),
 		.awburst_if		(awburst_if),
-		.awcache_if		(awcache_if),
-		.awprot_if		(awprot_if),
-		.awqos_if		(awqos_if),
-		.awregion_if	(awregion_if),
 		.wready_if		(wready_if),
 		.wvalid_if		(wvalid_if),
 		.wdata_if		(wdata_if),
@@ -253,10 +225,6 @@ module top(
 		.arlen_if		(arlen_if),
 		.arsize_if		(arsize_if),
 		.arburst_if		(arburst_if),
-		.arcache_if		(arcache_if),
-		.arprot_if		(arprot_if),
-		.arqos_if		(arqos_if),
-		.arregion_if	(arregion_if),
 		.rid_if			(rid_if),
 		.rdata_if		(rdata_if),
 		.rresp_if		(rresp_if),
@@ -291,10 +259,6 @@ module top(
 		.awlen_mem		(awlen_mem),
 		.awsize_mem		(awsize_mem),
 		.awburst_mem	(awburst_mem),
-		.awcache_mem	(awcache_mem),
-		.awprot_mem		(awprot_mem),
-		.awqos_mem		(awqos_mem),
-		.awregion_mem	(awregion_mem),
 		.wready_mem		(wready_mem),
 		.wvalid_mem		(wvalid_mem),
 		.wdata_mem		(wdata_mem),
@@ -311,10 +275,6 @@ module top(
 		.arlen_mem		(arlen_mem),
 		.arsize_mem		(arsize_mem),
 		.arburst_mem	(arburst_mem),
-		.arcache_mem	(arcache_mem),
-		.arprot_mem		(arprot_mem),
-		.arqos_mem		(arqos_mem),
-		.arregion_mem	(arregion_mem),
 		.rid_mem		(rid_mem),
 		.rdata_mem		(rdata_mem),
 		.rresp_mem		(rresp_mem),
@@ -339,10 +299,6 @@ module top(
 		.awlen_if		(awlen_if),
 		.awsize_if		(awsize_if),
 		.awburst_if		(awburst_if),
-		.awcache_if		(awcache_if),
-		.awprot_if		(awprot_if),
-		.awqos_if		(awqos_if),
-		.awregion_if	(awregion_if),
 		.wready_if		(wready_if),
 		.wvalid_if		(wvalid_if),
 		.wdata_if		(wdata_if),
@@ -378,10 +334,6 @@ module top(
 		.awlen_mem		(awlen_mem),
 		.awsize_mem		(awsize_mem),
 		.awburst_mem	(awburst_mem),
-		.awcache_mem	(awcache_mem),
-		.awprot_mem		(awprot_mem),
-		.awqos_mem		(awqos_mem),
-		.awregion_mem	(awregion_mem),
 		.wready_mem		(wready_mem),
 		.wvalid_mem		(wvalid_mem),
 		.wdata_mem		(wdata_mem),
@@ -409,62 +361,68 @@ module top(
 		.rvalid_mem 	(rvalid_mem),
 		.rready_mem 	(rready_mem),
 
-         
-         
+		//axi out
 		.awready_axi		(awready_i),
 		.awvalid_axi		(awvalid_o),
-         
 		.awid_axi 			(awid_o),
-		.awaddr_axi			(awaddr_o),
-         
-         
+		.awaddr_axi			(awaddr),
 		.awlen_axi			(awlen_o),
 		.awsize_axi			(awsize_o),
 		.awburst_axi		(awburst_o),
-         
-		.awcache_axi		(awcache_o),
-		.awprot_axi			(awprot_o),
-		.awqos_axi			(awqos_o),
-		.awregion_axi		(awregion_o),
-         
 		.wready_axi			(wready_i),
 		.wvalid_axi			(wvalid_o),
-         
 		.wdata_axi			(wdata_o),
 		.wstrb_axi			(wstrb_o),
-         
 		.wlast_axi			(wlast_o),
-         
 		.bid_axi			(bid_i),
 		.bresp_axi			(bresp_i),
-         
 		.bvalid_axi			(bvalid_i),
 		.bready_axi			(bready_o),
-         
 		.arready_axi		(arready_i),
 		.arvalid_axi		(arvalid_o),
-         
 		.arid_axi			(arid_o),
-		.araddr_axi			(araddr_o),
-         
+		.araddr_axi			(araddr),
 		.arlen_axi			(arlen_o),
 		.arsize_axi			(arsize_o),
 		.arburst_axi		(arburst_o),
-         
-		.arcache_axi		(arcache_o),
-		.arprot_axi			(arprot_o),
-		.arqos_axi			(arqos_o),
-		.arregion_axi		(arregion_o),
-         
-         
 		.rid_axi			(rid_i),
 		.rdata_axi			(rdata_i),
 		.rresp_axi			(rresp_i),
-         
 		.rlast_axi			(rlast_i),
-         
 		.rvalid_axi 		(rvalid_i),
-		.rready_axi 		(rready_o)
+		.rready_axi 		(rready_o),
+
+		//timer
+		
+		.awready_timer		(),
+		.awvalid_timer		(),
+		.awid_timer 		(),
+		.awaddr_timer		(),
+		.awlen_timer		(),
+		.awsize_timer		(),
+		.awburst_timer		(),
+		.wready_timer		(),
+		.wvalid_timer		(),
+		.wdata_timer		(),
+		.wstrb_timer		(),
+		.wlast_timer		(),
+		.bid_timer			(),
+		.bresp_timer		(),
+		.bvalid_timer		(),
+		.bready_timer		(),
+		.arready_timer		(),
+		.arvalid_timer		(),
+		.arid_timer			(),
+		.araddr_timer		(),
+		.arlen_timer		(),
+		.arsize_timer		(),
+		.arburst_timer		(),
+		.rid_timer			(),
+		.rdata_timer		(),
+		.rresp_timer		(),
+		.rlast_timer		(),
+		.rvalid_timer 		(),
+		.rready_timer 		()
 
 );
 
