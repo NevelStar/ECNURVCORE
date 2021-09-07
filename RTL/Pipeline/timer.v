@@ -1,8 +1,8 @@
 `include "define.v"
 module timer
-#{
+#(
 	parameter AXI_ADDRESS_WIDTH = 64, AXI_DATA_WIDTH = 64
-}
+)
 (
     input wire clk,
     input wire rst,
@@ -34,7 +34,7 @@ module timer
     output wire[AXI_DATA_WIDTH:0] mtime_o,
 	output wire[AXI_DATA_WIDTH:0] mtimecmp_o,
 
-    output time_irq_o;
+    output time_irq_o
 );
 
 //#define CLINT                   (0x2000000L)

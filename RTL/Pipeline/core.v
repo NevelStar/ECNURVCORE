@@ -114,7 +114,7 @@ module core
 	wire [`BUS_ADDR_MEM] stall_if_ctrl_i;
 	wire [`BUS_ADDR_MEM] stall_mem_ctrl_i;
 	wire				 irq_jmp_ctrl_i;
-	wire [`BUS_ADDR_MEM] irq_jmp_to_ctrl_i
+	wire [`BUS_ADDR_MEM] irq_jmp_to_ctrl_i;
 	wire [`BUS_ADDR_MEM] jmp_num1_ctrl_i;
 	wire [`BUS_ADDR_MEM] jmp_num2_ctrl_i;
 	wire [`BUS_ADDR_MEM] pc_prediction_ctrl_i;
@@ -131,7 +131,7 @@ module core
 	wire [`BUS_HOLD_CODE] hold_code;
 	
 	wire				   		irq_assert_clint_o;
-	wire 	[`BUS_DATA_INSTR] 	irq_addr_clint_o
+	wire 	[`BUS_DATA_INSTR] 	irq_addr_clint_o;
 	wire						csr_we_clint_o;
 	wire	[`BUS_CSR_IMM]		csr_addr_clint_o;
 	wire	[`BUS_DATA_REG]		csr_data_clint_i;
@@ -287,7 +287,7 @@ module core
 		.store_code_i		(store_code_ex_i),
 		.alu_add_sub_i		(alu_add_sub_ex_i),
 		.alu_shift_i		(alu_shift_ex_i),
-		.word_intercept_	i(word_intercept_ex_i),
+		.word_intercept_i	(word_intercept_ex_i),
 		.alu_operation_i	(alu_operation_ex_i),
 		.alu_op_num1_i		(alu_op_num1_ex_i),
 		.alu_op_num2_i		(alu_op_num2_ex_i),
