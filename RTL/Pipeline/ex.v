@@ -31,7 +31,7 @@ module ex(
 	output reg 					mem_wr_en		,
 	output reg 					mem_rd_en		,
 	output						mem_except		,
-	output	[`BUS_EXCEPT_CAUSE]	except_cause	,
+	output	[`BUS_EXCEPT_CAUSE]	except_cause	
 	
 );
 	

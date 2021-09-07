@@ -33,7 +33,7 @@
 //the constant
 `define REG_NUM				32
 `define DATA_WIDTH			64
-
+`define ADDR_WIDTH         32
 `define WR_STR_ALL			8'hff
 `define WR_STR_WORD			8'h0f
 `define WR_STR_HALF			8'h03
@@ -96,7 +96,8 @@
 `define BUS_AXI_LEN			7:0
 `define BUS_AXI_SIZE		2:0
 `define BUS_AXI_BURST		1:0
-`define BUS_AXI_RESP		0:0
+`define BUS_AXI_RESP		1:0
+`define BUS_AXI_ADDR		31:0
 
 
 
@@ -317,13 +318,6 @@
 `define CSR_CODE_CSRRSI		3'b110
 `define CSR_CODE_CSRRCI		3'b111
 
-
-`define UART_BASE               64'h10000000
-`define CLINT                   64'h20000000
-`define CLINT_MTIMECMP(hartid)  `CLINT + 0x4000 + 4*(hartid)
-`define CLINT_MTIME             `CLINT + 0xBFF8            // cycles since boot.
-`define IRQ_ENTRY_ADDR          64'h12345678
-
 // CSR reg addr
 `define CSR_MSTATUS 	12'h300
 `define CSR_MISA 		12'h301
@@ -343,3 +337,4 @@
 `define ReadDisable 1'b0
 
 `define ISA_RV64I 64'h8000000000000100
+`define RstEnable 1'b0
