@@ -1,7 +1,7 @@
 
 `include "defines.v"
 
-module clirq_top
+module clint
 (
 	input							clk,
 	input							rst_n,
@@ -72,6 +72,7 @@ module clirq_top
 	assign except_async = tmr_irq_i | ext_irq_i;
 	assign except_mret  = except_src_assert &   mret_assert ;
 	
+//	wire status_ena = w_mstatus[3] & (o_meie | o_mtie | o_msie) & irq_src_i;	//发生中断
 	assign irq_assert_o = except_src_assert;
 	
 	assign except_cus = except_src_if ? except_cus_if : (
@@ -160,13 +161,23 @@ module clirq_top
 				CSR_MSTATUS: begin
 					csr_we_o   <= `WriteEnable;
 					csr_addr_o <= `CSR_MSTATUS;
-					csr_data_o <= {csr_mstatus[31:4], 1'b0, csr_mstatus[2:0]};
+//					csr_data_o <= {csr_mstatus[31:4], 1'b0, csr_mstatus[2:0]};
+					csr_data_o <= {csr_mstatus[63:8], 
+								   csr_mstatus[3], 
+								   csr_mstatus[6:4], 
+								   1'b0, 
+								   csr_mstatus[2:0]};
 				end
 
 				CSR_MSTATUS_MRET: begin
 					csr_we_o   <= `WriteEnable;
 					csr_addr_o <= `CSR_MSTATUS;
-					csr_data_o <= {csr_mstatus[31:4], csr_mstatus[7], csr_mstatus[2:0]};
+//					csr_data_o <= {csr_mstatus[31:4], csr_mstatus[7], csr_mstatus[2:0]};
+					csr_data_o <= {csr_mstatus[63:8],
+								   1'b1,
+								   csr_mstatus[6:4],
+								   csr_mstatus[7],
+								   csr_mstatus[2:0]};
 				end
 				
 				default: begin
