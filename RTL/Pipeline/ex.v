@@ -30,8 +30,8 @@ module ex(
 	output reg 	[`BUS_ADDR_MEM]	addr_mem_rd		,
 	output reg 					mem_wr_en		,
 	output reg 					mem_rd_en		,
-	output						mem_except		,
-	output	[`BUS_EXCEPT_CAUSE]	except_cause	
+	output reg					mem_except		,
+	output reg	[`BUS_EXCEPT_CAUSE]	except_cause	
 	
 );
 	
