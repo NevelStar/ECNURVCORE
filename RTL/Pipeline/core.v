@@ -136,9 +136,12 @@ module core
 	wire	[`BUS_CSR_IMM]		csr_addr_clint_o;
 	wire	[`BUS_DATA_REG]		csr_data_clint_i;
 	wire	[`BUS_DATA_REG]		csr_data_clint_o;
+	
+	wire	[`BUS_DATA_REG]		mstatus_csr_reg_o;
+	wire	[`BUS_DATA_REG]		mie_csr_reg_o;
 	wire	[`BUS_DATA_REG]		mtvec_csr_reg_o;
 	wire	[`BUS_DATA_REG]		mepc_csr_reg_o;
-	wire	[`BUS_DATA_REG]		mstatus_csr_reg_o;
+	
 
 
 	assign jmp_en_pc_i = jmp_en_ctrl_o;
@@ -331,7 +334,7 @@ module core
 		.data_rd2			(data_rd2_reg_o)
 	);
 	
-/*
+
 	reg_csr U_reg_csr
 	(
         .clk				(clk),
@@ -350,11 +353,12 @@ module core
         .clt_data_i			(csr_data_clint_i),
         .clt_data_o			(csr_data_clint_o),
 		
+		.csr_mstatus		(mstatus_csr_reg_o),
+		.csr_mie			(mie_csr_reg_o),
 		.csr_mtvec			(mtvec_csr_reg_o),
-		.csr_mepc			(mepc_csr_reg_o),
-		.csr_mstatus		(mstatus_csr_reg_o)
+		.csr_mepc			(mepc_csr_reg_o)
     );
-*/
+
 
 	ctrl core_ctrl
 	(
@@ -379,7 +383,7 @@ module core
 		.hold_code_o		(hold_code_ctrl_o)
 	);
 	
-/*
+
 	clint core_clint
 	(
 		.clk				(clk),
@@ -403,11 +407,13 @@ module core
 		.csr_addr_o			(csr_addr_clint_o),
 		.csr_data_i			(csr_data_clint_i),
 		.csr_data_o			(csr_data_clint_o),
+		
+		.csr_mstatus		(mstatus_csr_reg_o),
+		.csr_mie			(mie_csr_reg_o),
 		.csr_mtvec			(mtvec_csr_reg_o), 
-		.csr_mepc			(mepc_csr_reg_o),  
-		.csr_mstatus		(mstatus_csr_reg_o)
+		.csr_mepc			(mepc_csr_reg_o)
 );
-*/
+
 
 
 endmodule

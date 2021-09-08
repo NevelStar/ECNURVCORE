@@ -23,12 +23,8 @@ module clint
 //	input	[`InstAddrBus] 			jump_addr_i,
 //	input							div_started_i,
 	
-	// from ctrl
-//	input	[`Hold_Flag_Bus]		hold_flag_i,
-	
 	input							tmr_irq_i,
 	input							ext_irq_i,
-	input							glb_irqen_i,
 	
 	// to ctrl
 //	output 							wire hold_flag_o,
@@ -40,18 +36,19 @@ module clint
 	output	reg	[`BUS_CSR_IMM]		csr_addr_o,
 	input		[`BUS_DATA_REG]		csr_data_i,
 	output	reg	[`BUS_DATA_REG] 	csr_data_o,
-	input		[`BUS_DATA_REG]		csr_mtvec,  
-	input		[`BUS_DATA_REG]		csr_mepc,   
-	input		[`BUS_DATA_REG]		csr_mstatus
 
+	input		[`BUS_DATA_REG]		csr_mstatus,
+	input		[`BUS_DATA_REG]		csr_mie,
+	input		[`BUS_DATA_REG]		csr_mtvec,  
+	input		[`BUS_DATA_REG]		csr_mepc
 );
 
 
-	localparam CSR_IDLE            = 5'b00001;
-	localparam CSR_MSTATUS         = 5'b00010;
-	localparam CSR_MEPC            = 5'b00100;
-	localparam CSR_MSTATUS_MRET    = 5'b01000;
-	localparam CSR_MCAUSE          = 5'b10000;
+	localparam S_IDLE            = 5'b00001;
+	localparam S_MSTATUS         = 5'b00010;
+	localparam S_MEPC            = 5'b00100;
+	localparam S_MSTATUS_MRET    = 5'b01000;
+	localparam S_MCAUSE          = 5'b10000;
 
 	reg		[4:0]				cur_csr_state;
 	reg		[4:0]				nxt_csr_state;
@@ -62,18 +59,20 @@ module clint
 	wire						except_sync,except_mret;
 	wire						except_async;
 	wire	[`BUS_EXCEPT_CAUSE]	except_cus;
-
-//	assign hold_flag_o = ((exc_state != EXCEPT_IDLE) | (csr_state != CSR_IDLE))? `HoldEnable: `HoldDisable;
+	
+	assign glb_irq_en = csr_mstatus[3];
+	assign tmr_irq_en = csr_mie[7];
+    assign sft_irq_en = csr_mie[3];
+    assign ext_irq_en = csr_mie[11];
 
 	assign except_src_assert = except_src_if | except_src_id | except_src_ex;
 	assign mret_assert = except_cus_id == `EXCEPT_MRET;
 	
 	assign except_sync  = except_src_assert & (~mret_assert);
-	assign except_async = tmr_irq_i | ext_irq_i;
+	assign except_async = glb_irq_en & ((tmr_irq_i & tmr_irq_en) | (ext_irq_i & ext_irq_en));
 	assign except_mret  = except_src_assert &   mret_assert ;
-	
-//	wire status_ena = w_mstatus[3] & (o_meie | o_mtie | o_msie) & irq_src_i;	//发生中断
-	assign irq_assert_o = except_src_assert;
+
+	assign irq_assert_o = except_sync | except_async | except_mret;
 	
 	assign except_cus = except_src_if ? except_cus_if : (
 						except_src_id ? except_cus_id : (
@@ -82,7 +81,7 @@ module clint
 
 	always @(posedge clk) begin
 		if (!rst_n)
-			cur_csr_state <= CSR_IDLE;
+			cur_csr_state <= S_IDLE;
 		else
 			cur_csr_state <= nxt_csr_state;
 	end
@@ -90,45 +89,45 @@ module clint
 	always @(*) begin
 		if (!rst_n) begin
 			irq_addr_o    = `ZERO_DOUBLE;
-			nxt_csr_state = CSR_IDLE;
+			nxt_csr_state = S_IDLE;
 		end 
 		else begin
 			nxt_csr_state = cur_csr_state;
 			case (cur_csr_state)
-				CSR_IDLE: begin
+				S_IDLE: begin
 					if (except_sync | except_async) begin
 						irq_addr_o    = csr_mtvec;
-						nxt_csr_state = CSR_MEPC;
+						nxt_csr_state = S_MEPC;
 					end 
 					else if (except_mret) begin
 						irq_addr_o    = csr_mepc;
-						nxt_csr_state = CSR_MSTATUS_MRET;
+						nxt_csr_state = S_MSTATUS_MRET;
 					end
 				end
 
-				CSR_MEPC: begin
+				S_MEPC: begin
 					irq_addr_o    = `ZERO_DOUBLE;
-					nxt_csr_state = CSR_MCAUSE;
+					nxt_csr_state = S_MCAUSE;
 				end
 
-				CSR_MCAUSE: begin
+				S_MCAUSE: begin
 					irq_addr_o    = `ZERO_DOUBLE;
-					nxt_csr_state = CSR_MSTATUS;
+					nxt_csr_state = S_MSTATUS;
 				end
 
-				CSR_MSTATUS: begin
+				S_MSTATUS: begin
 					irq_addr_o    = `ZERO_DOUBLE;
-					nxt_csr_state = CSR_IDLE;
+					nxt_csr_state = S_IDLE;
 				end
 
-				CSR_MSTATUS_MRET: begin
+				S_MSTATUS_MRET: begin
 					irq_addr_o    = `ZERO_DOUBLE;
-					nxt_csr_state = CSR_IDLE;
+					nxt_csr_state = S_IDLE;
 				end
 
 				default: begin
 					irq_addr_o    = `ZERO_DOUBLE;
-					nxt_csr_state = CSR_IDLE;
+					nxt_csr_state = S_IDLE;
 				end
 				
 			endcase
@@ -144,23 +143,23 @@ module clint
 		else begin
 			case(nxt_csr_state)
 
-				CSR_MEPC: begin
+				S_MEPC: begin
 					csr_we_o   <= `WriteEnable;
-					csr_addr_o <= `CSR_MEPC;
+					csr_addr_o <= `S_MEPC;
 					csr_data_o <= addr_instr_id_i;
 					
 					except_cus_reg <= except_cus;
 				end
 
-				CSR_MCAUSE: begin
+				S_MCAUSE: begin
 					csr_we_o   <= `WriteEnable;
-					csr_addr_o <= `CSR_MCAUSE;
+					csr_addr_o <= `S_MCAUSE;
 					csr_data_o <= {61'b0,except_cus_reg};
 				end
 
-				CSR_MSTATUS: begin
+				S_MSTATUS: begin
 					csr_we_o   <= `WriteEnable;
-					csr_addr_o <= `CSR_MSTATUS;
+					csr_addr_o <= `S_MSTATUS;
 //					csr_data_o <= {csr_mstatus[31:4], 1'b0, csr_mstatus[2:0]};
 					csr_data_o <= {csr_mstatus[63:8], 
 								   csr_mstatus[3], 
@@ -169,9 +168,9 @@ module clint
 								   csr_mstatus[2:0]};
 				end
 
-				CSR_MSTATUS_MRET: begin
+				S_MSTATUS_MRET: begin
 					csr_we_o   <= `WriteEnable;
-					csr_addr_o <= `CSR_MSTATUS;
+					csr_addr_o <= `S_MSTATUS;
 //					csr_data_o <= {csr_mstatus[31:4], csr_mstatus[7], csr_mstatus[2:0]};
 					csr_data_o <= {csr_mstatus[63:8],
 								   1'b1,
@@ -198,12 +197,12 @@ module clint
 //		else begin
 //			case(cur_csr_state)
 //
-//				CSR_MCAUSE: begin
+//				S_MCAUSE: begin
 //					irq_assert_o <= `INT_ASSERT;
 //					irq_addr_o <= csr_mtvec;
 //				end
 //
-//				CSR_MSTATUS_MRET: begin
+//				S_MSTATUS_MRET: begin
 //					irq_assert_o <= `INT_ASSERT;
 //					irq_addr_o <= csr_mepc;
 //				end

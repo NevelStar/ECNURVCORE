@@ -338,3 +338,4 @@
 
 `define ISA_RV64I 64'h8000000000000100
 `define RstEnable 1'b0
+`define IRQ_ENTRY_INIT 64'h30000000

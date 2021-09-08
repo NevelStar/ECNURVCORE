@@ -108,26 +108,11 @@ module ex_stage(
 		.csr_instr_i	(csr_instr_i),
 		.csr_addr_i		(csr_addr_i),
 		.csr_imm_i		(),
-		
-		.ext_irq_i		(),
-		.sft_irq_i		(),
-		.tmr_irq_i		(),
-		.irq_src_i		(),
-		.exp_src_i		(),
-		
-		.irq_pc_o		(),	
-		.mepc_o			(),
-		.mret_ena_i		(),
 
 		.wr_csr_nxt_o	(),
 		.rd_wen_o		(),
 		.wb_rd_idx_o	(),
-		.wb_data_o		(),
-
-		.meie_o			(),
-		.msie_o			(),
-		.mtie_o			(),
-		.glb_irq_o		()
+		.wb_data_o		()
 	);
 
 */

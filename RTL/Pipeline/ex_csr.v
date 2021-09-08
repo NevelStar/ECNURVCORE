@@ -18,25 +18,10 @@ module ex_csr
 	input	[`BUS_CSR_IMM]		csr_addr_i		,
 	input	[`BUS_CSR_IMMEX]	csr_imm_i		,	// alu_op_num1[31:0]
 	
-	input						ext_irq_i		,	//外部中断请求
-	input						sft_irq_i		,	//软件中断请求
-	input						tmr_irq_i		,	//计时器中断请求
-	input  						irq_src_i		,	//中断源
-	input  						exp_src_i		,	//异常源
-	
-	output [`BUS_ADDR_MEM]		irq_pc_o		,	//中断入口地址
-	output [`BUS_ADDR_MEM]		mepc_o			,   //中断返回后需要执行的PC
-	input  						mret_ena_i		,	//中断返回使能
-	
 	output [`BUS_DATA_REG] 		wr_csr_nxt_o	,	//写入CSR寄存器的值
 	output 						rd_wen_o		,	//CSR寄存器读使能，用于回写
 	output [`BUS_ADDR_REG]		wb_rd_idx_o		,	//回写索引
-	output [`BUS_DATA_REG]		wb_data_o		,	//回写数据
-	
-	output						meie_o			,	//外部中断使能
-	output						msie_o			,	//软件中断使能
-	output						mtie_o			,	//计时器中断使能
-	output						glb_irq_o			//全局中断使能
+	output [`BUS_DATA_REG]		wb_data_o			//回写数据
 );
 
 
