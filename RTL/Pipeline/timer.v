@@ -21,9 +21,9 @@ module timer
 	input wire [`DATA_WIDTH-1:0] saxi_wdata,
 	
 	//read data channel
-	output wire saxi_rvaild,
+	output reg  saxi_rvaild,
 	input wire saxi_rready,
-	output wire [`DATA_WIDTH-1:0] saxi_rdata,
+	output reg [`DATA_WIDTH-1:0] saxi_rdata,
 	
 	//write response channel
 	output reg saxi_bvaild,
