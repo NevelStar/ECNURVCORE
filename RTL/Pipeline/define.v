@@ -340,5 +340,9 @@
 `define RstEnable 1'b0
 
 //mmio peripherals reg address
+// | ADDRESS    		|  NAME    | FUNCTION 							|
+// | 0x0000000002004000 | MTIMECMP | TRIG IRG WHEN MTIME >= MTIMECMP	|
+// | 0x000000000200BFF8 | MTIME    | TIME CONUNTER						|
+
 `define CLINT_MTIMECMP 32'h02004000
 `define CLINT_MTIME    32'h0200BFF8
