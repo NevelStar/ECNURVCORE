@@ -8,16 +8,16 @@ module timer
 	//write address channel
 	input wire [`ADDR_WIDTH-1:0] saxi_awaddr,
 	input wire saxi_awvaild,
-	output wire saxi_awready,
+	output reg saxi_awready,
 	
 	//read address channel
 	input wire [`ADDR_WIDTH-1:0] saxi_araddr,
 	input wire saxi_arvaild,
-	output wire saxi_arready,
+	output reg saxi_arready,
 	
 	//write data channel
 	input wire saxi_wvaild,
-	input wire saxi_wready,
+	output reg saxi_wready,
 	input wire [`DATA_WIDTH-1:0] saxi_wdata,
 	
 	//read data channel
@@ -26,7 +26,7 @@ module timer
 	output wire [`DATA_WIDTH-1:0] saxi_rdata,
 	
 	//write response channel
-	output wire saxi_bvaild,
+	output reg saxi_bvaild,
 	input wire saxi_bready,
 
     //output wire[`DATA_WIDTH:0] mtime_o,
