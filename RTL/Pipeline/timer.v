@@ -29,8 +29,8 @@ module timer
 	output wire saxi_bvaild,
 	input wire saxi_bready,
 
-    output wire[`DATA_WIDTH:0] mtime_o,
-	output wire[`DATA_WIDTH:0] mtimecmp_o,
+    //output wire[`DATA_WIDTH:0] mtime_o,
+	//output wire[`DATA_WIDTH:0] mtimecmp_o,
 
     output time_irq_o
 );
@@ -39,18 +39,11 @@ module timer
 //#define CLINT_MTIMECMP(hartid)  (CLINT + 0x4000 + 4*(hartid))	//hartid = 0
 //#define CLINT_MTIME             (CLINT + 0xBFF8)            	// cycles since boot.
 
-// | ADDRESS    		|  NAME    | FUNCTION 							|
-// | 0x0000000002004000 | MTIMECMP | TRIG IRG WHEN MTIME >= MTIMECMP	|
-// | 0x000000000200BFF8 | MTIME    | TIME CONUNTER						|
-
-`define CLINT_MTIMECMP 64'h0000000002004000
-`define CLINT_MTIME    64'h000000000200BFF8
-
 reg [`DATA_WIDTH-1:0] mtime;
 reg [`DATA_WIDTH-1:0] mtimecmp;
 
-assign mtime_o = mtime;
-assign mtimecmp_o = mtimecmp;
+//assign mtime_o = mtime;
+//assign mtimecmp_o = mtimecmp;
 
 //AXI write address channel
 always @(posedge clk)

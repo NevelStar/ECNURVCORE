@@ -338,3 +338,7 @@
 
 `define ISA_RV64I 64'h8000000000000100
 `define RstEnable 1'b0
+
+//mmio peripherals reg address
+`define CLINT_MTIMECMP 32'h02004000
+`define CLINT_MTIME    32'h0200BFF8
