@@ -83,10 +83,10 @@ reg [`ADDR_WIDTH-1:0] axi_waddr; // the address need to be wirtten
 always@(*)
 begin
 	if (saxi_wvaild && saxi_wready && saxi_awvaild && saxi_awready) begin 
-		awi_waddr = saxi_awaddr;  		//the address is now available on the interface
+		axi_waddr = saxi_awaddr;  		//the address is now available on the interface
 	end 
 	else begin
-		awi_waddr = axi_awaddr_buf;		//the address is assigned in previous command
+		axi_waddr = axi_awaddr_buf;		//the address is assigned in previous command
 	end
 end
 
@@ -160,7 +160,7 @@ begin
 	end
 end
 
-reg [`ADDR_WIDTH-1:0] axi_raddr; // the address need to be wirtten
+reg [`ADDR_WIDTH-1:0] axi_raddr; // the address need to be read
 reg axi_need_read; //A read operation, need 
 
 always @(posedge clk)
@@ -172,7 +172,7 @@ begin
 	end
 	else begin
 		if (saxi_rvaild && saxi_rready) begin
-			axi_raddr <= saxi_raddr;
+			axi_raddr <= saxi_araddr;
 			axi_need_read <= 1'b1;
 		end
 		else begin

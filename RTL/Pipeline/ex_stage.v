@@ -75,7 +75,7 @@ module ex_stage(
 		.mem_wr_en		(mem_wr_en_o),
 		.mem_rd_en		(mem_rd_en_o),
 		.mem_except		(mem_except_o),
-		.except_cause	(except_cause_o),
+		.except_cause	(except_cause_o)
 	);
 
 	ex_mem core_pipeline_ex_mem(
