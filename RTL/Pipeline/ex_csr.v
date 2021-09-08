@@ -25,8 +25,6 @@ module ex_csr
 );
 
 
-	//--------------------省略部分信号的声明和赋值-------------------------
-	// CSR指令按照如下排列
 	// csr_instr_i = {rv32i_csrrci, rv32i_csrrsi, rv32i_csrrwi,
 	//                rv32i_csrrc,  rv32i_csrrs,  rv32i_csrrw};
 	

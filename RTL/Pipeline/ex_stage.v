@@ -44,6 +44,12 @@ module ex_stage(
 	output 	[`BUS_AXI_STRB]		strb_mem_wr_o	,
 	output 	[`BUS_ADDR_MEM] 	addr_mem_wr_o	,	
 	output 	[`BUS_ADDR_MEM] 	addr_mem_rd_o	,
+	
+	output						csr_we_o		,
+	output	[`BUS_CSR_IMM]		csr_addr_o		,
+	input	[`BUS_DATA_REG]		csr_data_i		,
+	output	[`BUS_DATA_REG] 	csr_data_o		,
+	
 	output						mem_except_o	,
 	output	[`BUS_EXCEPT_CAUSE]	except_cause_o	
 
@@ -94,7 +100,7 @@ module ex_stage(
 		.data_reg_wr_o 	(data_reg_wr_o),
 		.reg_wr_en_o	(reg_wr_en_o)	
 	);
-/*
+
 	ex_csr U_ex_csr
 	(
 		.clk			(clk),
@@ -115,5 +121,5 @@ module ex_stage(
 		.wb_data_o		()
 	);
 
-*/
+
 endmodule

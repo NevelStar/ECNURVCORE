@@ -313,7 +313,12 @@ module core
 		.addr_reg_wr_o		(addr_wr_ex_o),
 		.data_reg_wr_o 		(data_wr_ex_o),
 		.reg_wr_en_o		(wr_en_ex_o),
-			
+		
+		.csr_we_o			(csr_we_ex_o),
+        .csr_waddr_o		(csr_addr_ex_o),
+        .csr_data_o			(csr_data_ex_o),
+        .csr_data_i			(csr_data_ex_i),
+		
 		.mem_except_o		(mem_except),
 		.except_cause_o		(except_cause_ex_o)
 	);
@@ -340,18 +345,15 @@ module core
         .clk				(clk),
         .rst_n				(rst_n),
 		
-		.global_int_en_o	(csr_global_int_en_o),
-		
-        .ex_we_i			(ex_csr_we_o),
-        .ex_raddr_i			(id_csr_raddr_o),
-        .ex_waddr_i			(ex_csr_waddr_o),
-        .ex_data_i			(ex_csr_wdata_o),
-        .ex_data_o			(csr_data_o),
+        .ex_we_i			(csr_we_ex_o),
+        .ex_waddr_i			(csr_addr_ex_o),
+        .ex_data_i			(csr_data_ex_o),
+        .ex_data_o			(csr_data_ex_i),
 		
         .clt_we_i			(csr_we_clint_o),
         .clt_addr_i			(csr_addr_clint_o),
-        .clt_data_i			(csr_data_clint_i),
-        .clt_data_o			(csr_data_clint_o),
+        .clt_data_i			(csr_data_clint_o),
+        .clt_data_o			(csr_data_clint_i),
 		
 		.csr_mstatus		(mstatus_csr_reg_o),
 		.csr_mie			(mie_csr_reg_o),

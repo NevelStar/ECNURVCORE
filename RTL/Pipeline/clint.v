@@ -32,7 +32,7 @@ module clint
 	output	reg	[`BUS_ADDR_MEM]		irq_addr_o,
 	
 	// from/to csr_reg
-	output	reg						csr_we_o,                         
+	output	reg						csr_we_o,
 	output	reg	[`BUS_CSR_IMM]		csr_addr_o,
 	input		[`BUS_DATA_REG]		csr_data_i,
 	output	reg	[`BUS_DATA_REG] 	csr_data_o,
@@ -145,7 +145,7 @@ module clint
 
 				S_MEPC: begin
 					csr_we_o   <= `WriteEnable;
-					csr_addr_o <= `S_MEPC;
+					csr_addr_o <= `CSR_MEPC;
 					csr_data_o <= addr_instr_id_i;
 					
 					except_cus_reg <= except_cus;
@@ -153,13 +153,13 @@ module clint
 
 				S_MCAUSE: begin
 					csr_we_o   <= `WriteEnable;
-					csr_addr_o <= `S_MCAUSE;
+					csr_addr_o <= `CSR_MCAUSE;
 					csr_data_o <= {61'b0,except_cus_reg};
 				end
 
 				S_MSTATUS: begin
 					csr_we_o   <= `WriteEnable;
-					csr_addr_o <= `S_MSTATUS;
+					csr_addr_o <= `CSR_MSTATUS;
 //					csr_data_o <= {csr_mstatus[31:4], 1'b0, csr_mstatus[2:0]};
 					csr_data_o <= {csr_mstatus[63:8], 
 								   csr_mstatus[3], 
@@ -170,7 +170,7 @@ module clint
 
 				S_MSTATUS_MRET: begin
 					csr_we_o   <= `WriteEnable;
-					csr_addr_o <= `S_MSTATUS;
+					csr_addr_o <= `CSR_MSTATUS;
 //					csr_data_o <= {csr_mstatus[31:4], csr_mstatus[7], csr_mstatus[2:0]};
 					csr_data_o <= {csr_mstatus[63:8],
 								   1'b1,
