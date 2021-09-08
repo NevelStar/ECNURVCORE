@@ -338,4 +338,14 @@
 
 `define ISA_RV64I 64'h8000000000000100
 `define RstEnable 1'b0
-`define IRQ_ENTRY_INIT 64'h30000000
+
+//mmio peripherals reg address
+// | ADDRESS    		|  NAME    | FUNCTION 							|
+// | 0x0000000002004000 | MTIMECMP | TRIG IRG WHEN MTIME >= MTIMECMP	|
+// | 0x000000000200BFF8 | MTIME    | TIME CONUNTER						|
+
+`define CLINT_MTIMECMP 32'h02004000
+`define CLINT_MTIME    32'h0200BFF8
+
+//IRQ base addr reset value
+`define IRQ_ENTRY_ADDR 64'h30000000

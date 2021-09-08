@@ -8,29 +8,29 @@ module timer
 	//write address channel
 	input wire [`ADDR_WIDTH-1:0] saxi_awaddr,
 	input wire saxi_awvaild,
-	output wire saxi_awready,
+	output reg saxi_awready,
 	
 	//read address channel
 	input wire [`ADDR_WIDTH-1:0] saxi_araddr,
 	input wire saxi_arvaild,
-	output wire saxi_arready,
+	output reg saxi_arready,
 	
 	//write data channel
 	input wire saxi_wvaild,
-	input wire saxi_wready,
+	output reg saxi_wready,
 	input wire [`DATA_WIDTH-1:0] saxi_wdata,
 	
 	//read data channel
-	output wire saxi_rvaild,
+	output reg  saxi_rvaild,
 	input wire saxi_rready,
-	output wire [`DATA_WIDTH-1:0] saxi_rdata,
+	output reg [`DATA_WIDTH-1:0] saxi_rdata,
 	
 	//write response channel
-	output wire saxi_bvaild,
+	output reg saxi_bvaild,
 	input wire saxi_bready,
 
-    output wire[`DATA_WIDTH:0] mtime_o,
-	output wire[`DATA_WIDTH:0] mtimecmp_o,
+    //output wire[`DATA_WIDTH:0] mtime_o,
+	//output wire[`DATA_WIDTH:0] mtimecmp_o,
 
     output time_irq_o
 );
@@ -39,18 +39,11 @@ module timer
 //#define CLINT_MTIMECMP(hartid)  (CLINT + 0x4000 + 4*(hartid))	//hartid = 0
 //#define CLINT_MTIME             (CLINT + 0xBFF8)            	// cycles since boot.
 
-// | ADDRESS    		|  NAME    | FUNCTION 							|
-// | 0x0000000002004000 | MTIMECMP | TRIG IRG WHEN MTIME >= MTIMECMP	|
-// | 0x000000000200BFF8 | MTIME    | TIME CONUNTER						|
-
-`define CLINT_MTIMECMP 64'h0000000002004000
-`define CLINT_MTIME    64'h000000000200BFF8
-
 reg [`DATA_WIDTH-1:0] mtime;
 reg [`DATA_WIDTH-1:0] mtimecmp;
 
-assign mtime_o = mtime;
-assign mtimecmp_o = mtimecmp;
+//assign mtime_o = mtime;
+//assign mtimecmp_o = mtimecmp;
 
 //AXI write address channel
 always @(posedge clk)
@@ -90,10 +83,10 @@ reg [`ADDR_WIDTH-1:0] axi_waddr; // the address need to be wirtten
 always@(*)
 begin
 	if (saxi_wvaild && saxi_wready && saxi_awvaild && saxi_awready) begin 
-		awi_waddr = saxi_awaddr;  		//the address is now available on the interface
+		axi_waddr = saxi_awaddr;  		//the address is now available on the interface
 	end 
 	else begin
-		awi_waddr = axi_awaddr_buf;		//the address is assigned in previous command
+		axi_waddr = axi_awaddr_buf;		//the address is assigned in previous command
 	end
 end
 
@@ -167,7 +160,7 @@ begin
 	end
 end
 
-reg [`ADDR_WIDTH-1:0] axi_raddr; // the address need to be wirtten
+reg [`ADDR_WIDTH-1:0] axi_raddr; // the address need to be read
 reg axi_need_read; //A read operation, need 
 
 always @(posedge clk)
@@ -179,7 +172,7 @@ begin
 	end
 	else begin
 		if (saxi_rvaild && saxi_rready) begin
-			axi_raddr <= saxi_raddr;
+			axi_raddr <= saxi_araddr;
 			axi_need_read <= 1'b1;
 		end
 		else begin

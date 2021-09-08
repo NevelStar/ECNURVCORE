@@ -284,6 +284,26 @@ module top(
 
 	);
 
+	timer u_timer(
+		.clk          (clk          ),
+		.rst          (rst          ),
+		.saxi_awaddr  (timer_saxi_awaddr  ),
+		.saxi_awvaild (timer_saxi_awvaild ),
+		.saxi_awready (timer_saxi_awready ),
+		.saxi_araddr  (timer_saxi_araddr  ),
+		.saxi_arvaild (timer_saxi_arvaild ),
+		.saxi_arready (timer_saxi_arready ),
+		.saxi_wvaild  (timer_saxi_wvaild  ),
+		.saxi_wready  (timer_saxi_wready  ),
+		.saxi_wdata   (timer_saxi_wdata   ),
+		.saxi_rvaild  (timer_saxi_rvaild  ),
+		.saxi_rready  (timer_saxi_rready  ),
+		.saxi_rdata   (timer_saxi_rdata   ),
+		.saxi_bvaild  (timer_saxi_bvaild  ),
+		.saxi_bready  (timer_saxi_bready  ),
+		.time_irq_o   (time_irq_o   )
+	);
+	
 
 
 	axi_interconnect interconnect(
@@ -394,35 +414,35 @@ module top(
 
 		//timer
 		
-		.awready_timer		(),
-		.awvalid_timer		(),
+		.awready_timer		(timer_saxi_awready),
+		.awvalid_timer		(timer_saxi_awvaild),
 		.awid_timer 		(),
-		.awaddr_timer		(),
+		.awaddr_timer		(timer_saxi_awaddr),
 		.awlen_timer		(),
 		.awsize_timer		(),
 		.awburst_timer		(),
-		.wready_timer		(),
-		.wvalid_timer		(),
-		.wdata_timer		(),
+		.wready_timer		(timer_saxi_wready),
+		.wvalid_timer		(timer_saxi_wvaild),
+		.wdata_timer		(timer_saxi_wdata),
 		.wstrb_timer		(),
 		.wlast_timer		(),
 		.bid_timer			(),
 		.bresp_timer		(),
-		.bvalid_timer		(),
-		.bready_timer		(),
-		.arready_timer		(),
-		.arvalid_timer		(),
+		.bvalid_timer		(timer_saxi_bvaild),
+		.bready_timer		(timer_saxi_bready),
+		.arready_timer		(timer_saxi_arready),
+		.arvalid_timer		(timer_saxi_arvaild),
 		.arid_timer			(),
-		.araddr_timer		(),
+		.araddr_timer		(timer_saxi_araddr),
 		.arlen_timer		(),
 		.arsize_timer		(),
 		.arburst_timer		(),
 		.rid_timer			(),
-		.rdata_timer		(),
+		.rdata_timer		(timer_saxi_rdata),
 		.rresp_timer		(),
 		.rlast_timer		(),
-		.rvalid_timer 		(),
-		.rready_timer 		()
+		.rvalid_timer 		(timer_saxi_rvaild),
+		.rready_timer 		(timer_saxi_rready)
 
 );
 
