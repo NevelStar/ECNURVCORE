@@ -346,3 +346,6 @@
 
 `define CLINT_MTIMECMP 32'h02004000
 `define CLINT_MTIME    32'h0200BFF8
+
+//IRQ base addr reset value
+`define IRQ_ENTRY_ADDR 0x30000000
