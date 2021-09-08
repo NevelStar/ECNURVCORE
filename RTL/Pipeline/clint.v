@@ -1,5 +1,5 @@
 
-`include "defines.v"
+`include "define.v"
 
 module clint
 (
