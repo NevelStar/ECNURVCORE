@@ -112,8 +112,8 @@ module core
 	wire [`BUS_DATA_REG] data_rd1_reg_o;
 	wire [`BUS_DATA_REG] data_rd2_reg_o;
 
-	wire [`BUS_ADDR_MEM] stall_if_ctrl_i;
-	wire [`BUS_ADDR_MEM] stall_mem_ctrl_i;
+	wire 				 stall_if_ctrl_i;
+	wire 				 stall_mem_ctrl_i;
 	wire				 irq_jmp_ctrl_i;
 	wire [`BUS_ADDR_MEM] irq_jmp_to_ctrl_i;
 	wire [`BUS_ADDR_MEM] jmp_num1_ctrl_i;

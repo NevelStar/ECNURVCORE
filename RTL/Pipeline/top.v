@@ -159,6 +159,27 @@ module top(
 	wire [`BUS_ADDR_MEM] araddr;
 	wire [`BUS_ADDR_MEM] awaddr;
 	
+	//Timer AXI4-lite interface
+	wire [`ADDR_WIDTH-1:0] timer_saxi_awaddr;
+	wire timer_saxi_awvaild;
+	wire timer_saxi_awready;
+
+	wire [`ADDR_WIDTH-1:0] timer_saxi_araddr;
+	wire timer_saxi_arvaild;
+	wire timer_saxi_arready;
+
+	wire timer_saxi_wvaild;
+	wire timer_saxi_wready;
+	wire [`DATA_WIDTH-1:0] timer_saxi_wdata;
+
+	wire timer_saxi_rvaild;
+	wire timer_saxi_rready;
+	wire [`DATA_WIDTH-1:0] timer_saxi_rdata;
+
+	wire timer_saxi_bvaild;
+	wire timer_saxi_bready;
+	wire time_irq_o;
+
 	assign io_master_awaddr = awaddr[31:0];
 	assign io_master_araddr = araddr[31:0];
 
