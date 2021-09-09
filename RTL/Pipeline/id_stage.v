@@ -137,7 +137,7 @@ module id_stage(
 	
 		.alu_add_sub_i		(alu_add_sub),
 		.alu_shift_i		(alu_shift),
-		.word_intercept_	i(word_intercept),
+		.word_intercept_i	(word_intercept),
 		.alu_operation_i	(alu_operation),
 		.alu_op_num1_i		(alu_op_num1),
 		.alu_op_num2_i		(alu_op_num2),
