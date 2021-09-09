@@ -18,7 +18,7 @@ module ex_csr
 	// from id
 	input	[`BUS_ALU_OP]		csr_instr_i		,
 	input	[`BUS_CSR_IMM]		csr_addr_i		,
-	input	[`BUS_CSR_IMMEX]	csr_imm_i		,
+	input	[`BUS_DATA_REG]		csr_imm_i		,
 	
 	// from/to reg_csr
 	output						csr_we_o		,

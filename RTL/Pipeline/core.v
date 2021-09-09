@@ -136,6 +136,7 @@ module core
 	wire						csr_we_ex_o;
 	wire	[`BUS_CSR_IMM]		csr_addr_ex_o;
 	wire	[`BUS_DATA_REG]		csr_data_id_i;
+	wire	[`BUS_DATA_REG]		csr_data_id_o;
 	wire	[`BUS_DATA_REG]		csr_data_ex_o;
 	wire						csr_we_clint_o;
 	wire	[`BUS_CSR_IMM]		csr_addr_clint_o;
@@ -326,7 +327,7 @@ module core
 		.reg_wr_en_o		(wr_en_ex_o),
 		
 		.csr_we_o			(csr_we_ex_o),
-        .csr_waddr_o		(csr_addr_ex_o),
+        .csr_addr_o			(csr_addr_ex_o),
         .csr_data_o			(csr_data_ex_o),
         .csr_data_i			(csr_data_id_o),
 		

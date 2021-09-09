@@ -43,7 +43,7 @@ module id_stage(
 
 	output						decode_except_o	,
 	output	[`BUS_EXCEPT_CAUSE] except_cause_o	,
-	output	[`BUS_CSR_CODE]		csr_instr_o		,
+	output	[`BUS_ALU_OP]		csr_instr_o		,
 	output	[`BUS_CSR_IMM]		csr_addr_o		,
 	input	[`BUS_DATA_REG]		csr_data_i		,
 	output	[`BUS_DATA_REG]		csr_data_o		,
