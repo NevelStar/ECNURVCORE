@@ -6,7 +6,8 @@
 
 `include "define.v"
 
-module id_ex(
+module id_ex
+(
 	input						clk				,
 	input						rst_n			,
 
@@ -18,6 +19,7 @@ module id_ex(
 
 	input 	[`BUS_L_CODE]		load_code_i		,
 	input 	[`BUS_S_CODE]		store_code_i	,
+	input	[`OPERATION_CODE]	op_code_i		,
 
 	input		 				alu_add_sub_i	,
 	input		 				alu_shift_i		,
@@ -27,6 +29,7 @@ module id_ex(
 	input	[`BUS_DATA_REG]		alu_op_num2_i	,
 	input	[`BUS_ALU_OP]		csr_instr_i		,
 	input	[`BUS_CSR_IMM]		csr_addr_i		,
+	input	[`BUS_DATA_REG]		csr_data_i		,
 
 
 	input						hold_n			,
@@ -40,6 +43,7 @@ module id_ex(
 
 	output 	[`BUS_L_CODE]		load_code_o		,
 	output 	[`BUS_S_CODE]		store_code_o	,
+	output	[`OPERATION_CODE]	op_code_o		,
 
 	output		 				alu_add_sub_o	,
 	output		 				alu_shift_o		,
@@ -48,7 +52,8 @@ module id_ex(
 	output	[`BUS_DATA_REG]		alu_op_num1_o	,
 	output	[`BUS_DATA_REG]		alu_op_num2_o	,
 	output	[`BUS_ALU_OP]		csr_instr_o		,
-	output	[`BUS_CSR_IMM]		csr_addr_o		
+	output	[`BUS_CSR_IMM]		csr_addr_o		,
+	output	[`BUS_DATA_REG]		csr_data_o		,
 	
 );
 	gnrl_dff # (.DW(`DATA_WIDTH)) dff_data_rs1(
@@ -198,7 +203,26 @@ module id_ex(
 
 		.data_out	(addr_instr_o)
 	);
+	
+	gnrl_dff # (.DW(`DATA_WIDTH)) dff_addr_instr(
+		.clk		(clk),
+		.rst_n		(rst_n),
+		.wr_en		(hold_n),
+		.data_in	(csr_data_i),
+		.data_r_ini	(`ZERO_DOUBLE),
 
+		.data_out	(csr_data_o)
+	);
+
+	gnrl_dff # (.DW(7)) dff_addr_instr(
+		.clk		(clk),
+		.rst_n		(rst_n),
+		.wr_en		(hold_n),
+		.data_in	(op_code_i),
+		.data_r_ini	(`ZERO_DOUBLE),
+
+		.data_out	(op_code_o)
+	);
 
 
 endmodule

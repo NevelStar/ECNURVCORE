@@ -31,6 +31,7 @@ module decoder
 
 	output 	reg [`BUS_L_CODE]		load_code		,
 	output 	reg [`BUS_S_CODE]		store_code		,
+	output		[`OPERATION_CODE]	operation_code	,
 
 	output	reg [`BUS_ADDR_REG]		reg_rs1_addr	,
 	output	reg [`BUS_ADDR_REG]		reg_rs2_addr	,
@@ -41,12 +42,13 @@ module decoder
 	output	reg [`BUS_EXCEPT_CAUSE]	except_cause	,
 	output	reg [`BUS_ALU_OP]		csr_instr		,
 	output	reg [`BUS_CSR_IMM]		csr_addr		,
+	input		[`BUS_DATA_REG]		csr_data_i		,
 
 	output							load_bypass
 );
 
 
-	wire	[6:0]	operation_code;
+//	wire	[6:0]	operation_code;
 	wire	[4:0]	addr_rd;
 	wire	[2:0]	funct3;
 	wire	[4:0]	addr_rs1;
@@ -1143,7 +1145,7 @@ module decoder
 						alu_shift <= `ALU_SHIFT_L;
 						word_intercept <= `INTERCEPT_DIS;
 						alu_operation <= `ALU_ADD;
-						alu_op_num1	<= `ZERO_DOUBLE;
+						alu_op_num1	<= csr_data_i;
 						alu_op_num2	<= `ZERO_DOUBLE;
 						jmp_op_num1	<= `ZERO_DOUBLE;
 						jmp_op_num2	<= `ZERO_DOUBLE;
@@ -1167,7 +1169,7 @@ module decoder
 						alu_shift <= `ALU_SHIFT_L;
 						word_intercept <= `INTERCEPT_DIS;
 						alu_operation <= `ALU_ADD;
-						alu_op_num1	<= `ZERO_DOUBLE;
+						alu_op_num1	<= csr_data_i;
 						alu_op_num2	<= `ZERO_DOUBLE;
 						jmp_op_num1	<= `ZERO_DOUBLE;
 						jmp_op_num2	<= `ZERO_DOUBLE;
@@ -1191,7 +1193,7 @@ module decoder
 						alu_shift <= `ALU_SHIFT_L;
 						word_intercept <= `INTERCEPT_DIS;
 						alu_operation <= `ALU_ADD;
-						alu_op_num1	<= `ZERO_DOUBLE;
+						alu_op_num1	<= csr_data_i;
 						alu_op_num2	<= `ZERO_DOUBLE;
 						jmp_op_num1	<= `ZERO_DOUBLE;
 						jmp_op_num2	<= `ZERO_DOUBLE;
@@ -1215,8 +1217,8 @@ module decoder
 						alu_shift <= `ALU_SHIFT_L;
 						word_intercept <= `INTERCEPT_DIS;
 						alu_operation <= `ALU_ADD;
-						alu_op_num1	<= {58'b0,instr[19:15]};
-						alu_op_num2	<= `ZERO_DOUBLE;
+						alu_op_num1	<= csr_data_i;
+						alu_op_num2	<= {58'b0,instr[19:15]};
 						jmp_op_num1	<= `ZERO_DOUBLE;
 						jmp_op_num2	<= `ZERO_DOUBLE;
 						decode_except <= `EXCEPT_NOPE;
@@ -1239,8 +1241,8 @@ module decoder
 						alu_shift <= `ALU_SHIFT_L;
 						word_intercept <= `INTERCEPT_DIS;
 						alu_operation <= `ALU_ADD;
-						alu_op_num1	<= {58'b0,instr[19:15]};
-						alu_op_num2	<= `ZERO_DOUBLE;
+						alu_op_num1	<= csr_data_i;
+						alu_op_num2	<= {58'b0,instr[19:15]};
 						jmp_op_num1	<= `ZERO_DOUBLE;
 						jmp_op_num2	<= `ZERO_DOUBLE;
 						decode_except <= `EXCEPT_NOPE;
@@ -1263,8 +1265,8 @@ module decoder
 						alu_shift <= `ALU_SHIFT_L;
 						word_intercept <= `INTERCEPT_DIS;
 						alu_operation <= `ALU_ADD;
-						alu_op_num1	<= {58'b0,instr[19:15]};
-						alu_op_num2	<= `ZERO_DOUBLE;
+						alu_op_num1	<= csr_data_i;
+						alu_op_num2	<= {58'b0,instr[19:15]};
 						jmp_op_num1	<= `ZERO_DOUBLE;
 						jmp_op_num2	<= `ZERO_DOUBLE;
 						decode_except <= `EXCEPT_NOPE;

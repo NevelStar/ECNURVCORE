@@ -70,13 +70,14 @@ module core
 	wire [`BUS_DATA_REG] alu_op_num2_id_o;
 	wire [`BUS_DATA_REG] jmp_op_num1_id_o;
 	wire [`BUS_DATA_REG] jmp_op_num2_id_o;
+	wire [`OPERATION_CODE] operation_code_id_o;
 	wire [`BUS_ALU_OP] 	 csr_instr_id_o;
 	wire [`BUS_CSR_IMM]	 csr_addr_id_o;
 	wire [`BUS_JMP_FLAG] jmp_flag_id_o;	
 	wire load_bypass_id_o;
 
-	wire [`BUS_ADDR_MEM] pc_ex_i;
-	wire [`BUS_DATA_INSTR] instr_ex_i;
+//	wire [`BUS_ADDR_MEM] pc_ex_i;
+//	wire [`BUS_DATA_INSTR] instr_ex_i;
 	wire [`BUS_DATA_REG] data_rs1_ex_i;
 	wire [`BUS_DATA_REG] data_rs2_ex_i;
 	wire [`BUS_ALU_OP]	csr_instr_ex_i;	
@@ -132,6 +133,10 @@ module core
 	
 	wire				   		irq_assert_clint_o;
 	wire 	[`BUS_DATA_INSTR] 	irq_addr_clint_o;
+	wire						csr_we_ex_o;
+	wire	[`BUS_CSR_IMM]		csr_addr_ex_o;
+	wire	[`BUS_DATA_REG]		csr_data_id_i;
+	wire	[`BUS_DATA_REG]		csr_data_ex_o;
 	wire						csr_we_clint_o;
 	wire	[`BUS_CSR_IMM]		csr_addr_clint_o;
 	wire	[`BUS_DATA_REG]		csr_data_clint_i;
@@ -157,8 +162,8 @@ module core
 	assign instr_id_i = instr_rd_if_o;
 	assign addr_instr_id_i = addr_instr_i;
 
-	assign pc_ex_i = pc_o;
-	assign instr_ex_i = instr_rd_if_o;
+//	assign pc_ex_i = pc_o;
+//	assign instr_ex_i = instr_rd_if_o;
 	assign data_rs1_ex_i = data_rs1_id_o;
 	assign data_rs2_ex_i = data_rs2_id_o;
 	assign csr_instr_ex_i = csr_instr_id_o;
@@ -259,6 +264,7 @@ module core
 		.reg_wr_en_o		(reg_wr_en_id_o),
 		.load_code_o		(load_code_id_o),
 		.store_code_o		(store_code_id_o),
+		.op_code_o			(operation_code_id_o),
 		.alu_add_sub_o		(alu_add_sub_id_o),
 		.alu_shift_o		(alu_shift_id_o),
 		.word_intercept_o	(word_intercept_id_o),
@@ -266,9 +272,13 @@ module core
 		.alu_op_num1_o		(alu_op_num1_id_o),
 		.alu_op_num2_o		(alu_op_num2_id_o),
 		.jmp_op_num1_o		(jmp_op_num1_id_o),
-		.jmp_op_num2_o		(jmp_op_num2_id_o),	
+		.jmp_op_num2_o		(jmp_op_num2_id_o),
+		
 		.csr_instr_o		(csr_instr_id_o),
 		.csr_addr_o			(csr_addr_id_o),
+		.csr_data_i			(csr_data_id_i),
+		.csr_data_o			(csr_data_id_o),
+		
 		.jmp_flag_o			(jmp_flag_id_o),
 		.decode_except_o	(decode_except),
 		.except_cause_o		(except_cause_id_o),
@@ -282,8 +292,8 @@ module core
 		.rst_n				(rst_n),
 		.hold_code			(hold_code),
 	
-		.pc_i				(pc_ex_i),
-		.instr_i			(instr_ex_i),
+//		.pc_i				(pc_ex_i),
+//		.instr_i			(instr_ex_i),
 		.data_rs1_i			(data_rs1_ex_i),
 		.data_rs2_i			(data_rs2_ex_i),
 		.csr_instr_i		(csr_instr_ex_i),
@@ -291,6 +301,7 @@ module core
 	
 		.load_code_i		(load_code_ex_i),
 		.store_code_i		(store_code_ex_i),
+		.op_code_i			(operation_code_id_o),
 		.alu_add_sub_i		(alu_add_sub_ex_i),
 		.alu_shift_i		(alu_shift_ex_i),
 		.word_intercept_i	(word_intercept_ex_i),
@@ -317,7 +328,7 @@ module core
 		.csr_we_o			(csr_we_ex_o),
         .csr_waddr_o		(csr_addr_ex_o),
         .csr_data_o			(csr_data_ex_o),
-        .csr_data_i			(csr_data_ex_i),
+        .csr_data_i			(csr_data_id_o),
 		
 		.mem_except_o		(mem_except),
 		.except_cause_o		(except_cause_ex_o)
@@ -347,8 +358,9 @@ module core
 		
         .ex_we_i			(csr_we_ex_o),
         .ex_waddr_i			(csr_addr_ex_o),
+		.ex_raddr_i			(csr_addr_id_o),
         .ex_data_i			(csr_data_ex_o),
-        .ex_data_o			(csr_data_ex_i),
+        .ex_data_o			(csr_data_id_i),
 		
         .clt_we_i			(csr_we_clint_o),
         .clt_addr_i			(csr_addr_clint_o),

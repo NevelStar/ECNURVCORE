@@ -13,6 +13,7 @@ module ex(
 
 	input 	[`BUS_L_CODE]		load_code		,
 	input 	[`BUS_S_CODE]		store_code		,
+	input	[`OPERATION_CODE]	op_code			,
 
 	input						alu_add_sub		,
 	input						alu_shift		,
@@ -60,14 +61,12 @@ module ex(
 
 	assign op_num1_word = {{32{alu_op_num1[31]}},alu_op_num1[31:0]};
 	assign op_num1_word_u = {32'd0,alu_op_num1[31:0]};
-
-
+	
 	assign shamt = (word_intercept == `INTERCEPT_EN) ? {1'b0,alu_op_num2[4:0]} : alu_op_num2[5:0];
 
 	assign sra_mask = ~(64'hffffffffffffffff >> shamt);
 	assign sra_sign = sra_mask & {64{alu_op_num1[63]}};
 	assign sraw_sign = sra_mask & {64{alu_op_num1[31]}};
-
 
 	assign alu_add = alu_op_num1 + alu_op_num2;
 	assign alu_sub = alu_op_num1 - alu_op_num2;
@@ -84,35 +83,35 @@ module ex(
 	assign alu_and = alu_op_num1 & alu_op_num2;
 
 
-
-
-
-
 	always@(*)begin
-		case(alu_operation)
-			`INSTR_ADD: begin
-				case(alu_add_sub)
-					`ALU_ADD_EN:	alu_result <= (word_intercept == `INTERCEPT_EN) ? {{32{alu_add[31]}},alu_add[31:0]} : alu_add;
-					`ALU_SUB_EN:	alu_result <= (word_intercept == `INTERCEPT_EN) ? {{32{alu_sub[31]}},alu_sub[31:0]} : alu_sub;
-					default:		alu_result <= `ZERO_DOUBLE;
-				endcase
-			end
-			`INSTR_SL:		alu_result <= (word_intercept == `INTERCEPT_EN) ? alu_sllw : alu_sl;
-			`INSTR_SLT:		alu_result <= alu_slt;
-			`INSTR_SLTU:	alu_result <= alu_sltu;
-			`INSTR_XOR:		alu_result <= alu_xor;
-			`INSTR_SR: begin
-				case(alu_shift)
-					`ALU_SHIFT_L:	alu_result <= (word_intercept == `INTERCEPT_EN) ? alu_srlw : alu_srl;
-					`ALU_SHIFT_A:	alu_result <= (word_intercept == `INTERCEPT_EN) ? alu_sraw : alu_sra;
-					default:		alu_result <= `ZERO_DOUBLE;
-				endcase
-			end
-			`INSTR_OR:		alu_result <= alu_or;
-			`INSTR_AND:		alu_result <= alu_and;
-			default:		alu_result <= `ZERO_DOUBLE;
-		endcase
+		if(op_code == `OPERATION_SYS)
+			alu_result = alu_op_num1;
+		else
+			case(alu_operation)
+				`INSTR_ADD: begin
+					case(alu_add_sub)
+						`ALU_ADD_EN: alu_result = (word_intercept == `INTERCEPT_EN) ? {{32{alu_add[31]}},alu_add[31:0]} : alu_add;
+						`ALU_SUB_EN: alu_result = (word_intercept == `INTERCEPT_EN) ? {{32{alu_sub[31]}},alu_sub[31:0]} : alu_sub;
+						default:	 alu_result = `ZERO_DOUBLE;
+					endcase
+				end
+				`INSTR_SL:	 alu_result = (word_intercept == `INTERCEPT_EN) ? alu_sllw : alu_sl;
+				`INSTR_SLT:	 alu_result = alu_slt;
+				`INSTR_SLTU: alu_result = alu_sltu;
+				`INSTR_XOR:	 alu_result = alu_xor;
+				`INSTR_SR: begin
+					case(alu_shift)
+						`ALU_SHIFT_L: alu_result = (word_intercept == `INTERCEPT_EN) ? alu_srlw : alu_srl;
+						`ALU_SHIFT_A: alu_result = (word_intercept == `INTERCEPT_EN) ? alu_sraw : alu_sra;
+						default:	  alu_result = `ZERO_DOUBLE;
+					endcase
+				end
+				`INSTR_OR:	alu_result = alu_or;
+				`INSTR_AND:	alu_result = alu_and;
+				default:	alu_result = `ZERO_DOUBLE;
+			endcase
 	end
+
 
 	always@(*) begin
 		case(load_code)
@@ -130,6 +129,7 @@ module ex(
 			end
 		endcase
 	end
+
 
 	always@(*) begin
 		case(store_code)
@@ -175,7 +175,6 @@ module ex(
 			end
 		endcase
 	end
-
 
 
 endmodule
