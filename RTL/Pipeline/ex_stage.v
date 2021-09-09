@@ -121,7 +121,7 @@ module ex_stage(
 		.csr_imm_i			(alu_op_num2_i),
 	
 		.csr_we_o			(csr_we_o),
-		.csr_addr_o			(csr_addr_ex_o),
+		.csr_addr_o			(csr_addr_o),
 		.csr_data_o			(csr_data_o),
 		.csr_data_i			(csr_data_i)
 	);

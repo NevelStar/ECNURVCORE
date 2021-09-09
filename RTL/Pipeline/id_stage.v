@@ -59,6 +59,7 @@ module id_stage(
 	wire [`BUS_JMP_FLAG] jmp_flag;
 	wire [`BUS_L_CODE] load_code;
 	wire [`BUS_S_CODE] store_code;
+	wire [`OPERATION_CODE] operation_code;
 	wire [`BUS_ADDR_REG] reg_wr_addr;
 	wire reg_wr_en;
 	wire alu_add_sub;

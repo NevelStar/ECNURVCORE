@@ -132,7 +132,7 @@ module core
 	wire [`BUS_HOLD_CODE] hold_code;
 	
 	wire				   		irq_assert_clint_o;
-	wire 	[`BUS_DATA_INSTR] 	irq_addr_clint_o;
+	wire 	[`BUS_ADDR_MEM] 	irq_addr_clint_o;
 	wire						csr_we_ex_o;
 	wire	[`BUS_CSR_IMM]		csr_addr_ex_o;
 	wire	[`BUS_DATA_REG]		csr_data_id_i;
