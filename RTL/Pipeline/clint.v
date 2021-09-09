@@ -92,6 +92,7 @@ module clint
 			nxt_csr_state = S_IDLE;
 		end 
 		else begin
+			irq_addr_o    = `ZERO_DOUBLE;
 			nxt_csr_state = cur_csr_state;
 			case (cur_csr_state)
 				S_IDLE: begin

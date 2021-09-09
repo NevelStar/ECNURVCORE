@@ -179,11 +179,8 @@ module axi_interconnect(
 	reg timer_cs_r;
 	reg timer_cs_w;
 
-	assign timer_cs_ar = (araddr_mem >= `ADDR_TIMER_MIN) & (araddr_mem <= `ADDR_TIMER_MIN);
-	assign timer_cs_ar = (awaddr_mem >= `ADDR_TIMER_MIN) & (awaddr_mem <= `ADDR_TIMER_MIN);
-
-
-
+	assign timer_cs_ar = (araddr_mem >= `ADDR_TIMER_MIN) & (araddr_mem <= `ADDR_TIMER_MAX);
+	assign timer_cs_aw = (awaddr_mem >= `ADDR_TIMER_MIN) & (awaddr_mem <= `ADDR_TIMER_MAX);
 
 	reg [`BUS_DATA_MEM] rdata_if_t;
 	reg [`BUS_DATA_MEM] rdata_mem_t;
@@ -195,7 +192,8 @@ module axi_interconnect(
 		else begin
 			rdata_if_t <= rdata_if;
 		end
-	end		
+	end
+	
 	always@(posedge clk or negedge rst_n) begin
 		if(!rst_n) begin
 			rdata_mem_t <= `ZERO_DOUBLE;
@@ -673,45 +671,6 @@ module axi_interconnect(
 			rready_axi = `AXI_READY_DIS;
 		end
 	end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 endmodule

@@ -204,7 +204,7 @@ module id_ex
 		.data_out	(addr_instr_o)
 	);
 	
-	gnrl_dff # (.DW(`DATA_WIDTH)) dff_addr_instr(
+	gnrl_dff # (.DW(`DATA_WIDTH)) dff_csr_data(
 		.clk		(clk),
 		.rst_n		(rst_n),
 		.wr_en		(hold_n),
@@ -214,7 +214,7 @@ module id_ex
 		.data_out	(csr_data_o)
 	);
 
-	gnrl_dff # (.DW(7)) dff_addr_instr(
+	gnrl_dff # (.DW(7)) dff_opcode(
 		.clk		(clk),
 		.rst_n		(rst_n),
 		.wr_en		(hold_n),

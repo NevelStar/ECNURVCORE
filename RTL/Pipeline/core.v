@@ -414,6 +414,8 @@ module core
 		
 		.except_src_ex		(mem_except),
 		.except_cus_ex		(except_cause_ex_o),
+		.tmr_irq_i			(),
+		.ext_irq_i			(),
 		
 		.irq_assert_o		(irq_assert_clint_o),
 		.irq_addr_o			(irq_addr_clint_o),
