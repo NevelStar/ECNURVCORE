@@ -53,7 +53,7 @@ module id_ex
 	output	[`BUS_DATA_REG]		alu_op_num2_o	,
 	output	[`BUS_ALU_OP]		csr_instr_o		,
 	output	[`BUS_CSR_IMM]		csr_addr_o		,
-	output	[`BUS_DATA_REG]		csr_data_o		,
+	output	[`BUS_DATA_REG]		csr_data_o		
 	
 );
 	gnrl_dff # (.DW(`DATA_WIDTH)) dff_data_rs1(
