@@ -18,7 +18,8 @@ module core
 	input	[`BUS_ADDR_MEM] 	addr_instr_i 	,
 	input	[`BUS_DATA_MEM]		data_mem_i		,
 
-
+	input						tmr_irq_i		,
+	input 						ext_irq_i		,				
 
 	output						mem_wr_en_o		,
 	output						mem_rd_en_o		,
@@ -414,8 +415,8 @@ module core
 		
 		.except_src_ex		(mem_except),
 		.except_cus_ex		(except_cause_ex_o),
-		.tmr_irq_i			(),
-		.ext_irq_i			(),
+		.tmr_irq_i			(tmr_irq_i),
+		.ext_irq_i			(ext_irq_i),
 		
 		.irq_assert_o		(irq_assert_clint_o),
 		.irq_addr_o			(irq_addr_clint_o),

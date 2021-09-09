@@ -8,7 +8,7 @@
 module top(
 	input						clk				,
 	input						rst_n			,
-
+	input 						io_interrupt	,
 //with bus
 
 	//address write
@@ -197,7 +197,8 @@ module top(
 		.addr_instr_i 	(addr_instr),
 		.data_mem_i		(data_mem_rd),
 
-
+		.tmr_irq_i		(time_irq_o),
+		.ext_irq_i		(io_interrupt),
 
 		.mem_wr_en_o	(mem_wr_en),
 		.mem_rd_en_o	(mem_rd_en),
@@ -359,7 +360,7 @@ module top(
 		//.arcache_if		(arcache_if),
 		//.arprot_if		(arprot_if),
 		//.arqos_if		(arqos_if),
-		//.arregion_if	(arregion_if),
+		.arregion_if	(arregion_if),
 		.rid_if			(rid_if),
 		.rdata_if		(rdata_if),
 		.rresp_if		(rresp_if),
