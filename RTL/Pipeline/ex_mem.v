@@ -33,14 +33,14 @@ module ex_mem(
 
 	always@(*) begin
 		case(load_code_i)
-			`INSTR_LB: data_reg_wr <= {{56{data_mem_i[7]}},data_mem_i[7:0]};
-			`INSTR_LH: data_reg_wr <= {{48{data_mem_i[15]}},data_mem_i[15:0]};
-			`INSTR_LW: data_reg_wr <= {{32{data_mem_i[31]}},data_mem_i[31:0]};
-			`INSTR_LD: data_reg_wr <= data_mem_i;
-			`INSTR_LBU: data_reg_wr <= {56'd0,data_mem_i[7:0]};
-			`INSTR_LHU: data_reg_wr <= {48'd0,data_mem_i[15:0]};
-			`INSTR_LWU: data_reg_wr <= {32'd0,data_mem_i[31:0]};
-			default: data_reg_wr <= data_alu_i;
+			`INSTR_LB: data_reg_wr = {{56{data_mem_i[7]}},data_mem_i[7:0]};
+			`INSTR_LH: data_reg_wr = {{48{data_mem_i[15]}},data_mem_i[15:0]};
+			`INSTR_LW: data_reg_wr = {{32{data_mem_i[31]}},data_mem_i[31:0]};
+			`INSTR_LD: data_reg_wr = data_mem_i;
+			`INSTR_LBU: data_reg_wr = {56'd0,data_mem_i[7:0]};
+			`INSTR_LHU: data_reg_wr = {48'd0,data_mem_i[15:0]};
+			`INSTR_LWU: data_reg_wr = {32'd0,data_mem_i[31:0]};
+			default: data_reg_wr = data_alu_i;
 		endcase
 	end
 

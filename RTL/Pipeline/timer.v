@@ -216,8 +216,8 @@ end
 always @(*)
 begin
 	case(axi_raddr)
-		(`CLINT_MTIME): 	axi_data_to_read <= mtime;
-		(`CLINT_MTIMECMP): 	axi_data_to_read <= mtimecmp;
+		(`CLINT_MTIME): 	axi_data_to_read = mtime;
+		(`CLINT_MTIMECMP): 	axi_data_to_read = mtimecmp;
 	default: axi_data_to_read = {`DATA_WIDTH{1'b0}};
 	endcase
 	

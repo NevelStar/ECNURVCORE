@@ -34,28 +34,28 @@ module ex_csr
 	assign csr_addr_o = csr_addr_i;
 	assign csr_data_o = reg_csr_val;
 	
-	always@ (*) begin
-		reg_csr_val <= 64'b0;
+	always@(*) begin
+		reg_csr_val = 64'b0;
 		case (csr_instr_i & {3{csr_we_o}})
 			3'b001: begin
-				reg_csr_val <= data_rs1_i;					//rv32i_csrrw       
+				reg_csr_val = data_rs1_i;					//rv32i_csrrw       
 			end
 			3'b010: begin
-				reg_csr_val <= data_rs1_i | csr_data_i;		//rv32i_csrrs
+				reg_csr_val = data_rs1_i | csr_data_i;		//rv32i_csrrs
 			end
 			3'b011: begin
-				reg_csr_val <= ~data_rs1_i & csr_data_i;	//rv32i_csrrc
+				reg_csr_val = ~data_rs1_i & csr_data_i;	//rv32i_csrrc
 			end
 			3'b101: begin
-				reg_csr_val <= csr_imm_i;					//rv32i_csrrwi
+				reg_csr_val = csr_imm_i;					//rv32i_csrrwi
 			end
 			3'b110: begin
-				reg_csr_val <= csr_imm_i | csr_data_i;  	//rv32i_csrrsi
+				reg_csr_val = csr_imm_i | csr_data_i;  	//rv32i_csrrsi
 			end
 			3'b111: begin
-				reg_csr_val <= ~csr_imm_i & csr_data_i;		//rv32i_csrrci
+				reg_csr_val = ~csr_imm_i & csr_data_i;		//rv32i_csrrci
 			end
-			default: reg_csr_val <= 64'b0;
+			default: reg_csr_val = 64'b0;
 		endcase
 	end
 

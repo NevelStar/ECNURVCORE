@@ -49,14 +49,14 @@ module ctrl(
 
 	always@(*) begin
 		case(jmp_flag_i)
-			`INSTR_BEQ:		jmp_en_pre <= (data_rs1_i == data_rs2_i) ? `JMP_EN : `JMP_DIS;
-			`INSTR_BNE:		jmp_en_pre <= (data_rs1_i != data_rs2_i) ? `JMP_EN : `JMP_DIS;
-			`INSTR_BLT:		jmp_en_pre <= rs1_slt_rs2 ? `JMP_EN : `JMP_DIS;
-			`INSTR_BGE:		jmp_en_pre <= rs1_slt_rs2 ? `JMP_DIS : `JMP_EN;
-			`INSTR_BLTU:	jmp_en_pre <= rs1_sltu_rs2 ? `JMP_EN : `JMP_DIS;
-			`INSTR_BGEU:	jmp_en_pre <= rs1_sltu_rs2 ? `JMP_DIS : `JMP_EN;
-			`JMP_J: 		jmp_en_pre <= `JMP_EN;
-			default:		jmp_en_pre <= `JMP_DIS;
+			`INSTR_BEQ:		jmp_en_pre = (data_rs1_i == data_rs2_i) ? `JMP_EN : `JMP_DIS;
+			`INSTR_BNE:		jmp_en_pre = (data_rs1_i != data_rs2_i) ? `JMP_EN : `JMP_DIS;
+			`INSTR_BLT:		jmp_en_pre = rs1_slt_rs2 ? `JMP_EN : `JMP_DIS;
+			`INSTR_BGE:		jmp_en_pre = rs1_slt_rs2 ? `JMP_DIS : `JMP_EN;
+			`INSTR_BLTU:	jmp_en_pre = rs1_sltu_rs2 ? `JMP_EN : `JMP_DIS;
+			`INSTR_BGEU:	jmp_en_pre = rs1_sltu_rs2 ? `JMP_DIS : `JMP_EN;
+			`JMP_J: 		jmp_en_pre = `JMP_EN;
+			default:		jmp_en_pre = `JMP_DIS;
 		endcase
 	end
 

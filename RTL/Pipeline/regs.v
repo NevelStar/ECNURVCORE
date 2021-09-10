@@ -39,28 +39,28 @@ module regs
 
 	always@(*) begin
 		if(addr_rd1 == `REG_ADDR_ZERO) begin
-			data_rd1 <= `ZERO_WORD;
+			data_rd1 = `ZERO_WORD;
 		end
 		else begin
 			if((wr_en == `REG_WR_EN) & (addr_rd1 == addr_wr)) begin
-				data_rd1 <= data_wr;
+				data_rd1 = data_wr;
 			end
 			else begin
-				data_rd1 <= register_x[addr_rd1];
+				data_rd1 = register_x[addr_rd1];
 			end
 		end
 	end
 
 	always@(*) begin
 		if(addr_rd2 == `REG_ADDR_ZERO) begin
-			data_rd2 <= `ZERO_WORD;
+			data_rd2 = `ZERO_WORD;
 		end
 		else begin
 			if((wr_en == `REG_WR_EN) & (addr_rd2 == addr_wr)) begin
-				data_rd2 <= data_wr;
+				data_rd2 = data_wr;
 			end
 			else begin
-				data_rd2 <= register_x[addr_rd2];
+				data_rd2 = register_x[addr_rd2];
 			end
 		end
 	end
