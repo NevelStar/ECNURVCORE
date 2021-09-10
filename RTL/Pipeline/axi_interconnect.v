@@ -268,7 +268,7 @@ module axi_interconnect(
 	assign awready_if = `AXI_READY_DIS;
 	assign wready_if = `AXI_READY_DIS;
 	assign bid_if = `AXI_ID_ZERO;	
-	assign bresp_if = `AXI_VALID_DIS;
+	assign bresp_if = {1'b0,`AXI_VALID_DIS};
 	assign bvalid_if = `AXI_VALID_DIS;
 
 	always@(*) begin

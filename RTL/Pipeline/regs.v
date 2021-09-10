@@ -27,7 +27,7 @@ module regs
 	always@(posedge clk) begin
 		if(!rst_n) begin
 			for(i=0;i<`REG_NUM;i=i+1)begin
-				register_x[i] <= `ZERO_WORD;
+				register_x[i] <= `ZERO_DOUBLE;
 			end
 		end
 		else begin
@@ -39,7 +39,7 @@ module regs
 
 	always@(*) begin
 		if(addr_rd1 == `REG_ADDR_ZERO) begin
-			data_rd1 = `ZERO_WORD;
+			data_rd1 = `ZERO_DOUBLE;
 		end
 		else begin
 			if((wr_en == `REG_WR_EN) & (addr_rd1 == addr_wr)) begin
@@ -53,7 +53,7 @@ module regs
 
 	always@(*) begin
 		if(addr_rd2 == `REG_ADDR_ZERO) begin
-			data_rd2 = `ZERO_WORD;
+			data_rd2 = `ZERO_DOUBLE;
 		end
 		else begin
 			if((wr_en == `REG_WR_EN) & (addr_rd2 == addr_wr)) begin
