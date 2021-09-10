@@ -219,7 +219,7 @@ module id_ex
 		.rst_n		(rst_n),
 		.wr_en		(hold_n),
 		.data_in	(op_code_i),
-		.data_r_ini	(7{1'b0}),
+		.data_r_ini	({7{1'b0}}),
 
 		.data_out	(op_code_o)
 	);
