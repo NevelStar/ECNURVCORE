@@ -40,10 +40,10 @@ module if_axi_interface(
 	output 	[`BUS_AXI_SIZE] 	awsize_if	,
 	output 	[`BUS_AXI_BURST]	awburst_if	,
 
-	output	[`BUS_AXI_CACHE]	awcache_if	,
-	output						awprot_if	,
-	output						awqos_if	,
-	output						awregion_if	,
+	//output	[`BUS_AXI_CACHE]	awcache_if	,
+	//output						awprot_if	,
+	//output						awqos_if	,
+	//output						awregion_if	,
 
 
 
@@ -85,10 +85,10 @@ module if_axi_interface(
 	output 	[`BUS_AXI_SIZE] 	arsize_if	,
 	output 	[`BUS_AXI_BURST]	arburst_if	,
 
-	output	[`BUS_AXI_CACHE]	arcache_if	,
-	output						arprot_if	,
-	output						arqos_if	,
-	output						arregion_if	,
+	//output	[`BUS_AXI_CACHE]	arcache_if	,
+	//output						arprot_if	,
+	//output						arqos_if	,
+	//output						arregion_if	,
 
 
 

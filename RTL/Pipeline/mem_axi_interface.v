@@ -44,10 +44,10 @@ module mem_axi_interface(
 	output 	[`BUS_AXI_SIZE] 	awsize_mem		,
 	output 	[`BUS_AXI_BURST]	awburst_mem		,
 
-	output	[`BUS_AXI_CACHE]	awcache_mem		,
-	output						awprot_mem		,
-	output						awqos_mem		,
-	output						awregion_mem	,
+	//output	[`BUS_AXI_CACHE]	awcache_mem		,
+	//output						awprot_mem		,
+	//output						awqos_mem		,
+	//output						awregion_mem	,
 
 
 
@@ -89,10 +89,10 @@ module mem_axi_interface(
 	output 	[`BUS_AXI_SIZE] 	arsize_mem		,
 	output 	[`BUS_AXI_BURST]	arburst_mem		,
 
-	output	[`BUS_AXI_CACHE]	arcache_mem		,
-	output						arprot_mem		,
-	output						arqos_mem		,
-	output						arregion_mem	,
+	//output	[`BUS_AXI_CACHE]	arcache_mem		,
+	//output						arprot_mem		,
+	//output						arqos_mem		,
+	//output						arregion_mem	,
 
 
 
