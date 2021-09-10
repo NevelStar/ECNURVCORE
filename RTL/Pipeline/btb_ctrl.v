@@ -49,7 +49,7 @@ module btb_ctrl(
 	assign prediction_error = jmp_en_error | jmp_target_error;
 	assign prediction_error_o = prediction_error;
 
-	always@(posedge clk or negedge rst_n) begin
+	always@(posedge clk) begin
 		if(!rst_n) begin
 			pc_buffer <= `MEM_ADDR_ZERO;
 			target_buffer <= `MEM_ADDR_ZERO;
@@ -69,7 +69,7 @@ module btb_ctrl(
 		end
 	end
 
-	always@(posedge clk or negedge rst_n) begin
+	always@(posedge clk) begin
 		if(!rst_n) begin
 			jmp_prediction_t <= `JMP_DIS;
 			target_prediction_t <= `MEM_ADDR_ZERO;

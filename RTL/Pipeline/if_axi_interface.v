@@ -159,7 +159,7 @@ module if_axi_interface(
 	
 
 
-	always@(posedge clk or negedge rst_n) begin
+	always@(posedge clk) begin
 		if(!rst_n) begin
 			pc_t <= `BASE_PC;
 		end
@@ -173,7 +173,7 @@ module if_axi_interface(
 		end
 	end		
 
-	always@(posedge clk or negedge rst_n) begin
+	always@(posedge clk) begin
 		if(!rst_n) begin
 			addr_instr <= `BASE_PC;
 		end
@@ -186,7 +186,7 @@ module if_axi_interface(
 			end
 		end
 	end	
-    always@(posedge clk or negedge rst_n) begin
+    always@(posedge clk) begin
 		if(!rst_n) begin
 			instr_t <= `ZERO_WORD;
 		end
@@ -200,7 +200,7 @@ module if_axi_interface(
 		end
 	end	
 
-	always@(posedge clk or negedge rst_n) begin
+	always@(posedge clk) begin
 		if(!rst_n) begin
 			if_wait <= 1'b0;
 		end
@@ -225,7 +225,7 @@ module if_axi_interface(
 	end	
 
 
-	always@(posedge clk or negedge rst_n) begin
+	always@(posedge clk) begin
 		if(!rst_n) begin
 			rdata_act_t <= `ZERO_DOUBLE;
 		end

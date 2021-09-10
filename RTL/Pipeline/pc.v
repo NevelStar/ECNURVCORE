@@ -24,7 +24,7 @@ module pc(
 
 	assign hold_n = (hold_code >= `HOLD_CODE_PC) ? `HOLD_EN : `HOLD_DIS;
 
-	always @(posedge clk or negedge rst_n)begin
+	always @(posedge clk)begin
 		if(!rst_n) begin
 			addr_instr <= `BASE_PC;
 		end

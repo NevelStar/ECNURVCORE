@@ -20,7 +20,7 @@ module gnrl_dff # (
 	
 	assign data_out = data_r;
 
-	always @(posedge clk or negedge rst_n) begin
+	always @(posedge clk) begin
 		if(!rst_n) begin
 			data_r <= data_r_ini;
 		end

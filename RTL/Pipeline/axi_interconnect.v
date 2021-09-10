@@ -185,7 +185,7 @@ module axi_interconnect(
 	reg [`BUS_DATA_MEM] rdata_if_t;
 	reg [`BUS_DATA_MEM] rdata_mem_t;
 
-	always@(posedge clk or negedge rst_n) begin
+	always@(posedge clk) begin
 		if(!rst_n) begin
 			rdata_if_t <= `ZERO_DOUBLE;
 		end
@@ -194,7 +194,7 @@ module axi_interconnect(
 		end
 	end
 	
-	always@(posedge clk or negedge rst_n) begin
+	always@(posedge clk) begin
 		if(!rst_n) begin
 			rdata_mem_t <= `ZERO_DOUBLE;
 		end
@@ -205,7 +205,7 @@ module axi_interconnect(
 
 
 	//write request
-	always@(posedge clk or negedge rst_n) begin
+	always@(posedge clk) begin
 		if(!rst_n) begin
 			axi_wbusy <= `AXI_IDLE;
 			timer_cs_w <= 1'b0;
@@ -236,7 +236,7 @@ module axi_interconnect(
 
 
 	//read request
-	always@(posedge clk or negedge rst_n) begin
+	always@(posedge clk) begin
 		if(!rst_n) begin
 			axi_rbusy <= `AXI_IDLE;
 			timer_cs_r <= 1'b0;

@@ -260,7 +260,7 @@ module mem_axi_interface(
 
 
 
-	always@(posedge clk or negedge rst_n) begin
+	always@(posedge clk) begin
 		if(!rst_n) begin
 			bvalid_t <= `AXI_VALID_DIS;
 			rlast_t <= `AXI_VALID_DIS;
@@ -272,7 +272,7 @@ module mem_axi_interface(
 			data_mem_rd_t <= data_mem_rd;
 		end
 	end	
-	always@(posedge clk or negedge rst_n) begin
+	always@(posedge clk) begin
 		if(!rst_n) begin
 			mem_rd_wait <= 1'b0;
 			mem_rd_aligned <= `AXI_ADDR_ALIGN;
@@ -305,7 +305,7 @@ module mem_axi_interface(
 			end
 		end
 	end
-	always@(posedge clk or negedge rst_n) begin
+	always@(posedge clk) begin
 		if(!rst_n) begin
 			mem_wr_wait <= 1'b0;
 			mem_wr_aligned <= `AXI_ADDR_ALIGN;
@@ -340,7 +340,7 @@ module mem_axi_interface(
 	end
 
 
-	always@(posedge clk or negedge rst_n) begin
+	always@(posedge clk) begin
 		if(!rst_n) begin
 			data_wr <= `ZERO_DOUBLE;
 		end
@@ -353,7 +353,7 @@ module mem_axi_interface(
 			end
 		end
     end
-	always@(posedge clk or negedge rst_n) begin
+	always@(posedge clk) begin
 		if(!rst_n) begin
 			data_rd_t <= `ZERO_DOUBLE;
 		end
@@ -366,7 +366,7 @@ module mem_axi_interface(
 			end
 		end
     end
-	always@(posedge clk or negedge rst_n) begin
+	always@(posedge clk) begin
 		if(!rst_n) begin
 			data_wr_valid <= `AXI_VALID_DIS;
 			data_act_page <= 1'b0;

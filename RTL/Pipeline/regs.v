@@ -24,7 +24,7 @@ module regs
 	
 	reg [`BUS_DATA_REG] register_x[0:`REG_NUM-1]; //x0 is always 0
 
-	always@(posedge clk or negedge rst_n) begin
+	always@(posedge clk) begin
 		if(!rst_n) begin
 			for(i=0;i<`REG_NUM;i=i+1)begin
 				register_x[i] <= `ZERO_WORD;
