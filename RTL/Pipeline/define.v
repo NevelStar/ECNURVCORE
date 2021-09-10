@@ -13,8 +13,8 @@
 
 `define PC_MAX				64'h0000_0000_0000_0fff
 
-`define ADDR_TIMER_MIN      64'h0000_0000_1000_0000
-`define ADDR_TIMER_MAX      64'h0000_0000_1fff_ffff
+`define ADDR_TIMER_MIN      64'h0000_0000_2000_0000
+`define ADDR_TIMER_MAX      64'h0000_0000_2fff_ffff
 
 
 //zero
