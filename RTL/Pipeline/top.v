@@ -308,7 +308,7 @@ module top(
 
 	timer u_timer(
 		.clk          (clk          ),
-		.rst          (rst          ),
+		.rst          (rst_n        ),
 		.saxi_awaddr  (timer_saxi_awaddr  ),
 		.saxi_awvaild (timer_saxi_awvaild ),
 		.saxi_awready (timer_saxi_awready ),

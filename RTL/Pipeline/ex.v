@@ -166,7 +166,7 @@ module ex(
 				except_cause = (alu_result[2:0] == 3'b000) ? `EXCEPT_NONE : `EXCEPT_MEM_ALIGN;
 			end
 			default: begin
-				data_mem_wr = `ZERO_WORD;
+				data_mem_wr = `ZERO_DOUBLE;
 				strb_mem_wr = `WR_STR_NONE;
 				addr_mem_wr = `MEM_ADDR_ZERO;
 				mem_wr_en = `MEM_WR_DIS;
