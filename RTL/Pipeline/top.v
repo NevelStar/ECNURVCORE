@@ -328,7 +328,7 @@ module top(
 	
 
 
-	axi_interconnect interconnect(
+	axi_interconnect u_interconnect(
 		.clk			(clk),
 		.rst_n			(rst_n),
 
