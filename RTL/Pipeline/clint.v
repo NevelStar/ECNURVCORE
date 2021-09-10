@@ -59,7 +59,11 @@ module clint
 	wire						except_sync,except_mret;
 	wire						except_async;
 	wire	[`BUS_EXCEPT_CAUSE]	except_cus;
-	
+	wire 						glb_irq_en;
+	wire 						tmr_irq_en;
+	wire 						sft_irq_en;
+	wire 						ext_irq_en;
+
 	assign glb_irq_en = csr_mstatus[3];
 	assign tmr_irq_en = csr_mie[7];
     assign sft_irq_en = csr_mie[3];
