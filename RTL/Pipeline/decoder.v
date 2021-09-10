@@ -1218,7 +1218,7 @@ module decoder
 						word_intercept = `INTERCEPT_DIS;
 						alu_operation = `ALU_ADD;
 						alu_op_num1	= csr_data_i;
-						alu_op_num2	= {58'b0,instr[19:15]};
+						alu_op_num2	= {59'b0,instr[19:15]};
 						jmp_op_num1	= `ZERO_DOUBLE;
 						jmp_op_num2	= `ZERO_DOUBLE;
 						decode_except = `EXCEPT_NOPE;
@@ -1242,7 +1242,7 @@ module decoder
 						word_intercept = `INTERCEPT_DIS;
 						alu_operation = `ALU_ADD;
 						alu_op_num1	= csr_data_i;
-						alu_op_num2	= {58'b0,instr[19:15]};
+						alu_op_num2	= {59'b0,instr[19:15]};
 						jmp_op_num1	= `ZERO_DOUBLE;
 						jmp_op_num2	= `ZERO_DOUBLE;
 						decode_except = `EXCEPT_NOPE;
@@ -1266,7 +1266,7 @@ module decoder
 						word_intercept = `INTERCEPT_DIS;
 						alu_operation = `ALU_ADD;
 						alu_op_num1	= csr_data_i;
-						alu_op_num2	= {58'b0,instr[19:15]};
+						alu_op_num2	= {59'b0,instr[19:15]};
 						jmp_op_num1	= `ZERO_DOUBLE;
 						jmp_op_num2	= `ZERO_DOUBLE;
 						decode_except = `EXCEPT_NOPE;
