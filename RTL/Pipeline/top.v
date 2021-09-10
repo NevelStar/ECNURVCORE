@@ -360,7 +360,7 @@ module top(
 		//.arcache_if		(arcache_if),
 		//.arprot_if		(arprot_if),
 		//.arqos_if		(arqos_if),
-		.arregion_if	(arregion_if),
+		//.arregion_if	(arregion_if),
 		.rid_if			(rid_if),
 		.rdata_if		(rdata_if),
 		.rresp_if		(rresp_if),
