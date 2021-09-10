@@ -282,10 +282,10 @@ module axi_interconnect(
 				awlen_axi = awlen_mem;
 				awsize_axi = awsize_mem;
 				awburst_axi = awburst_mem;
-				awcache_axi = awcache_mem;
-				awprot_axi = awprot_mem;
-				awqos_axi = awqos_mem;
-				awregion_axi = awregion_mem;
+				//awcache_axi = awcache_mem;
+				//awprot_axi = awprot_mem;
+				//awqos_axi = awqos_mem;
+				//awregion_axi = awregion_mem;
 
 				awvalid_timer = awvalid_mem;
 				awid_timer = awid_mem;
@@ -293,10 +293,10 @@ module axi_interconnect(
 				awlen_timer = awlen_mem;
 				awsize_timer = awsize_mem;
 				awburst_timer = awburst_mem;
-				awcache_timer = awcache_mem;
-				awprot_timer = awprot_mem;
-				awqos_timer = awqos_mem;
-				awregion_timer = awregion_mem;
+				//awcache_timer = awcache_mem;
+				//awprot_timer = awprot_mem;
+				//awqos_timer = awqos_mem;
+				//awregion_timer = awregion_mem;
 
 				awvalid_axi = `AXI_VALID_DIS;
 				awid_axi = `AXI_ID_ZERO;
@@ -304,10 +304,10 @@ module axi_interconnect(
 				awlen_axi = `AXI_LEN_ZERO;
 				awsize_axi = `AXI_SIZE_DOUBLE;
 				awburst_axi = `AXI_BURST_INCR;
-				awcache_axi = awcache_mem;
-				awprot_axi = awprot_mem;
-				awqos_axi = awqos_mem;
-				awregion_axi = awregion_mem;
+				//awcache_axi = awcache_mem;
+				//awprot_axi = awprot_mem;
+				//awqos_axi = awqos_mem;
+				//awregion_axi = awregion_mem;
 			end
 			else begin
 			
@@ -319,10 +319,10 @@ module axi_interconnect(
 				awlen_axi = awlen_mem;
 				awsize_axi = awsize_mem;
 				awburst_axi = awburst_mem;
-				awcache_axi = awcache_mem;
-				awprot_axi = awprot_mem;
-				awqos_axi = awqos_mem;
-				awregion_axi = awregion_mem;
+				//awcache_axi = awcache_mem;
+				//awprot_axi = awprot_mem;
+				//awqos_axi = awqos_mem;
+				//awregion_axi = awregion_mem;
 
 				awvalid_timer = `AXI_VALID_DIS;
 				awid_timer = `AXI_ID_ZERO;
@@ -330,10 +330,10 @@ module axi_interconnect(
 				awlen_timer = `AXI_LEN_ZERO;
 				awsize_timer = `AXI_SIZE_DOUBLE;
 				awburst_timer = `AXI_BURST_INCR;
-				awcache_timer = awcache_mem;
-				awprot_timer = awprot_mem;
-				awqos_timer = awqos_mem;
-				awregion_timer = awregion_mem;
+				//awcache_timer = awcache_mem;
+				//awprot_timer = awprot_mem;
+				//awqos_timer = awqos_mem;
+				//awregion_timer = awregion_mem;
 			end
 		end
 		else begin
@@ -345,10 +345,10 @@ module axi_interconnect(
 			awlen_axi = `AXI_LEN_ZERO;
 			awsize_axi = `AXI_SIZE_DOUBLE;
 			awburst_axi = `AXI_BURST_INCR;
-			awcache_axi = awcache_mem;
-			awprot_axi = awprot_mem;
-			awqos_axi = awqos_mem;
-			awregion_axi = awregion_mem;
+			//awcache_axi = awcache_mem;
+			//awprot_axi = awprot_mem;
+			//awqos_axi = awqos_mem;
+			//awregion_axi = awregion_mem;
 
 			awvalid_timer = `AXI_VALID_DIS;
 			awid_timer = `AXI_ID_ZERO;
@@ -356,10 +356,10 @@ module axi_interconnect(
 			awlen_timer = `AXI_LEN_ZERO;
 			awsize_timer = `AXI_SIZE_DOUBLE;
 			awburst_timer = `AXI_BURST_INCR;
-			awcache_timer = awcache_mem;
-			awprot_timer = awprot_mem;
-			awqos_timer = awqos_mem;
-			awregion_timer = awregion_mem;
+			//awcache_timer = awcache_mem;
+			//awprot_timer = awprot_mem;
+			//awqos_timer = awqos_mem;
+			//awregion_timer = awregion_mem;
 		end
 	end
 
@@ -446,10 +446,10 @@ module axi_interconnect(
 					arlen_axi = `AXI_LEN_ZERO;
 					arsize_axi = `AXI_SIZE_DOUBLE;
 					arburst_axi = `AXI_BURST_INCR;
-					arcache_axi = arcache_if;
-					arprot_axi = arprot_if;
-					arqos_axi = arqos_if;
-					arregion_axi = arregion_if;
+					//arcache_axi = arcache_if;
+					//arprot_axi = arprot_if;
+					//arqos_axi = arqos_if;
+					//arregion_axi = arregion_if;
 
 					arvalid_timer = arvalid_mem;
 					arid_timer = arid_mem;
@@ -457,10 +457,10 @@ module axi_interconnect(
 					arlen_timer = arlen_mem;
 					arsize_timer = arsize_mem;
 					arburst_timer = arburst_mem;
-					arcache_timer = arcache_mem;
-					arprot_timer = arprot_mem;
-					arqos_timer = arqos_mem;
-					arregion_timer = arregion_mem;
+					//arcache_timer = arcache_mem;
+					//arprot_timer = arprot_mem;
+					//arqos_timer = arqos_mem;
+					//arregion_timer = arregion_mem;
 				end
 				else begin
 					arready_mem =  rst_n ? `AXI_READY_EN : `AXI_READY_DIS;
@@ -472,10 +472,10 @@ module axi_interconnect(
 					arlen_axi = arlen_mem;
 					arsize_axi = arsize_mem;
 					arburst_axi = arburst_mem;
-					arcache_axi = arcache_mem;
-					arprot_axi = arprot_mem;
-					arqos_axi = arqos_mem;
-					arregion_axi = arregion_mem;
+					//arcache_axi = arcache_mem;
+					//arprot_axi = arprot_mem;
+					//arqos_axi = arqos_mem;
+					//arregion_axi = arregion_mem;
 
 					arvalid_timer = `AXI_VALID_DIS;
 					arid_timer = `AXI_ID_ZERO;
@@ -483,10 +483,10 @@ module axi_interconnect(
 					arlen_timer = `AXI_LEN_ZERO;
 					arsize_timer = `AXI_SIZE_DOUBLE;
 					arburst_timer = `AXI_BURST_INCR;
-					arcache_timer = arcache_if;
-					arprot_timer = arprot_if;
-					arqos_timer = arqos_if;
-					arregion_timer = arregion_if;
+					//arcache_timer = arcache_if;
+					//arprot_timer = arprot_if;
+					//arqos_timer = arqos_if;
+					//arregion_timer = arregion_if;
 				end
 			end
 			else begin
@@ -500,10 +500,10 @@ module axi_interconnect(
 					arlen_axi = arlen_if;
 					arsize_axi = arsize_if;
 					arburst_axi = arburst_if;
-					arcache_axi = arcache_if;
-					arprot_axi = arprot_if;
-					arqos_axi = arqos_if;
-					arregion_axi = arregion_if;
+					//arcache_axi = arcache_if;
+					//arprot_axi = arprot_if;
+					//arqos_axi = arqos_if;
+					//arregion_axi = arregion_if;
 
 					arvalid_timer = `AXI_VALID_DIS;
 					arid_timer = `AXI_ID_ZERO;
@@ -511,10 +511,10 @@ module axi_interconnect(
 					arlen_timer = `AXI_LEN_ZERO;
 					arsize_timer = `AXI_SIZE_DOUBLE;
 					arburst_timer = `AXI_BURST_INCR;
-					arcache_timer = arcache_if;
-					arprot_timer = arprot_if;
-					arqos_timer = arqos_if;
-					arregion_timer = arregion_if;
+					//arcache_timer = arcache_if;
+					//arprot_timer = arprot_if;
+					//arqos_timer = arqos_if;
+					//arregion_timer = arregion_if;
 				end
 				else begin
 					arready_if =  rst_n ? `AXI_READY_EN : `AXI_READY_DIS;
@@ -526,10 +526,10 @@ module axi_interconnect(
 					arlen_axi = `AXI_LEN_ZERO;
 					arsize_axi = `AXI_SIZE_DOUBLE;
 					arburst_axi = `AXI_BURST_INCR;
-					arcache_axi = arcache_if;
-					arprot_axi = arprot_if;
-					arqos_axi = arqos_if;
-					arregion_axi = arregion_if;
+					//arcache_axi = arcache_if;
+					//arprot_axi = arprot_if;
+					//arqos_axi = arqos_if;
+					//arregion_axi = arregion_if;
 
 					arvalid_timer = `AXI_VALID_DIS;
 					arid_timer = `AXI_ID_ZERO;
@@ -537,10 +537,10 @@ module axi_interconnect(
 					arlen_timer = `AXI_LEN_ZERO;
 					arsize_timer = `AXI_SIZE_DOUBLE;
 					arburst_timer = `AXI_BURST_INCR;
-					arcache_timer = arcache_if;
-					arprot_timer = arprot_if;
-					arqos_timer = arqos_if;
-					arregion_timer = arregion_if;
+					//arcache_timer = arcache_if;
+					//arprot_timer = arprot_if;
+					//arqos_timer = arqos_if;
+					//arregion_timer = arregion_if;
 				end
 			end
 		end
@@ -554,10 +554,10 @@ module axi_interconnect(
 			arlen_axi = `AXI_LEN_ZERO;
 			arsize_axi = `AXI_SIZE_DOUBLE;
 			arburst_axi = `AXI_BURST_FIX;
-			arcache_axi = arcache_if;
-			arprot_axi = arprot_if;
-			arqos_axi = arqos_if;
-			arregion_axi = arregion_if;
+			//arcache_axi = arcache_if;
+			//arprot_axi = arprot_if;
+			//arqos_axi = arqos_if;
+			//arregion_axi = arregion_if;
 
 			arvalid_timer = `AXI_VALID_DIS;
 			arid_timer = `AXI_ID_ZERO;
@@ -565,10 +565,10 @@ module axi_interconnect(
 			arlen_timer = `AXI_LEN_ZERO;
 			arsize_timer = `AXI_SIZE_DOUBLE;
 			arburst_timer = `AXI_BURST_INCR;
-			arcache_timer = arcache_if;
-			arprot_timer = arprot_if;
-			arqos_timer = arqos_if;
-			arregion_timer = arregion_if;
+			//arcache_timer = arcache_if;
+			//arprot_timer = arprot_if;
+			//arqos_timer = arqos_if;
+			//arregion_timer = arregion_if;
 
 			arvalid_timer = `AXI_VALID_DIS;
 			arid_timer = `AXI_ID_ZERO;
@@ -576,10 +576,10 @@ module axi_interconnect(
 			arlen_timer = `AXI_LEN_ZERO;
 			arsize_timer = `AXI_SIZE_DOUBLE;
 			arburst_timer = `AXI_BURST_INCR;
-			arcache_timer = arcache_if;
-			arprot_timer = arprot_if;
-			arqos_timer = arqos_if;
-			arregion_timer = arregion_if;
+			//arcache_timer = arcache_if;
+			//arprot_timer = arprot_if;
+			//arqos_timer = arqos_if;
+			//arregion_timer = arregion_if;
 		end
 	end
 
