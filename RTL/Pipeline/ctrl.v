@@ -38,7 +38,8 @@ module ctrl(
 	wire prediction_result_t;
 	wire jmp_en_prediction;
 	wire [`BUS_ADDR_MEM] jmp_to_prediction;
-
+	wire hold_n;
+	
 	assign jmp_en = (load_bypass_i==`LOAD_BYPASS_EN) ? `JMP_DIS : jmp_en_pre ;
 	assign jmp_to = (jmp_en == `JMP_EN) ? (jmp_num1_i + jmp_num2_i) : `MEM_ADDR_ZERO;
 
