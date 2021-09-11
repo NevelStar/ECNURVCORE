@@ -670,6 +670,7 @@ module axi_interconnect(
 			rvalid_if = `AXI_VALID_EN;
 
 			rready_axi = `AXI_READY_DIS;
+			rready_timer = `AXI_READY_DIS;
 		end
 	end
 

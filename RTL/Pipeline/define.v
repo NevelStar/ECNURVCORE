@@ -8,10 +8,10 @@
 //the initial data
 `define INSTR_ADDR_INI		64'h0000_0000_0000_0000
 
-`define BASE_PC				64'h0000_0000_0000_0000
-`define BASE_MEM			64'h0000_0000_0000_1000
+`define BASE_PC				64'h0000_0000_3000_0000
+`define BASE_MEM			64'h0000_0000_8000_0000
 
-`define PC_MAX				64'h0000_0000_0000_0fff
+`define PC_MAX				64'h0000_0000_ffff_ffff
 
 `define ADDR_TIMER_MIN      64'h0000_0000_2000_0000
 `define ADDR_TIMER_MAX      64'h0000_0000_2fff_ffff
