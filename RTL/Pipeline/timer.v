@@ -207,7 +207,7 @@ begin
 			saxi_rvaild <= 1'b0;				
 		end
 		else begin
-			saxi_rvaild <= {`DATA_WIDTH{1'b0}};
+			saxi_rvaild <= 1'b0;
 		end
 	end
 end

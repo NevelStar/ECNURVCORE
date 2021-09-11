@@ -33,7 +33,7 @@
 //the constant
 `define REG_NUM				32
 `define DATA_WIDTH			64
-`define ADDR_WIDTH         32
+`define ADDR_WIDTH          32
 `define WR_STR_ALL			8'hff
 `define WR_STR_WORD			8'h0f
 `define WR_STR_HALF			8'h03
