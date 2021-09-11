@@ -69,7 +69,7 @@ always @(posedge clk)
 begin
 	if (rst == `RstEnable)
 	begin
-		axi_awaddr_buf <= 1'b0;
+		axi_awaddr_buf <= 32'b0;
 	end
 	else begin
 		if (saxi_awvaild && saxi_awready) begin
@@ -194,7 +194,7 @@ begin
 	end
 	else begin
 		if (axi_wait_for_read && saxi_rready) begin  
-			saxi_rdata <= axi_need_read;
+			saxi_rdata <= axi_data_to_read;
 			saxi_rvaild <= 1'b1;
 			axi_wait_for_read <= 1'b0;					//exit wait for read mode
 		end

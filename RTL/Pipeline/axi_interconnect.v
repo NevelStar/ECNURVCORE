@@ -597,7 +597,7 @@ module axi_interconnect(
 
 					rid_if = `AXI_ID_ZERO;
 					rdata_if = rdata_if_t;
-					rresp_if = `AXI_VALID_DIS;
+					rresp_if = {1'b0,`AXI_VALID_DIS};
 					rlast_if = `AXI_VALID_DIS;
 					rvalid_if = `AXI_VALID_EN;
 
@@ -613,7 +613,7 @@ module axi_interconnect(
 
 					rid_if = `AXI_ID_ZERO;
 					rdata_if = rdata_if_t;
-					rresp_if = `AXI_VALID_DIS;
+					rresp_if = {1'b0,`AXI_VALID_DIS};
 					rlast_if = `AXI_VALID_DIS;
 					rvalid_if = `AXI_VALID_EN;
 
@@ -625,7 +625,7 @@ module axi_interconnect(
 				if(rready_if == `AXI_VALID_EN) begin
 					rid_mem = `AXI_ID_ZERO;
 					rdata_mem = `ZERO_DOUBLE;
-					rresp_mem = `AXI_VALID_DIS;
+					rresp_mem = {1'b0,`AXI_VALID_DIS};
 					rlast_mem = `AXI_VALID_DIS;
 					rvalid_mem = `AXI_VALID_DIS;
 
@@ -641,13 +641,13 @@ module axi_interconnect(
 				else begin
 					rid_mem = `AXI_ID_ZERO;
 					rdata_mem = `ZERO_DOUBLE;
-					rresp_mem = `AXI_VALID_DIS;
+					rresp_mem = {1'b0,`AXI_VALID_DIS};
 					rlast_mem = `AXI_VALID_DIS;
 					rvalid_mem = `AXI_VALID_DIS;
 
 					rid_if = `AXI_ID_ZERO;
 					rdata_if = `ZERO_DOUBLE;
-					rresp_if = `AXI_VALID_DIS;
+					rresp_if = {1'b0,`AXI_VALID_DIS};
 					rlast_if = `AXI_VALID_DIS;
 					rvalid_if = `AXI_VALID_DIS;
 
@@ -659,13 +659,13 @@ module axi_interconnect(
 		else begin
 			rid_mem = `AXI_ID_ZERO;
 			rdata_mem = rdata_mem_t;
-			rresp_mem = `AXI_VALID_DIS;
+			rresp_mem = {1'b0,`AXI_VALID_DIS};
 			rlast_mem = `AXI_VALID_DIS;
 			rvalid_mem = `AXI_VALID_EN;
 
 			rid_if = `AXI_ID_ZERO;
 			rdata_if = rdata_if_t;
-			rresp_if = `AXI_VALID_DIS;
+			rresp_if = {1'b0,`AXI_VALID_DIS};
 			rlast_if = `AXI_VALID_DIS;
 			rvalid_if = `AXI_VALID_EN;
 
