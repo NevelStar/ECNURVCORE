@@ -90,53 +90,47 @@ module clint
 			cur_csr_state <= nxt_csr_state;
 	end
 
-	always @(posedge clk) begin
-		if (!rst_n) begin
-			irq_addr_o    <= `ZERO_DOUBLE;
-			nxt_csr_state <= S_IDLE;
-		end 
-		else begin
-			irq_addr_o    <= `ZERO_DOUBLE;
-			nxt_csr_state <= cur_csr_state;
-			case (cur_csr_state)
-				S_IDLE: begin
-					if (except_sync | except_async) begin
-						irq_addr_o    <= csr_mtvec;
-						nxt_csr_state <= S_MEPC;
-					end 
-					else if (except_mret) begin
-						irq_addr_o    <= csr_mepc;
-						nxt_csr_state <= S_MSTATUS_MRET;
-					end
+	always @(*) begin
+		irq_addr_o    = `ZERO_DOUBLE;
+		nxt_csr_state = cur_csr_state;
+		case (cur_csr_state)
+			S_IDLE: begin
+			if (except_sync | except_async) begin
+					irq_addr_o    = csr_mtvec;
+					nxt_csr_state = S_MEPC;
+				end 
+			else if (except_mret) begin
+				irq_addr_o    = csr_mepc;
+				nxt_csr_state = S_MSTATUS_MRET;
 				end
+			end
 
-				S_MEPC: begin
-					irq_addr_o    <= `ZERO_DOUBLE;
-					nxt_csr_state <= S_MCAUSE;
-				end
+			S_MEPC: begin
+				irq_addr_o    = `ZERO_DOUBLE;
+				nxt_csr_state = S_MCAUSE;
+			end
 
-				S_MCAUSE: begin
-					irq_addr_o    <= `ZERO_DOUBLE;
-					nxt_csr_state <= S_MSTATUS;
-				end
+			S_MCAUSE: begin
+				irq_addr_o    = `ZERO_DOUBLE;
+				nxt_csr_state = S_MSTATUS;
+			end
 
-				S_MSTATUS: begin
-					irq_addr_o    <= `ZERO_DOUBLE;
-					nxt_csr_state <= S_IDLE;
-				end
+			S_MSTATUS: begin
+				irq_addr_o    = `ZERO_DOUBLE;
+				nxt_csr_state = S_IDLE;
+			end
 
-				S_MSTATUS_MRET: begin
-					irq_addr_o    <= `ZERO_DOUBLE;
-					nxt_csr_state <= S_IDLE;
-				end
+			S_MSTATUS_MRET: begin
+				irq_addr_o    = `ZERO_DOUBLE;
+				nxt_csr_state = S_IDLE;
+			end
 
-				default: begin
-					irq_addr_o    <= `ZERO_DOUBLE;
-					nxt_csr_state <= S_IDLE;
-				end
-				
-			endcase
-		end
+			default: begin
+				irq_addr_o    = `ZERO_DOUBLE;
+				nxt_csr_state = S_IDLE;
+			end
+
+		endcase
 	end
 
 	always @(posedge clk) begin
