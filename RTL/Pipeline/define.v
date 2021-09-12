@@ -131,6 +131,7 @@
 `define OPERATION_FENCE		7'b0001111
 `define OPERATION_AUIPC		7'b0010111
 `define OPERATION_SYS		7'b1110011
+`define OPERATION_FENCE		7'b0001111
 
 
 //funct3 code
@@ -189,6 +190,7 @@
 
 
 
+`define INSTR_FENCE_I       32'h0000100f
 
 //irq instruction
 `define INSTR_EBREAK 		32'h00100073

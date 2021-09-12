@@ -80,6 +80,12 @@ ver 1.4.0:
 	The mem stage will be syncronized with ex stage by the mux
 	If pipeline hold, new data are not allowed to be written in general registers
 
-verr 1.4.1:
+ver 1.4.1:
 ·AXI improve:
 	Unaligned memory access(store/load) supported
+
+ver 1.4.2
+·Timer AXI interface:
+	Timer interface supported in AXI interconnect
+	When timer interface act, the access to RAM will not continue
+·Fence_I instruction supported 

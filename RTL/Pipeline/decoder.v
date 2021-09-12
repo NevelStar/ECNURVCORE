@@ -1300,6 +1300,54 @@ module decoder
 					end
 				endcase
 			end
+			`OPERATION_FENCE: begin
+				if(instr == `INSTR_FENCE_I) begin
+					reg_wr_en = `REG_WR_DIS;
+					reg_rs1_addr = `REG_ADDR_ZERO;
+					reg_rs2_addr = `REG_ADDR_ZERO;
+					reg_wr_addr = `REG_ADDR_ZERO;
+
+					jmp_flag = `JMP_NOPE;
+					load_code = `LOAD_NOPE;
+					store_code = `STORE_NOPE;
+
+					alu_add_sub = `ALU_ADD_EN;
+					alu_shift = `ALU_SHIFT_L;
+					word_intercept = `INTERCEPT_DIS;
+					alu_operation = `ALU_ADD;
+					alu_op_num1	= `ZERO_DOUBLE;
+					alu_op_num2	= `ZERO_DOUBLE;
+					jmp_op_num1	= `ZERO_DOUBLE;
+					jmp_op_num2	= `ZERO_DOUBLE;
+					decode_except = `EXCEPT_NOPE;
+					except_cause = `EXCEPT_NONE;
+					csr_instr = `CSR_CODE_NOPE;
+					csr_addr = `CSR_ADDR_ZERO;
+				end
+				else begin
+					reg_wr_en = `REG_WR_DIS;
+					reg_rs1_addr = `REG_ADDR_ZERO;
+					reg_rs2_addr = `REG_ADDR_ZERO;
+					reg_wr_addr = `REG_ADDR_ZERO;
+
+					jmp_flag = `JMP_NOPE;
+					load_code = `LOAD_NOPE;
+					store_code = `STORE_NOPE;
+
+					alu_add_sub = `ALU_ADD_EN;
+					alu_shift = `ALU_SHIFT_L;
+					word_intercept = `INTERCEPT_DIS;
+					alu_operation = `ALU_ADD;
+					alu_op_num1	= `ZERO_DOUBLE;
+					alu_op_num2	= `ZERO_DOUBLE;
+					jmp_op_num1	= `ZERO_DOUBLE;
+					jmp_op_num2	= `ZERO_DOUBLE;
+					decode_except = `EXCEPT_ACT;
+					except_cause = `EXCEPT_ID_ILLEGAL;
+					csr_instr = `CSR_CODE_NOPE;
+					csr_addr = `CSR_ADDR_ZERO;
+				end
+			end
 
 			`OPERATION_NOP: begin
 				reg_wr_en = `REG_WR_DIS;
