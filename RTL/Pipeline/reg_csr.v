@@ -257,6 +257,27 @@ module reg_csr
 		.data_out	(csr_mcycle)
 	);
 	
+	// ================================ minstret ================================
+	wire					minstret_sel,minstret_ena;
+	wire	[`BUS_DATA_REG]	minstret_init;
+	wire	[`BUS_DATA_REG]	minstret_nxt;
+	wire	[`BUS_DATA_REG]	csr_minstret;
+	
+	assign minstret_sel = csr_waddr == `CSR_MINSTRET;
+	assign minstret_ena = minstret_sel & clt_we_i;
+	
+	assign minstret_init = `ZERO_DOUBLE;
+	
+	gnrl_dff # (.DW(`DATA_WIDTH)) dff_minstret
+	(
+		.clk		(clk),
+		.rst_n		(rst_n),
+		.wr_en		(minstret_ena),
+		.data_in	(csr_next),
+		.data_r_ini	(minstret_init),
+		.data_out	(csr_minstret)
+	);
+	
 	// ================================ mhartid ================================
 	wire					mhartid_sel,mhartid_ena;
 	wire	[`BUS_DATA_REG]	mhartid_init;
