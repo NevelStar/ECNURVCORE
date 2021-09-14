@@ -58,6 +58,13 @@ module ex_stage(
 
 	wire [`BUS_DATA_REG] alu_result;	
 	wire hold_n;
+	wire mem_wr_en;
+	wire mem_rd_en;	
+
+	assign mem_wr_en_o = mem_wr_en & (!mem_except_o);
+	assign mem_rd_en_o = mem_rd_en & (!mem_except_o);
+	//assign mem_wr_en_o = mem_wr_en;
+	//assign mem_rd_en_o = mem_rd_en;
 
 	assign hold_n = (hold_code >= `HOLD_CODE_EX) ? `HOLD_EN : `HOLD_DIS;
 
@@ -81,8 +88,8 @@ module ex_stage(
 		.strb_mem_wr		(strb_mem_wr_o),
 		.addr_mem_wr		(addr_mem_wr_o),
 		.addr_mem_rd		(addr_mem_rd_o),
-		.mem_wr_en			(mem_wr_en_o),
-		.mem_rd_en			(mem_rd_en_o),
+		.mem_wr_en			(mem_wr_en),
+		.mem_rd_en			(mem_rd_en),
 		.mem_except			(mem_except_o),
 		.except_cause		(except_cause_o)
 	);

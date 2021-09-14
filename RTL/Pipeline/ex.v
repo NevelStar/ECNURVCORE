@@ -115,7 +115,25 @@ module ex(
 
 	always@(*) begin
 		case(load_code)
-			`INSTR_LB,`INSTR_LH,`INSTR_LW,`INSTR_LD,`INSTR_LBU,`INSTR_LHU,`INSTR_LWU: begin
+			`INSTR_LB,`INSTR_LBU: begin
+				addr_mem_rd = alu_result;
+				mem_rd_en = `MEM_RD_EN;
+				mem_except = `EXCEPT_NOPE;
+				except_cause = `EXCEPT_NONE;
+			end
+			`INSTR_LH,`INSTR_LHU: begin
+				addr_mem_rd = alu_result;
+				mem_rd_en = `MEM_RD_EN;
+				mem_except = (alu_result[0] == 1'b0) ? `EXCEPT_NOPE : `EXCEPT_ACT;
+				except_cause = (alu_result[0] == 1'b0) ? `EXCEPT_NONE : `EXCEPT_MEM_ALIGN;
+			end
+			`INSTR_LW,`INSTR_LWU: begin
+				addr_mem_rd = alu_result;
+				mem_rd_en = `MEM_RD_EN;
+				mem_except = (alu_result[1:0] == 2'b00) ? `EXCEPT_NOPE : `EXCEPT_ACT;
+				except_cause = (alu_result[1:0] == 2'b00) ? `EXCEPT_NONE : `EXCEPT_MEM_ALIGN;
+			end
+			`INSTR_LD: begin
 				addr_mem_rd = alu_result;
 				mem_rd_en = `MEM_RD_EN;
 				mem_except = (alu_result[2:0] == 3'b000) ? `EXCEPT_NOPE : `EXCEPT_ACT;
@@ -138,24 +156,24 @@ module ex(
 				strb_mem_wr = `WR_STR_BYTE;
 				addr_mem_wr = alu_result;
 				mem_wr_en = `MEM_WR_EN;
-				mem_except = (alu_result[2:0] == 3'b000) ? `EXCEPT_NOPE : `EXCEPT_ACT;
-				except_cause = (alu_result[2:0] == 3'b000) ? `EXCEPT_NONE : `EXCEPT_MEM_ALIGN;
+				mem_except = `EXCEPT_NOPE;
+				except_cause = `EXCEPT_NONE;
 			end
 			`INSTR_SH: begin
 				data_mem_wr = {48'd0,data_rs2[15:0]};
 				strb_mem_wr = `WR_STR_HALF;
 				addr_mem_wr = alu_result;
 				mem_wr_en = `MEM_WR_EN;
-				mem_except = (alu_result[2:0] == 3'b000) ? `EXCEPT_NOPE : `EXCEPT_ACT;
-				except_cause = (alu_result[2:0] == 3'b000) ? `EXCEPT_NONE : `EXCEPT_MEM_ALIGN;
+				mem_except = (alu_result[0] == 1'b0) ? `EXCEPT_NOPE : `EXCEPT_ACT;
+				except_cause = (alu_result[0] == 1'b0) ? `EXCEPT_NONE : `EXCEPT_MEM_ALIGN;
 			end
 			`INSTR_SW: begin
 				data_mem_wr = {32'd0,data_rs2[31:0]};
 				strb_mem_wr = `WR_STR_WORD;
 				addr_mem_wr = alu_result;
 				mem_wr_en = `MEM_WR_EN;
-				mem_except = (alu_result[2:0] == 3'b000) ? `EXCEPT_NOPE : `EXCEPT_ACT;
-				except_cause = (alu_result[2:0] == 3'b000) ? `EXCEPT_NONE : `EXCEPT_MEM_ALIGN;
+				mem_except = (alu_result[1:0] == 2'b00) ? `EXCEPT_NOPE : `EXCEPT_ACT;
+				except_cause = (alu_result[1:0] == 2'b00) ? `EXCEPT_NONE : `EXCEPT_MEM_ALIGN;
 			end
 			`INSTR_SD: begin
 				data_mem_wr = data_rs2;
