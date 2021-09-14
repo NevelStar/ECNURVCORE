@@ -331,6 +331,7 @@
 `define CSR_MTVAL     	12'h343
 `define CSR_MIP      	12'h344
 `define CSR_MCYCLE   	12'hb00
+`define CSR_MINSTRET	12'hb02
 `define CSR_MHARTID 	12'hf14
 
 `define WriteEnable 1'b1
