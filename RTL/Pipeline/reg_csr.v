@@ -54,7 +54,7 @@ module reg_csr
 	wire	[`BUS_DATA_REG]	mstatus_init;
 	
 	assign mstatus_sel = csr_waddr == `CSR_MSTATUS;
-	assign mstatus_ena = mstatus_sel & clt_we_i;
+	assign mstatus_ena = mstatus_sel & (ex_we_i | clt_we_i);
 	
 	assign mstatus_init = {56'b0,
 						   1'b0,			// MPIE
@@ -78,7 +78,7 @@ module reg_csr
 	wire	[`BUS_DATA_REG]	csr_misa;
 	
 	assign misa_sel = csr_waddr == `CSR_MISA;
-	assign misa_ena = misa_sel & clt_we_i;
+	assign misa_ena = misa_sel & (ex_we_i | clt_we_i);
 	
 	assign misa_init = `ISA_RV64I;
 	
@@ -97,7 +97,7 @@ module reg_csr
 	wire	[`BUS_DATA_REG]	mie_init;
 	
 	assign mie_sel = csr_waddr == `CSR_MIE;
-	assign mie_ena = mie_sel & clt_we_i;
+	assign mie_ena = mie_sel & (ex_we_i | clt_we_i);
 	
 	assign mie_init = {52'b0,
 					   1'b1,			// MEIE
@@ -122,7 +122,7 @@ module reg_csr
 	wire	[`BUS_DATA_REG]	mtvec_init;
 	
 	assign mtvec_sel = csr_waddr == `CSR_MTVEC;
-	assign mtvec_ena = mtvec_sel & clt_we_i;
+	assign mtvec_ena = mtvec_sel & (ex_we_i | clt_we_i);
 	
 	assign mtvec_init = `IRQ_ENTRY_INIT;
 	
@@ -142,7 +142,7 @@ module reg_csr
 	wire	[`BUS_DATA_REG]	csr_mscratch;
 	
 	assign mscratch_sel = csr_waddr == `CSR_MSCRATCH;
-	assign mscratch_ena = mscratch_sel & clt_we_i;
+	assign mscratch_ena = mscratch_sel & (ex_we_i | clt_we_i);
 	
 	assign mscratch_init = `ZERO_DOUBLE;
 	
@@ -161,7 +161,7 @@ module reg_csr
 	wire	[`BUS_DATA_REG]	mepc_init;
 	
 	assign mepc_sel = csr_waddr == `CSR_MEPC;
-	assign mepc_ena = mepc_sel & clt_we_i;
+	assign mepc_ena = mepc_sel & (ex_we_i | clt_we_i);
 
 	assign mepc_init = `ZERO_DOUBLE;
 
@@ -181,7 +181,7 @@ module reg_csr
 	wire	[`BUS_DATA_REG]	csr_mcause;
 	
 	assign mcause_sel = csr_waddr == `CSR_MCAUSE;
-	assign mcause_ena = mcause_sel & clt_we_i;
+	assign mcause_ena = mcause_sel & (ex_we_i | clt_we_i);
 	
 	assign mcause_init = `ZERO_DOUBLE;
 	
@@ -201,7 +201,7 @@ module reg_csr
 	wire	[`BUS_DATA_REG]	csr_mtval;
 	
 	assign mtval_sel = csr_waddr == `CSR_MTVAL;
-	assign mtval_ena = mtval_sel & clt_we_i;
+	assign mtval_ena = mtval_sel & (ex_we_i | clt_we_i);
 
 	assign mtval_init = `ZERO_DOUBLE;
 	
@@ -221,7 +221,7 @@ module reg_csr
 	wire	[`BUS_DATA_REG]	csr_mip;
 	
 	assign mip_sel = csr_waddr == `CSR_MIP;
-	assign mip_ena = mip_sel & clt_we_i;
+	assign mip_ena = mip_sel & (ex_we_i | clt_we_i);
 
 	assign mip_init = `ZERO_DOUBLE;
 	
@@ -242,7 +242,7 @@ module reg_csr
 	wire	[`BUS_DATA_REG]	csr_mcycle;
 	
 	assign mcycle_sel = csr_waddr == `CSR_MCYCLE;
-	assign mcycle_ena = mcycle_sel & clt_we_i;
+	assign mcycle_ena = mcycle_sel & (ex_we_i | clt_we_i);
 	
 	assign mcycle_init = `ZERO_DOUBLE;
 	assign mcycle_nxt  = mcycle_ena ? csr_next : csr_mcycle + 64'b1;
@@ -264,7 +264,7 @@ module reg_csr
 	wire	[`BUS_DATA_REG]	csr_minstret;
 	
 	assign minstret_sel = csr_waddr == `CSR_MINSTRET;
-	assign minstret_ena = minstret_sel & clt_we_i;
+	assign minstret_ena = minstret_sel & (ex_we_i | clt_we_i);
 	
 	assign minstret_init = `ZERO_DOUBLE;
 	
@@ -284,7 +284,7 @@ module reg_csr
 	wire	[`BUS_DATA_REG]	csr_mhartid;
 	
 	assign mhartid_sel = csr_waddr == `CSR_MHARTID;
-	assign mhartid_ena = mhartid_sel & clt_we_i;
+	assign mhartid_ena = mhartid_sel & (ex_we_i | clt_we_i);
 
 	assign mhartid_init = `ZERO_DOUBLE;
 	
