@@ -60,6 +60,7 @@ module id_stage(
 	wire [`BUS_L_CODE] load_code;
 	wire [`BUS_S_CODE] store_code;
 	wire [`OPERATION_CODE] operation_code;
+//	wire [`BUS_ALU_OP] funct3;
 	wire [`BUS_ADDR_REG] reg_wr_addr;
 	wire reg_wr_en;
 	wire alu_add_sub;
@@ -102,10 +103,11 @@ module id_stage(
 		.jmp_op_num1		(jmp_op_num1),
 		.jmp_op_num2		(jmp_op_num2),
 		.jmp_flag			(jmp_flag),
-		.operation_code		(operation_code),
 		
 		.load_code			(load_code),
 		.store_code			(store_code),
+		.operation_code		(operation_code),
+//		.funct3				(funct3),
 		
 		.reg_rs1_addr		(addr_rs1_o),
 		.reg_rs2_addr		(addr_rs2_o),
@@ -135,6 +137,7 @@ module id_stage(
 		.load_code_i		(load_code),
 		.store_code_i		(store_code),
 		.op_code_i			(operation_code),
+//		.funct3_i			(funct3),
 	
 		.alu_add_sub_i		(alu_add_sub),
 		.alu_shift_i		(alu_shift),
@@ -157,6 +160,7 @@ module id_stage(
 		.load_code_o		(load_code_o),
 		.store_code_o		(store_code_o),
 		.op_code_o			(op_code_o),
+//		.funct3_o			(funct3_o),
 	
 		.alu_add_sub_o		(alu_add_sub_o),
 		.alu_shift_o		(alu_shift_o),

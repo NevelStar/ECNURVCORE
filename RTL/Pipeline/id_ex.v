@@ -20,6 +20,7 @@ module id_ex
 	input 	[`BUS_L_CODE]		load_code_i		,
 	input 	[`BUS_S_CODE]		store_code_i	,
 	input	[`OPERATION_CODE]	op_code_i		,
+	input	[`BUS_ALU_OP]		funct3_i		,
 
 	input		 				alu_add_sub_i	,
 	input		 				alu_shift_i		,
@@ -27,7 +28,7 @@ module id_ex
 	input	[`BUS_ALU_OP]		alu_operation_i	,
 	input	[`BUS_DATA_REG]		alu_op_num1_i	,
 	input	[`BUS_DATA_REG]		alu_op_num2_i	,
-	input	[`BUS_ALU_OP]		csr_instr_i		,
+//	input	[`BUS_ALU_OP]		csr_instr_i		,
 	input	[`BUS_CSR_IMM]		csr_addr_i		,
 	input	[`BUS_DATA_REG]		csr_data_i		,
 
@@ -44,6 +45,7 @@ module id_ex
 	output 	[`BUS_L_CODE]		load_code_o		,
 	output 	[`BUS_S_CODE]		store_code_o	,
 	output	[`OPERATION_CODE]	op_code_o		,
+//	output	[`BUS_ALU_OP]		funct3_o		,
 
 	output		 				alu_add_sub_o	,
 	output		 				alu_shift_o		,
@@ -223,6 +225,16 @@ module id_ex
 
 		.data_out	(op_code_o)
 	);
+	
+//	gnrl_dff # (.DW(3)) dff_opcode(
+//		.clk		(clk),
+//		.rst_n		(rst_n),
+//		.wr_en		(hold_n),
+//		.data_in	(funct3_i),
+//		.data_r_ini	({3{1'b0}}),
+//
+//		.data_out	(funct3_o)
+//	);
 
 
 endmodule

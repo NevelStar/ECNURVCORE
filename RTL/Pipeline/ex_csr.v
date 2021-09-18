@@ -30,7 +30,7 @@ module ex_csr
 	
 	reg		[`BUS_DATA_REG]	reg_csr_val;
 	
-	assign csr_we_o   = op_code_i == `OPERATION_SYS;
+	assign csr_we_o   = (op_code_i == `OPERATION_SYS) & (csr_instr_i != `CSR_CODE_NOPE);
 	assign csr_addr_o = csr_addr_i;
 	assign csr_data_o = reg_csr_val;
 	

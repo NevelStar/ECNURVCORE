@@ -5,6 +5,7 @@ module clint
 (
 	input							clk,
 	input							rst_n,
+	input							hold_on,
 	
 	// from if
 	input							except_src_if		,
@@ -50,6 +51,7 @@ module clint
 	localparam S_MSTATUS_MRET    = 5'b01000;
 	localparam S_MCAUSE          = 5'b10000;
 
+	reg							hold_reg;
 	reg		[4:0]				cur_csr_state;
 	reg		[4:0]				nxt_csr_state;
 	reg		[`BUS_EXCEPT_CAUSE]	except_cus_reg;
@@ -83,6 +85,14 @@ module clint
 						except_src_ex ? except_cus_id : 3'b0
 						));
 
+	
+	always @(posedge clk) begin
+		if (!rst_n)
+			hold_reg <= 1'b1;
+		else
+			hold_reg <= hold_on;
+	end
+	
 	always @(posedge clk) begin
 		if (!rst_n)
 			cur_csr_state <= S_IDLE;
@@ -95,13 +105,13 @@ module clint
 		nxt_csr_state = cur_csr_state;
 		case (cur_csr_state)
 			S_IDLE: begin
-			if (except_sync | except_async) begin
+				if (except_sync & hold_reg | except_async) begin
 					irq_addr_o    = csr_mtvec;
 					nxt_csr_state = S_MEPC;
 				end 
-			else if (except_mret) begin
-				irq_addr_o    = csr_mepc;
-				nxt_csr_state = S_MSTATUS_MRET;
+				else if (except_mret) begin
+					irq_addr_o    = csr_mepc;
+					nxt_csr_state = S_MSTATUS_MRET;
 				end
 			end
 

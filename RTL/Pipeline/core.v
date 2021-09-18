@@ -34,6 +34,7 @@ module core
 	wire fetch_except;
 	wire decode_except;
 	wire mem_except;
+	wire hold_n_pc_o;
 	wire [`BUS_EXCEPT_CAUSE] except_cause_if_o;
 	wire [`BUS_EXCEPT_CAUSE] except_cause_id_o;
 	wire [`BUS_EXCEPT_CAUSE] except_cause_ex_o;
@@ -223,7 +224,8 @@ module core
 		.jmp_en				(jmp_en_pc_i),
 		.jmp_to				(jmp_to_pc_i),
 			
-		.addr_instr			(pc_o)
+		.addr_instr			(pc_o),
+		.hold_n				(hold_n_pc_o),
 	);
 
 
@@ -404,6 +406,7 @@ module core
 	(
 		.clk				(clk),
 		.rst_n				(rst_n),
+		.hold_n				(hold_n_pc_o),	
 	
 		.except_src_if		(fetch_except),
 		.except_cus_if		(except_cause_if_o),

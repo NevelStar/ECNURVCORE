@@ -17,10 +17,11 @@ module pc(
 	input						jmp_en		,
 	input	[`BUS_ADDR_MEM]		jmp_to		,
 
-	output reg [`BUS_ADDR_MEM]	addr_instr
+	output reg [`BUS_ADDR_MEM]	addr_instr	,
+	output						hold_n
 );
 
-	wire hold_n;
+//	wire hold_n;
 
 	assign hold_n = (hold_code >= `HOLD_CODE_PC) ? `HOLD_EN : `HOLD_DIS;
 
