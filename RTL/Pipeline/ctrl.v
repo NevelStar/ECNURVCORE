@@ -31,7 +31,6 @@ module ctrl(
 	reg jmp_en_pre;
 	wire jmp_en;
 	wire irq_jmp_t;
-	wire irq_jmp_t2;
 	wire [`BUS_ADDR_MEM] jmp_to;
 
     wire rs1_slt_rs2;
@@ -68,7 +67,7 @@ module ctrl(
 					  (prediction_result == `JMP_RIGHT) ? jmp_to_prediction : (
 					  (jmp_en == `JMP_EN) ? jmp_to : pc_instr_i + 64'd4));
 
-	assign instr_mask_o = prediction_result_t | irq_jmp_t2;
+	assign instr_mask_o = prediction_result_t | irq_jmp_t;
 
 	assign hold_code_o = (stall_mem == `STALL_EN) ? `HOLD_CODE_EX : ((stall_if == `STALL_EN) ? `HOLD_CODE_EX : `HOLD_CODE_NOPE);
 
@@ -92,15 +91,6 @@ module ctrl(
 			.data_r_ini	(`JMP_RIGHT),
 	
 			.data_out	(irq_jmp_t)
-		);
-	gnrl_dff # (.DW(1)) dff_irq_jmp_en2(
-			.clk		(clk),
-			.rst_n		(rst_n),
-			.wr_en		(hold_n),
-			.data_in	(irq_jmp_t),
-			.data_r_ini	(`JMP_RIGHT),
-	
-			.data_out	(irq_jmp_t2)
 		);
 
 
