@@ -225,7 +225,7 @@ module core
 		.jmp_to				(jmp_to_pc_i),
 			
 		.addr_instr			(pc_o),
-		.hold_n				(hold_n_pc_o),
+		.hold_n				(hold_n_pc_o)
 	);
 
 

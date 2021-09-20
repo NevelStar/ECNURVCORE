@@ -28,7 +28,7 @@ module id_ex
 	input	[`BUS_ALU_OP]		alu_operation_i	,
 	input	[`BUS_DATA_REG]		alu_op_num1_i	,
 	input	[`BUS_DATA_REG]		alu_op_num2_i	,
-//	input	[`BUS_ALU_OP]		csr_instr_i		,
+	input	[`BUS_ALU_OP]		csr_instr_i		,
 //	input	[`BUS_CSR_IMM]		csr_addr_i		,
 	input	[`BUS_DATA_REG]		csr_data_i		,
 
