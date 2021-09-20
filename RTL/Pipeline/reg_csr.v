@@ -26,7 +26,7 @@ module reg_csr
 	output	[`BUS_DATA_REG]		ex_data_o 		,
 	
 	input						clt_we_i 		,
-	input	[`BUS_CSR_IMM]		clt_addr_i		,
+	input	[`BUS_CSR_IMM]		clt_waddr_i		,
 	input	[`BUS_DATA_REG]		clt_data_i 		,
 	output	[`BUS_DATA_REG]		clt_data_o 		,
 	
@@ -45,9 +45,10 @@ module reg_csr
 	wire	[`BUS_DATA_REG]	csr_next;
 	wire	[`BUS_CSR_IMM]	csr_waddr,csr_raddr;
 	
-	assign csr_next  =   ex_we_i  ? ex_data_i  : (  clt_we_i  ? clt_data_i : `ZERO_DOUBLE);
-	assign csr_waddr =   ex_we_i  ? ex_waddr_i : (  clt_we_i  ? clt_addr_i : 12'b0);
-	assign csr_raddr = (~ex_we_i) ? ex_raddr_i : ((~clt_we_i) ? clt_addr_i : 12'b0);
+	assign csr_next  =   ex_we_i  ? ex_data_i  : (  clt_we_i  ? clt_data_i  : `ZERO_DOUBLE);
+	assign csr_waddr =   ex_we_i  ? ex_waddr_i : (  clt_we_i  ? clt_waddr_i : 12'b0);
+//	assign csr_raddr = (~ex_we_i) ? ex_raddr_i : ((~clt_we_i) ? clt_addr_i  : 12'b0);
+	assign csr_raddr = ex_raddr_i;
 
 	// ================================ mstatus ================================
 	wire					mstatus_sel,mstatus_ena;
@@ -56,7 +57,9 @@ module reg_csr
 	assign mstatus_sel = csr_waddr == `CSR_MSTATUS;
 	assign mstatus_ena = mstatus_sel & (ex_we_i | clt_we_i);
 	
-	assign mstatus_init = {56'b0,
+	assign mstatus_init = {51'b0,
+						   2'b0,			// MPP
+						   3'b0,
 						   1'b0,			// MPIE
 						   3'b0,
 						   1'b1,			// MIE

@@ -116,22 +116,22 @@ module clint
 			end
 
 			S_MEPC: begin
-				irq_addr_o    = `ZERO_DOUBLE;
+				irq_addr_o    = csr_mtvec;
 				nxt_csr_state = S_MCAUSE;
 			end
 
 			S_MCAUSE: begin
-				irq_addr_o    = `ZERO_DOUBLE;
+				irq_addr_o    = csr_mtvec;
 				nxt_csr_state = S_MSTATUS;
 			end
 
 			S_MSTATUS: begin
-				irq_addr_o    = `ZERO_DOUBLE;
+				irq_addr_o    = csr_mtvec;
 				nxt_csr_state = S_IDLE;
 			end
 
 			S_MSTATUS_MRET: begin
-				irq_addr_o    = `ZERO_DOUBLE;
+				irq_addr_o    = csr_mepc;
 				nxt_csr_state = S_IDLE;
 			end
 
@@ -170,10 +170,12 @@ module clint
 					csr_we_o   <= `WriteEnable;
 					csr_addr_o <= `CSR_MSTATUS;
 //					csr_data_o <= {csr_mstatus[31:4], 1'b0, csr_mstatus[2:0]};
-					csr_data_o <= {csr_mstatus[63:8], 
-								   csr_mstatus[3], 
+					csr_data_o <= {csr_mstatus[63:13],
+								   2'b11,					// MPP
+								   csr_mstatus[10:8],
+								   csr_mstatus[3], 			// MPIE
 								   csr_mstatus[6:4], 
-								   1'b0, 
+								   1'b0, 					// MIE
 								   csr_mstatus[2:0]};
 				end
 
@@ -181,10 +183,12 @@ module clint
 					csr_we_o   <= `WriteEnable;
 					csr_addr_o <= `CSR_MSTATUS;
 //					csr_data_o <= {csr_mstatus[31:4], csr_mstatus[7], csr_mstatus[2:0]};
-					csr_data_o <= {csr_mstatus[63:8],
-								   1'b1,
+					csr_data_o <= {csr_mstatus[63:13],
+								   2'b0,					// MPP
+								   csr_mstatus[10:8],
+								   1'b1, 					// MPIE
 								   csr_mstatus[6:4],
-								   csr_mstatus[7],
+								   csr_mstatus[7],			// MIE
 								   csr_mstatus[2:0]};
 				end
 				

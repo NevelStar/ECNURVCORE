@@ -367,7 +367,7 @@ module core
         .ex_data_o			(csr_data_id_i),
 		
         .clt_we_i			(csr_we_clint_o),
-        .clt_addr_i			(csr_addr_clint_o),
+        .clt_waddr_i		(csr_addr_clint_o),
         .clt_data_i			(csr_data_clint_o),
         .clt_data_o			(csr_data_clint_i),
 		

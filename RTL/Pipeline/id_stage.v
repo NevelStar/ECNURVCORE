@@ -116,7 +116,7 @@ module id_stage(
 		.decode_except		(decode_except_o),
 		.except_cause		(except_cause_o),
 		.csr_instr			(csr_instr),
-		.csr_addr			(csr_addr),
+		.csr_addr			(csr_addr_o),
 		.csr_data_i			(csr_data_i),
 		.load_bypass		(load_bypass_o)
 
@@ -146,7 +146,7 @@ module id_stage(
 		.alu_op_num1_i		(alu_op_num1),
 		.alu_op_num2_i		(alu_op_num2),
 		.csr_instr_i		(csr_instr),
-		.csr_addr_i			(csr_addr),
+//		.csr_addr_i			(csr_addr),
 		.csr_data_i			(csr_data_i),
 	
 		.hold_n				(hold_n),
@@ -169,7 +169,7 @@ module id_stage(
 		.alu_op_num1_o		(alu_op_num1_o),
 		.alu_op_num2_o		(alu_op_num2_o),
 		.csr_instr_o		(csr_instr_o),
-		.csr_addr_o			(csr_addr_o),
+//		.csr_addr_o			(csr_addr_o),
 		.csr_data_o			(csr_data_o)
 	);
 
