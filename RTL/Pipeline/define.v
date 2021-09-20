@@ -151,11 +151,11 @@
 
 //type B
 `define INSTR_BEQ			3'b000
-`define INSTR_BNE			3'B001
-`define INSTR_BLT			3'B100
-`define INSTR_BGE			3'B101
-`define INSTR_BLTU			3'B110
-`define INSTR_BGEU			3'B111
+`define INSTR_BNE			3'b001
+`define INSTR_BLT			3'b100
+`define INSTR_BGE			3'b101
+`define INSTR_BLTU			3'b110
+`define INSTR_BGEU			3'b111
 
 //type S
 `define INSTR_SB			3'b000
