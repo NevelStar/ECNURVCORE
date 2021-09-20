@@ -29,6 +29,7 @@ module btb_ctrl(
 
 	reg jmp_prediction_t;
 	reg pc_match_t;
+	reg hold_n_t;
 	reg [`BUS_ADDR_MEM] target_prediction_t;
 
 	reg [`BUS_PRE_STATE] prediction_state;

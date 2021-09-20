@@ -5,7 +5,7 @@ module clint
 (
 	input							clk,
 	input							rst_n,
-	input							hold_on,
+	input							hold_n,
 	
 	// from if
 	input							except_src_if		,
@@ -90,7 +90,7 @@ module clint
 		if (!rst_n)
 			hold_reg <= 1'b1;
 		else
-			hold_reg <= hold_on;
+			hold_reg <= hold_n;
 	end
 	
 	always @(posedge clk) begin
