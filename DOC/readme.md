@@ -1,5 +1,4 @@
-<div align=center> <font color=#000000 size=6 face="黑体">ECNURVCORE RISC-V CPU </font> </div>
-
+# ECNURVCORE RISC-V CPU
 
 > Design Team：tangyuchao oujiahua liyanzhong liuyuan jiachen
 
