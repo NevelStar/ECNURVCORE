@@ -1,11 +1,9 @@
-<div align=center> <font size=6 face="微软雅黑">ECNURVCORE RISC-V CPU</font> </div>
-
-
-
-
+<div align=center> <font size=10 face="微软雅黑">ECNURVCORE RISC-V CPU</font> </div>
 
 > Design Team：tangyuchao oujiahua liyanzhong liuyuan jiachen
-----------
+
+---
+
 ## 一、系统整体概述
 
 ### (1) 指令集架构
@@ -61,7 +59,7 @@ ECNURVCORE是由本团队设计的一个支持RV64I指令集的三级流水线�
 
 ### （3）总线地址分配
 
-| **设备**          | **地址空间**            |
+| **设备**    | **地址空间**      |
 | ----------------- | ----------------------- |
 | reserve           | 0x0000_0000~0x01ff_ffff |
 | CLINT             | 0x0200_0000~0x0200_ffff |
@@ -73,10 +71,7 @@ ECNURVCORE是由本团队设计的一个支持RV64I指令集的三级流水线�
 | ChipLink MMIO     | 0x4000_0000~0x7fff_ffff |
 | memory            | 0x8000_0000~0xffff_ffff |
 
-
 ---
-
-
 
 ## 二、核内设计
 
@@ -134,21 +129,11 @@ ECNURVCORE是由本团队设计的一个支持RV64I指令集的三级流水线�
 
 ##### [4] 异常与中断
 
-
-
 #### 3.流水线的冲刷
-
-
 
 ### （四）分支预测逻辑
 
-
-
-
-
 ### （五）LSU单元设计
-
-
 
 ---
 
@@ -165,8 +150,6 @@ ECNURVCORE是由本团队设计的一个支持RV64I指令集的三级流水线�
 #### 1．读写机制
 
 #### 2．总线仲裁
-
-
 
 ## 三、异常与中断处理
 
