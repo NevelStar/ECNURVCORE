@@ -1,4 +1,3 @@
-# ECNURVCORE RISC-V CPU
 <h1 align = "center">ECNURVCORE RISC-V CPU</h1>
 > Design Team：tangyuchao oujiahua liyanzhong liuyuan jiachen
 
