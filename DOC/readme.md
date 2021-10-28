@@ -244,8 +244,8 @@ S_MRET状态：写入MSTATUS寄存器，下一状态S_IDLE
 
 ### （一）RT-thread系统运行成功截图
 
-![图像2](D:\RVCORE\ECNURVCORE\DOC\rt-thread_success.png)
+![图像2](rt-thread_success.png)
 
 ### （二）回归测试
 
-![图像3](D:\RVCORE\ECNURVCORE\DOC\difftest_success.png)
+![图像3](difftest_success.png)
