@@ -585,8 +585,8 @@ module ysyx_210295_axi_interconnect(
 	assign rvalid_axi_neg = rvalid_axi_reg && ( ~rvalid_axi );  
 
     reg [1:0] r_state;
-    parameter [1:0] R_STATE_IDLE = 2'b00, R_STATE_ADDR = 2'b01, R_STATE_READ  = 2'b10, R_STATE_END  = 2'b11;
-	wire r_state_idle = r_state == R_STATE_IDLE, r_state_read  = r_state == R_STATE_READ, r_state_end  = r_state == R_STATE_END;
+    parameter [1:0] R_STATE_IDLE = 2'b00,  R_STATE_READ  = 2'b10, R_STATE_END  = 2'b11;
+	wire r_state_read  = r_state == R_STATE_READ, r_state_end  = r_state == R_STATE_END;
       // Read State Machine
 	  /*
     always @(posedge clock) begin
@@ -623,18 +623,23 @@ module ysyx_210295_axi_interconnect(
 	
 reg [1:0] st;
 always@(posedge clock) begin
-    case(st)
-    2'b00: if(timer_cs_ar_pos) begin
-           if(arready_timer)  st<=2'b10;
-           else               st<=2'b01;
-    end
-           else               st<=2'b00;
-    2'b01:if(arready_timer)   st<=2'b10;
-          else                st<=2'b01;
-    2'b10:if(rvalid_timer)    st<=2'b00;
-          else                st<=2'b10;
-    default:                  st<=2'b00;
-    endcase
+	if(reset) begin
+		st <= 0;
+	end    
+	else begin
+		case(st)
+			2'b00: if(timer_cs_ar_pos) begin
+						if(arready_timer)  st<=2'b10;
+						else	st<=2'b01;
+					end
+					else               st<=2'b00;
+			2'b01:if(arready_timer)   st<=2'b10;
+					else                st<=2'b01;
+			2'b10:if(rvalid_timer)    st<=2'b00;
+				else                st<=2'b10;
+			default:                  st<=2'b00;
+			endcase
+	end
 end
 
 wire timer_valid;
@@ -1099,7 +1104,7 @@ endmodule
 //Edited in 2021.08.04
 
 
-
+/*
 module ysyx_210295_btb_ctrl(
 	input						clock				,
 	input						reset				,
@@ -1231,7 +1236,7 @@ module ysyx_210295_btb_ctrl(
 
 
 endmodule
-
+*/
 
 
 module ysyx_210295_clint
@@ -1264,14 +1269,14 @@ module ysyx_210295_clint
 	// to ctrl
 //	output 							wire hold_flag_o,
 	output							irq_assert_o,
-	output  wire				  except_async_o,
+	output  wire				  	except_async_o,
 	output	reg	[`YSYX210295_BUS_ADDR_MEM]		irq_addr_o,
 	
 	// from/to csr_reg
 	output	reg						csr_we_o,
 	output	reg	[`YSYX210295_BUS_CSR_IMM]		csr_addr_o,
 //	input		[`YSYX210295_BUS_DATA_REG]		csr_data_i,
-	output	reg	[`YSYX210295_BUS_DATA_REG] 	csr_data_o,
+	output	reg	[`YSYX210295_BUS_DATA_REG] 		csr_data_o,
 
 	input		[`YSYX210295_BUS_DATA_REG]		csr_mstatus,
 	input		[`YSYX210295_BUS_DATA_REG]		csr_mie,
@@ -1299,7 +1304,7 @@ module ysyx_210295_clint
 	wire	[`YSYX210295_BUS_EXCEPT_CAUSE]	except_cus;
 	wire	[`YSYX210295_BUS_EXCEPT_CAUSE]	irq_cus;
 
-        wire 						glb_irq_en;
+    wire 						glb_irq_en;
 	wire 						tmr_irq_en;
 	//wire 						sft_irq_en;
 	wire 						ext_irq_en;
@@ -1346,7 +1351,7 @@ module ysyx_210295_clint
 	assign glb_irq_en = csr_mstatus[3];
 	assign tmr_irq_en = csr_mie[7];
     //  assign sft_irq_en = csr_mie[3];
-      assign ext_irq_en = csr_mie[11];
+    assign ext_irq_en = csr_mie[11];
 
 	//the source of except
 	assign except_src_assert = except_src_if | except_src_id | except_src_ex;
@@ -1363,7 +1368,7 @@ module ysyx_210295_clint
 						except_src_id ? except_cus_id : (
 						except_src_ex ? except_cus_ex : 4'b0
 						));
-      assign irq_cus = (ext_irq_i & ext_irq_en) ?  4'd11: 
+    assign irq_cus = (ext_irq_i & ext_irq_en) ?  4'd11: 
 	                         (tmr_irq_i & tmr_irq_en) ?  4'd7  : 0 ;
 	
 	assign mcause_data = (except_async) ? {1'b1,59'b0,irq_cus} : 
@@ -1591,7 +1596,7 @@ module ysyx_210295_core
 	wire jmp_en_pc_i;
 	wire [`YSYX210295_BUS_ADDR_MEM] jmp_to_pc_i;
 
-	wire instr_mask_if_i;
+	//wire instr_mask_if_i;
 	wire [`YSYX210295_BUS_ADDR_MEM] pc_if_i;
 	wire [`YSYX210295_BUS_DATA_INSTR] instr_rd_if_i; 	
 	wire [`YSYX210295_BUS_DATA_INSTR] instr_rd_if_o;
@@ -1675,21 +1680,21 @@ module ysyx_210295_core
 
 	wire [`YSYX210295_BUS_ADDR_MEM] jmp_num1_ctrl_i;
 	wire [`YSYX210295_BUS_ADDR_MEM] jmp_num2_ctrl_i;
-	wire [`YSYX210295_BUS_ADDR_MEM] pc_prediction_ctrl_i;
-	wire [`YSYX210295_BUS_ADDR_MEM] pc_jmp_ctrl_i;
+	//wire [`YSYX210295_BUS_ADDR_MEM] pc_prediction_ctrl_i;
+	//wire [`YSYX210295_BUS_ADDR_MEM] pc_jmp_ctrl_i;
 	wire [`YSYX210295_BUS_DATA_REG] data_rs1_ctrl_i;
 	wire [`YSYX210295_BUS_DATA_REG] data_rs2_ctrl_i;
 	wire [`YSYX210295_BUS_JMP_FLAG] jmp_flag_ctrl_i;
 	wire load_bypass_ctrl_i;
 	wire jmp_en_ctrl_o;
 	wire [`YSYX210295_BUS_ADDR_MEM] jmp_to_ctrl_o;
-	wire instr_mask_ctrl_o;
+	//wire instr_mask_ctrl_o;
 	wire [`YSYX210295_BUS_HOLD_CODE] hold_code_ctrl_o;
 
 	//wire [`YSYX210295_BUS_HOLD_CODE] hold_code;
 
-	wire				   		irq_assert_clint_o;
-	wire 	[`YSYX210295_BUS_ADDR_MEM] 	irq_addr_clint_o;
+	wire				   					irq_assert_clint_o;
+	wire 	[`YSYX210295_BUS_ADDR_MEM] 		irq_addr_clint_o;
 	wire						csr_we_ex_o;
 	wire	[`YSYX210295_BUS_CSR_IMM]		csr_addr_ex_o;
 	wire	[`YSYX210295_BUS_DATA_REG]		csr_data_id_i;
@@ -1712,11 +1717,11 @@ module ysyx_210295_core
 	reg	[`YSYX210295_BUS_DATA_REG]		mtvec_csr_r;
 	reg	[`YSYX210295_BUS_DATA_REG]		mepc_csr_r;
 */
-       	reg [32:0] cnt_inst;
+    reg [32:0] cnt_inst;
 	wire hold_n_pos;
 	
 	reg hold_n_r ;
-    	always@(posedge clock) begin
+    always@(posedge clock) begin
 	   if(reset) hold_n_r <= 0;    
 	   else      hold_n_r <= hold_n_pc_o ;
  	end
@@ -1733,7 +1738,7 @@ module ysyx_210295_core
 
 	assign instr_rd_if_i = instr_i;
 	assign pc_if_i = pc_o;
-	assign instr_mask_if_i = instr_mask_ctrl_o;
+	//assign instr_mask_if_i = instr_mask_ctrl_o;
 
 	assign data_rs1_id_i = data_rd1_reg_o;
 	assign data_rs2_id_i = data_rd2_reg_o;
@@ -1778,8 +1783,8 @@ module ysyx_210295_core
 	assign stall_mem_ctrl_i = stall_mem;
 	assign jmp_num1_ctrl_i = jmp_op_num1_id_o;
 	assign jmp_num2_ctrl_i = jmp_op_num2_id_o;
-	assign pc_prediction_ctrl_i = pc_o;
-	assign pc_jmp_ctrl_i = addr_instr_i;
+	//assign pc_prediction_ctrl_i = pc_o;
+	//assign pc_jmp_ctrl_i = addr_instr_i;
 	assign data_rs1_ctrl_i = jmpb_rs1_id_o;
 	assign data_rs2_ctrl_i = jmpb_rs2_id_o;
 	assign jmp_flag_ctrl_i = jmp_flag_id_o;
@@ -1820,7 +1825,7 @@ module ysyx_210295_core
 		.instr_rd_i 	(instr_rd_if_i),
 
 		.reset          (reset),
-		.instr_mask_i	(instr_mask_if_i),
+		//.instr_mask_i	(instr_mask_if_i),
 		.pc_i 			(pc_if_i),
 		
 		.fetch_except_o	(fetch_except),
@@ -1830,10 +1835,10 @@ module ysyx_210295_core
 	);
 
  //   wire [31:0] diff_instr_id_i;
-	wire [31:0] diff_instr_id_o;
-	wire [31:0] diff_instr_ex_i; 
-	wire [31:0] diff_instr_ex_o;
-    assign diff_instr_ex_i = diff_instr_id_o ;
+//	wire [31:0] diff_instr_id_o;
+//	wire [31:0] diff_instr_ex_i; 
+	//wire [31:0] diff_instr_ex_o;
+    //assign diff_instr_ex_i = diff_instr_id_o ;
 /*
 	wire [63:0] diff_pc_id_i;
 	wire [63:0] diff_pc_id_o;
@@ -1863,7 +1868,7 @@ module ysyx_210295_core
 		.instr_i		(instr_id_i),
 		.addr_instr_i	(addr_instr_id_i),
 
-		.diff_instr_i   (instr_id_i),
+	//	.diff_instr_i   (instr_id_i),
 
 		.except_async  (except_async_id),
 
@@ -1880,7 +1885,7 @@ module ysyx_210295_core
 		.addr_wr_o		(addr_wr_id_o),
 		//.addr_instr_o	(),
 
-		.diff_instr_o   (diff_instr_id_o),
+	//	.diff_instr_o   (diff_instr_id_o),
 	//	.diff_pc_o      (diff_pc_id_o),
 	//	.diff_instr_en_o(diff_instr_en_id_o),
 
@@ -1920,7 +1925,7 @@ module ysyx_210295_core
 		.csr_instr_i	(csr_instr_ex_i),
 		.csr_addr_i		(csr_addr_ex_i),
 
-		.diff_instr_i   (diff_instr_ex_i),
+	//	.diff_instr_i   (diff_instr_ex_i),
 	//	.diff_pc_i      (diff_pc_ex_i),
 	//	.diff_instr_en_i(diff_instr_en_ex_i),
 
@@ -1950,7 +1955,7 @@ module ysyx_210295_core
 		.mem_wr_en_o	(mem_wr_en_ex_o),
 		.mem_rd_en_o	(mem_rd_en_ex_o),
 
-		.diff_instr_o   (diff_instr_ex_o),
+	//	.diff_instr_o   (diff_instr_ex_o),
 	//	.diff_pc_o      (diff_pc_ex_o),
 	//	.diff_instr_en_o(diff_instr_en_ex_o),
 
@@ -1993,16 +1998,16 @@ module ysyx_210295_core
 			.reset				(reset),
 			.hold_n             (hold_n_pc_o), // by ou
 			
-			.ex_we			(csr_we_ex_o),
+			.ex_we				(csr_we_ex_o),
 			.ex_waddr_i			(csr_addr_ex_o),
 			.ex_raddr_i			(csr_addr_id_o),
 			.ex_data_i			(csr_data_ex_o),
 			.ex_data_o			(csr_data_id_i),
 			
 			.clt_we_i			(csr_we_clint_o),
-			.clt_waddr_i			(csr_addr_clint_o),
+			.clt_waddr_i		(csr_addr_clint_o),
 			.clt_data_i			(csr_data_clint_o),
-			//.clt_data_o			(csr_data_clint_i),
+			//.clt_data_o		(csr_data_clint_i),
 			
 			.csr_mstatus		(mstatus_csr_reg_o),
 			.csr_mie			(mie_csr_reg_o),
@@ -2013,8 +2018,8 @@ module ysyx_210295_core
     wire jmp_en;// by ou
 	ysyx_210295_ctrl core_ctrl
 	(
-		.clock			(clock),
-		.reset			(reset),
+		//.clock			(clock),
+		//.reset			(reset),
 		.stall_if		(stall_if_ctrl_i),
 		.stall_mem	    (stall_mem_ctrl_i),
 
@@ -2023,8 +2028,8 @@ module ysyx_210295_core
 		
 		.jmp_num1_i		(jmp_num1_ctrl_i),
 		.jmp_num2_i		(jmp_num2_ctrl_i),
-		.pc_pred_i		(pc_prediction_ctrl_i),
-		.pc_instr_i		(pc_jmp_ctrl_i),
+		//.pc_pred_i		(pc_prediction_ctrl_i),
+		//.pc_instr_i		(pc_jmp_ctrl_i),
 		.data_rs1_i		(data_rs1_ctrl_i),
 		.data_rs2_i		(data_rs2_ctrl_i),
 		.jmp_flag_i		(jmp_flag_ctrl_i),
@@ -2033,7 +2038,7 @@ module ysyx_210295_core
         .jmp_en          (jmp_en),  // by ou
 		.jmp_en_o		(jmp_en_ctrl_o),		
 		.jmp_to_o		(jmp_to_ctrl_o),
-		.instr_mask_o	(instr_mask_ctrl_o),
+		//.instr_mask_o	(instr_mask_ctrl_o),
 		.hold_code_o	(hold_code_ctrl_o)
 	);
 
@@ -2508,16 +2513,16 @@ endmodule
 
 
 module ysyx_210295_ctrl(
-	input					clock				,
-	input					reset			,
+	//input					clock				,
+	//input					reset			,
 	input					stall_if		,
 	input					stall_mem		,
 	input					irq_jmp_i		,
 	input [`YSYX210295_BUS_ADDR_MEM]	irq_jmp_to_i	,
 	input [`YSYX210295_BUS_ADDR_MEM]	jmp_num1_i		,
 	input [`YSYX210295_BUS_ADDR_MEM]	jmp_num2_i		,
-	input [`YSYX210295_BUS_ADDR_MEM]	pc_pred_i		,
-	input [`YSYX210295_BUS_ADDR_MEM]	pc_instr_i		,
+	//input [`YSYX210295_BUS_ADDR_MEM]	pc_pred_i		,
+	//input [`YSYX210295_BUS_ADDR_MEM]	pc_instr_i		,
 	input [`YSYX210295_BUS_DATA_REG]	data_rs1_i		,
 	input [`YSYX210295_BUS_DATA_REG]	data_rs2_i		,
 	input [`YSYX210295_BUS_JMP_FLAG]	jmp_flag_i		,
@@ -2526,7 +2531,7 @@ module ysyx_210295_ctrl(
     output                  jmp_en,
 	output					jmp_en_o		,
 	output [`YSYX210295_BUS_ADDR_MEM]	jmp_to_o		,	
-	output					instr_mask_o	,	
+	//output					instr_mask_o	,	
 	output [`YSYX210295_BUS_HOLD_CODE]	hold_code_o 			
 );
 
@@ -2536,11 +2541,11 @@ module ysyx_210295_ctrl(
 
     wire rs1_slt_rs2;
     wire rs1_sltu_rs2;
-	wire prediction_result;
-	wire prediction_result_t;
-	wire jmp_en_prediction;
-	wire [`YSYX210295_BUS_ADDR_MEM] jmp_to_prediction;
-	wire hold_n;
+//	wire prediction_result;
+//	wire prediction_result_t;
+//	wire jmp_en_prediction;
+//	wire [`YSYX210295_BUS_ADDR_MEM] jmp_to_prediction;
+	//wire hold_n;
 
 	assign jmp_en = (load_bypass_i==`YSYX210295_LOAD_BYPASS_EN) ? `YSYX210295_JMP_DIS : jmp_en_pre ;
 	assign jmp_to = (jmp_en == `YSYX210295_JMP_EN) ? (jmp_num1_i + jmp_num2_i) : `YSYX210295_MEM_ADDR_ZERO;
@@ -2564,12 +2569,12 @@ module ysyx_210295_ctrl(
 			default:		jmp_en_pre = `YSYX210295_JMP_DIS;
 		endcase
 	end
-wire  irq_jmp_i_r;
+//wire  irq_jmp_i_r;
 //wire irq_jmp_i_r_2;
-reg irq_jmp_i_r2;
-wire irq_jmp_i_r_pos;
+//reg irq_jmp_i_r2;
+//wire irq_jmp_i_r_pos;
 
-assign irq_jmp_i_r_pos =(~irq_jmp_i_r2) && ( irq_jmp_i_r );  
+//assign irq_jmp_i_r_pos =(~irq_jmp_i_r2) && ( irq_jmp_i_r );  
 /*
    always@(posedge clock) begin
 	   if(reset) irq_jmp_i_r<=0;
@@ -2577,7 +2582,7 @@ assign irq_jmp_i_r_pos =(~irq_jmp_i_r2) && ( irq_jmp_i_r );
 	   else               irq_jmp_i_r <= irq_jmp_i_r;
    end
 */
-
+/*
 	ysyx_210295_gnrl_dff # (.DW(1)) diff_irq_jmp_i(
 		.clock		(clock),
 		.reset		(reset),
@@ -2587,6 +2592,7 @@ assign irq_jmp_i_r_pos =(~irq_jmp_i_r2) && ( irq_jmp_i_r );
 
 		.data_out	(irq_jmp_i_r)
 	);
+	*/
 	/*
 	ysyx_210295_gnrl_dff # (.DW(1)) diff_irq_jmp_i2(
 		.clock		(clock),
@@ -2598,24 +2604,28 @@ assign irq_jmp_i_r_pos =(~irq_jmp_i_r2) && ( irq_jmp_i_r );
 		.data_out	(irq_jmp_i_r_2)
 	);//by lee
 */
-      always@(posedge clock) begin
-	   if(reset) irq_jmp_i_r2<=0;
-	   else irq_jmp_i_r2<=irq_jmp_i_r;
-   end
-
+/*
+    always@(posedge clock) begin
+	   if(reset) irq_jmp_i_r2 <= 1'b0;
+	   else irq_jmp_i_r2 <= irq_jmp_i_r;
+   	end
+*/
+	/*
 	reg [`YSYX210295_BUS_ADDR_MEM]	irq_jmp_to_i_r;
 
 	always@(posedge clock) begin
-	   if(reset) irq_jmp_to_i_r<=0;
+	   if(reset) irq_jmp_to_i_r <= 64'b0;
 	   else if(irq_jmp_i_r_pos) irq_jmp_to_i_r<=irq_jmp_to_i;
 	   else irq_jmp_to_i_r <= irq_jmp_to_i_r;
 	end
-
+	*/
+	/*
 	reg [`YSYX210295_BUS_ADDR_MEM]	pc_instr_i_t;
 	always @(posedge clock) begin
-		if (reset)			pc_instr_i_t <= 0;
+		if (reset)			pc_instr_i_t <= 64'b0;
 		else if (hold_n)	pc_instr_i_t <= pc_instr_i; 
 	end
+	*/
     //assign jmp_en_o = (irq_jmp_i_r == `YSYX210295_JMP_EN) ? `YSYX210295_JMP_EN : ((prediction_result == `YSYX210295_JMP_RIGHT) ? jmp_en_prediction : `YSYX210295_JMP_EN);  //by  ou
 	//assign jmp_en_o = (irq_jmp_i == `YSYX210295_JMP_EN) ? `YSYX210295_JMP_EN : ((prediction_result == `YSYX210295_JMP_RIGHT) ? jmp_en_prediction : `YSYX210295_JMP_EN);  
 	assign jmp_en_o = (irq_jmp_i == `YSYX210295_JMP_EN) ? `YSYX210295_JMP_EN : jmp_en;//by lee
@@ -2629,12 +2639,12 @@ assign irq_jmp_i_r_pos =(~irq_jmp_i_r2) && ( irq_jmp_i_r );
 	*/
 	
 	//assign instr_mask_o = prediction_result_t |  irq_jmp_i_r;
-	assign instr_mask_o = irq_jmp_i_r;
+	//assign instr_mask_o = irq_jmp_i_r;
     
 	assign hold_code_o = (stall_mem == `YSYX210295_STALL_EN) ? `YSYX210295_HOLD_CODE_EX : ((stall_if == `YSYX210295_STALL_EN) ? `YSYX210295_HOLD_CODE_EX : `YSYX210295_HOLD_CODE_NOPE);
 
-	assign hold_n = (hold_code_o == `YSYX210295_HOLD_CODE_NOPE) ? `YSYX210295_HOLD_DIS : `YSYX210295_HOLD_EN;
-
+	//assign hold_n = (hold_code_o == `YSYX210295_HOLD_CODE_NOPE) ? `YSYX210295_HOLD_DIS : `YSYX210295_HOLD_EN;
+/*
 	ysyx_210295_gnrl_dff # (.DW(1)) prediction_reg(
 			.clock		(clock),
 			.reset		(reset),
@@ -2643,9 +2653,9 @@ assign irq_jmp_i_r_pos =(~irq_jmp_i_r2) && ( irq_jmp_i_r );
 			.data_r_ini	(`YSYX210295_JMP_RIGHT),
 			.data_out	(prediction_result_t)
 		);
+*/
 
-
-
+/*
 	ysyx_210295_btb_ctrl ctrl_prediction(
 		.clock				(clock),
 		.reset				(reset),
@@ -2663,7 +2673,9 @@ assign irq_jmp_i_r_pos =(~irq_jmp_i_r2) && ( irq_jmp_i_r );
 		.target_pc_o		(jmp_to_prediction),
 		.prediction_error_o	(prediction_result)
 	);
+	*/
 endmodule
+
 //ECNURVCORE
 //Pipeline CPU
 //Created by Chesed
@@ -4383,7 +4395,7 @@ module ysyx_210295_ex_mem(
 	input						reset			,
 	input						hold_n			,
 
-	input   [`YSYX210295_BUS_DATA_INSTR]   diff_instr_i    ,
+	//input   [`YSYX210295_BUS_DATA_INSTR]   diff_instr_i    ,
 	//input   [`YSYX210295_BUS_ADDR_MEM]     diff_pc_i       ,
 	//input                       diff_instr_en_i ,
 
@@ -4393,7 +4405,7 @@ module ysyx_210295_ex_mem(
 	input						reg_wr_en_i		,
 	input	[`YSYX210295_BUS_L_CODE]		load_code_i		,
 
-	output  [`YSYX210295_BUS_DATA_INSTR]   diff_instr_o    ,
+	//output  [`YSYX210295_BUS_DATA_INSTR]   diff_instr_o    ,
 	//output  [`YSYX210295_BUS_ADDR_MEM]     diff_pc_o       ,
 	//output                      diff_instr_en_o ,
 
@@ -4422,7 +4434,7 @@ module ysyx_210295_ex_mem(
 			default: data_reg_wr = data_alu_i;
 		endcase
 	end
-
+/*
 	ysyx_210295_gnrl_dff # (.DW(32)) diff_ex_instr_i(
 		.clock		(clock),
 		.reset		(reset),
@@ -4432,7 +4444,7 @@ module ysyx_210295_ex_mem(
 
 		.data_out	(diff_instr_o)
 	);
-
+*/
 
 	ysyx_210295_gnrl_dff # (.DW(5)) dff_addr_reg_wr(
 		.clock		(clock),
@@ -4485,7 +4497,7 @@ module ysyx_210295_ex_stage(
 	input	[`YSYX210295_BUS_DATA_REG]		data_rs2_i		,
 	input	[`YSYX210295_BUS_ALU_OP]		csr_instr_i		,
 	input	[`YSYX210295_BUS_CSR_IMM]		csr_addr_i		,
-	input   [`YSYX210295_BUS_DATA_INSTR]   diff_instr_i    ,
+//	input   [`YSYX210295_BUS_DATA_INSTR]   diff_instr_i    ,
 //	input   [`YSYX210295_BUS_ADDR_MEM]     diff_pc_i       ,
 //	input                       diff_instr_en_i ,
 
@@ -4506,7 +4518,7 @@ module ysyx_210295_ex_stage(
 
 	input                                    except_async,
 
-	output   [`YSYX210295_BUS_DATA_INSTR]  diff_instr_o    ,
+//	output   [`YSYX210295_BUS_DATA_INSTR]  diff_instr_o    ,
 //	output   [`YSYX210295_BUS_ADDR_MEM]    diff_pc_o       ,
 //	output                      diff_instr_en_o ,
 
@@ -4583,7 +4595,7 @@ module ysyx_210295_ex_stage(
 		.reset				(reset),
 		.hold_n				(hold_n),
 		
-		.diff_instr_i   (diff_instr_i),
+	//	.diff_instr_i   (diff_instr_i),
 	//	.diff_pc_i      (diff_pc_i),
 	//	.diff_instr_en_i(diff_instr_en_i) ,
 
@@ -4595,7 +4607,7 @@ module ysyx_210295_ex_stage(
 		.reg_wr_en_i		(reg_wr_en),  // by ou
 		.load_code_i		(load_code_i),
 		
-		.diff_instr_o   (diff_instr_o),
+	//	.diff_instr_o   (diff_instr_o),
 	//	.diff_pc_o      (diff_pc_o),
 	//	.diff_instr_en_o(diff_instr_en_o) ,
 	
@@ -4687,7 +4699,7 @@ module ysyx_210295_id_ex(
 	input						reg_wr_en_i		,
 	//input	[`YSYX210295_BUS_ADDR_MEM]		addr_instr_i	,
 
-	input   [`YSYX210295_BUS_DATA_INSTR]   diff_instr_i    ,
+///	input   [`YSYX210295_BUS_DATA_INSTR]   diff_instr_i    ,
 //	input   [`YSYX210295_BUS_ADDR_MEM]     diff_pc_i       ,
 //	input                       diff_instr_en_i ,
 
@@ -4714,7 +4726,7 @@ module ysyx_210295_id_ex(
 	output						reg_wr_en_o		,
 	//output	[`YSYX210295_BUS_ADDR_MEM]		addr_instr_o	,
 
-	output  [`YSYX210295_BUS_DATA_INSTR]   diff_instr_o    ,
+//	output  [`YSYX210295_BUS_DATA_INSTR]   diff_instr_o    ,
 //	output  [`YSYX210295_BUS_ADDR_MEM]     diff_pc_o       ,
 //	output                      diff_instr_en_o ,
 
@@ -4734,7 +4746,7 @@ module ysyx_210295_id_ex(
 	output	[`YSYX210295_BUS_DATA_REG]		csr_data_o		
 	
 );
-
+/*
     ysyx_210295_gnrl_dff # (.DW(32)) diff_instr(
 		.clock		(clock),
 		.reset		(reset),
@@ -4744,7 +4756,7 @@ module ysyx_210295_id_ex(
 
 		.data_out	(diff_instr_o)
 	);
-
+*/
 	ysyx_210295_gnrl_dff # (.DW(`YSYX210295_DATA_WIDTH)) dff_data_rs1(
 		.clock		(clock),
 		.reset		(reset),
@@ -4924,7 +4936,7 @@ module ysyx_210295_id_stage(
 	input	[`YSYX210295_BUS_DATA_INSTR]	instr_i			,
 	input	[`YSYX210295_BUS_ADDR_MEM]		addr_instr_i	,	
 
-	input   [`YSYX210295_BUS_DATA_INSTR]   diff_instr_i    ,
+//	input   [`YSYX210295_BUS_DATA_INSTR]   diff_instr_i    ,
 //	input   [`YSYX210295_BUS_ADDR_MEM]     diff_pc_i       ,
 //	input                       diff_instr_en_i ,
 
@@ -4937,7 +4949,7 @@ module ysyx_210295_id_stage(
 	output	[`YSYX210295_BUS_ADDR_REG]		addr_wr_o		,
 	//output	[`YSYX210295_BUS_ADDR_MEM]		addr_instr_o	,
 
-	output  [`YSYX210295_BUS_DATA_INSTR]   diff_instr_o    ,
+//	output  [`YSYX210295_BUS_DATA_INSTR]   diff_instr_o    ,
 //	output  [`YSYX210295_BUS_ADDR_MEM]     diff_pc_o       ,
 //	output                      diff_instr_en_o ,
 
@@ -5053,7 +5065,7 @@ module ysyx_210295_id_stage(
 		.reg_wr_en_i	(reg_wr_en),
 		//.addr_instr_i	(addr_instr_i),
 
-		.diff_instr_i   (diff_instr_i),
+	//	.diff_instr_i   (diff_instr_i),
 	//	.diff_pc_i      (diff_pc_i),
 	//	.diff_instr_en_i(diff_instr_en_i) ,
 
@@ -5081,7 +5093,7 @@ module ysyx_210295_id_stage(
 		.reg_wr_en_o	(reg_wr_en_o),
 		//.addr_instr_o	(addr_instr_o),
 
-		.diff_instr_o   (diff_instr_o),
+	//	.diff_instr_o   (diff_instr_o),
 	//	.diff_pc_o      (diff_pc_o),
 	//	.diff_instr_en_o(diff_instr_en_o) ,
 
@@ -5252,7 +5264,7 @@ module ysyx_210295_if_axi_interface(
 	
 
 	always@(posedge clock) begin
-	   if (reset) rvalid_if_t <= 0;
+	   if (reset) rvalid_if_t <= 1'b0;
 	   else       rvalid_if_t <= rvalid_if;	
 	end
 
@@ -5377,7 +5389,7 @@ module ysyx_210295_if_stage(
 	input	[`YSYX210295_BUS_DATA_INSTR]	instr_rd_i 		,
     input                       reset           ,
 	
-	input						instr_mask_i	,
+	//input						instr_mask_i	,
 	input	[`YSYX210295_BUS_ADDR_MEM]		pc_i			,
 	
 	output						fetch_except_o	,
@@ -5519,9 +5531,9 @@ module ysyx_210295_mem_axi_interface(
 	reg data_act_page;//0~first 1~second
 
 	reg [`YSYX210295_BUS_DATA_MEM] data_wr_act_first;
-	reg [`YSYX210295_BUS_DATA_MEM] data_wr_act_second;
+//	reg [`YSYX210295_BUS_DATA_MEM] data_wr_act_second;
 	reg [`YSYX210295_BUS_AXI_STRB] strb_wr_act_first;
-	reg [`YSYX210295_BUS_AXI_STRB] strb_wr_act_second;
+//	reg [`YSYX210295_BUS_AXI_STRB] strb_wr_act_second;
 
 	reg [`YSYX210295_BUS_DATA_MEM] data_rd_t;
 	reg	[`YSYX210295_BUS_DATA_MEM] data_mem_rd_act;
@@ -5613,7 +5625,7 @@ module ysyx_210295_mem_axi_interface(
 
     reg [1:0] r_state;
     parameter [1:0] R_STATE_IDLE = 2'b00, R_STATE_WAIT = 2'b01, R_STATE_READ  = 2'b10, R_STATE_END  = 2'b11;
-	wire r_state_idle = r_state == R_STATE_IDLE, r_state_wait  = r_state == R_STATE_WAIT, r_state_read  = r_state == R_STATE_READ, r_state_end  = r_state == R_STATE_END;
+	wire  r_state_wait  = r_state == R_STATE_WAIT, r_state_read  = r_state == R_STATE_READ, r_state_end  = r_state == R_STATE_END;
       // Read State Machine
 	  /*
     always @(posedge clock) begin
@@ -5661,8 +5673,8 @@ module ysyx_210295_mem_axi_interface(
                 endcase
         end
     end
-	wire rd_mem_valid;
-	assign rd_mem_valid = r_state_read | r_state_end ;
+//	wire rd_mem_valid;
+//	assign rd_mem_valid = r_state_read | r_state_end ;
 	assign mem_rd_wait =  r_state_read | r_state_end ;
 	
     //assign stall_mem_rd = (arready_mem & arvalid_mem) | mem_rd_wait;
@@ -5698,7 +5710,7 @@ module ysyx_210295_mem_axi_interface(
 
 	reg [1:0] w_state;
 	parameter [1:0] W_STATE_IDLE = 2'b00,  W_STATE_ADDR = 2'b01, W_STATE_WAIT = 2'b10, W_STATE_WRITE = 2'b11;
-	wire w_state_idle = w_state == W_STATE_IDLE,  w_state_addr = w_state == W_STATE_ADDR, w_state_wait = w_state == W_STATE_WAIT, w_state_write = w_state == W_STATE_WRITE;
+	wire  w_state_addr = w_state == W_STATE_ADDR, w_state_wait = w_state == W_STATE_WAIT, w_state_write = w_state == W_STATE_WRITE;
 
 /*
     always @(posedge clock) begin
@@ -5761,16 +5773,16 @@ module ysyx_210295_mem_axi_interface(
 	end
 	*/
     
-    reg hold_n_r ;
+  //  reg hold_n_r ;
     always@(posedge clock) begin
 	   if(reset) begin
 			   mem_wr_en_reg <= 0;
-			   hold_n_r <= 0;
+	//		   hold_n_r <= 0;
 	   end    
 	   else begin
                //mem_wr_en_reg <= mem_wr_en  ;
 			   mem_wr_en_reg <= mem_wr_en; //1009
-			   hold_n_r <= hold_n ;
+	//		   hold_n_r <= hold_n ;
 	   end
  	end
 
@@ -5878,57 +5890,57 @@ module ysyx_210295_mem_axi_interface(
 		case(awaddr_mem[2:0])
 			3'b000: begin	
 				data_wr_act_first = data_wr;
-				data_wr_act_second = `YSYX210295_ZERO_DOUBLE;
+			//	data_wr_act_second = `YSYX210295_ZERO_DOUBLE;
 				strb_wr_act_first = strb_mem_wr;
-				strb_wr_act_second = `YSYX210295_WR_STR_NONE;
+			//	strb_wr_act_second = `YSYX210295_WR_STR_NONE;
 			end
 			3'b001: begin
 				data_wr_act_first = {data_wr[55:0],8'h0};
-				data_wr_act_second = {56'h0,data_wr[63:56]};
+			//	data_wr_act_second = {56'h0,data_wr[63:56]};
 				strb_wr_act_first = strb_mem_wr << 1;
-				strb_wr_act_second = {7'b0,strb_mem_wr[7]};
+			//	strb_wr_act_second = {7'b0,strb_mem_wr[7]};
 			end
 			3'b010: begin
 				data_wr_act_first = {data_wr[47:0],16'h0};
-				data_wr_act_second = {48'h0,data_wr[63:48]};
+			//	data_wr_act_second = {48'h0,data_wr[63:48]};
 				strb_wr_act_first = strb_mem_wr << 2;
-				strb_wr_act_second = {6'b0,strb_mem_wr[7:6]};
+			//	strb_wr_act_second = {6'b0,strb_mem_wr[7:6]};
 			end
 			3'b011: begin
 				data_wr_act_first = {data_wr[39:0],24'h0};
-				data_wr_act_second = {40'h0,data_wr[63:40]};
+			//	data_wr_act_second = {40'h0,data_wr[63:40]};
 				strb_wr_act_first = strb_mem_wr << 3;
-				strb_wr_act_second = {5'b0,strb_mem_wr[7:5]};
+			//	strb_wr_act_second = {5'b0,strb_mem_wr[7:5]};
 			end
 			3'b100: begin
 				data_wr_act_first = {data_wr[31:0],32'h0};
-				data_wr_act_second = {32'h0,data_wr[63:32]};
+			//	data_wr_act_second = {32'h0,data_wr[63:32]};
 				strb_wr_act_first = strb_mem_wr << 4;
-				strb_wr_act_second = {4'b0,strb_mem_wr[7:4]};
+			//	strb_wr_act_second = {4'b0,strb_mem_wr[7:4]};
 			end
 			3'b101: begin
 				data_wr_act_first = {data_wr[23:0],40'h0};
-				data_wr_act_second = {24'h0,data_wr[63:24]};
+			//	data_wr_act_second = {24'h0,data_wr[63:24]};
 				strb_wr_act_first = strb_mem_wr << 5;
-				strb_wr_act_second = {3'b0,strb_mem_wr[7:3]};
+			//	strb_wr_act_second = {3'b0,strb_mem_wr[7:3]};
 			end
 			3'b110: begin
 				data_wr_act_first = {data_wr[15:0],48'h0};
-				data_wr_act_second = {16'h0,data_wr[63:16]};
+			//	data_wr_act_second = {16'h0,data_wr[63:16]};
 				strb_wr_act_first = strb_mem_wr << 6;
-				strb_wr_act_second = {2'b0,strb_mem_wr[7:2]};
+			//	strb_wr_act_second = {2'b0,strb_mem_wr[7:2]};
 			end
 			3'b111: begin
 				data_wr_act_first = {data_wr[7:0],56'h0};
-				data_wr_act_second = {8'h0,data_wr[63:8]};
+			//	data_wr_act_second = {8'h0,data_wr[63:8]};
 				strb_wr_act_first = strb_mem_wr << 7;
-				strb_wr_act_second = {1'b0,strb_mem_wr[7:1]};
+			//	strb_wr_act_second = {1'b0,strb_mem_wr[7:1]};
 			end
 			default: begin
 				data_wr_act_first = data_wr;
-				data_wr_act_second = `YSYX210295_ZERO_DOUBLE;
+			//	data_wr_act_second = `YSYX210295_ZERO_DOUBLE;
 				strb_wr_act_first = strb_mem_wr;
-				strb_wr_act_second = `YSYX210295_WR_STR_NONE;
+			//	strb_wr_act_second = `YSYX210295_WR_STR_NONE;
 			end
 		endcase	
 	end
@@ -6766,7 +6778,7 @@ begin
 		if (axi_need_resp) begin
 			saxi_bvalid <= 1'b1;  //when need to response
 		end
-		if (saxi_bvalid && saxi_bready) begin
+		else if (saxi_bvalid && saxi_bready) begin
 			saxi_bvalid <= 1'b0;  //when response was received
 		end 
 	end
