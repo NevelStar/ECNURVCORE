@@ -1,5 +1,17 @@
 <h1 align = "center">ECNURVCORE RISC-V CPU</h1>
-> Design Team：tangyuchao oujiahua liyanzhong liuyuan jiachen
+> 设计团队：Tangyuchao Oujiahua Liyanzhong Liuyuan Jiachen
+>
+> 开发语言：Verilog
+>
+> 开源地址：[GITHUB仓库](https://github.com/NevelStar/ECNURVCORE)
+>
+> 开发前所阅读过的设计：[tinyriscv](https://gitee.com/liangkangnan/tinyriscv) （开发中未使用其代码片段）
+>
+> 心得体会：
+>
+> - RTL写起来容易，但debug较为困难，整个项目大量时间用于debug，要更多注意RTL的协作规范和顶层设计。不同队员的设计意图有所差别，需要更多的协调。集思广益更能出成果。
+> - 希望开源的测试平台尽可能完善可靠，文档详实清晰，比如difftest总线行为与预先设计的axi总线行为存在着一些不同，引发了很多问题。开源工具应该考虑给用户更平滑的学习曲线。
+> - 从RTL走向高层语言，从寄存器走向编译器，这些历练使得我们成长很快。感谢团队的所有同学，正是大家的团结协作，使得我们的项目圆满成功，也感谢ysyx团队，让我们有了这样的锻炼机会。
 
 ---
 
@@ -9,15 +21,13 @@
 
 ECNURVCORE是由本团队设计的一个支持RV64I指令集的三级流水线顺序执行CPU。
 
-开源地址：[GITHUB仓库](https://github.com/NevelStar/ECNURVCORE)
-
 ### (2) 系统对外接口
 
 - 系统具有一个时钟接口：**CLK**
 - 一个高电平有效的复位接口：**RESET**
 - 一个外部中断输入接口：**IO_INTERRUPT**
 - 一组对外用于数据交互的**AXI4 master**总线，以及一组预留给DMA（暂未实现）的**AXI4 slave**总线接口
-  由于对外只有1个master AXI4接口，处理器核内分为取指总线和访存总线两个接口，通过axi_interconnect模块进行仲裁，合并成一个对外的master AXI接口。仲裁时，访存的优先级大于取指的优先级。
+  由于对外只有1个master AXI4接口，处理器核内分为取指总线和访存总线两个接口，通过axi_interconnect模块进行仲裁，合并成一个对外的master AXI4接口。仲裁时，访存的优先级大于取指的优先级。
 
 #### 以下是CPU对外接口的详细表格：
 
@@ -74,7 +84,7 @@ ECNURVCORE是由本团队设计的一个支持RV64I指令集的三级流水线�
 
 系统复位PC地址为0x30000000，第一条指令将从FLASH中读取。
 
-系统支持从FLASH地址区域（0x3000_0000至0x3fff_ffff）和memory地址区域（0x8000_0000至0xffff_ffff）读取指令并执行。
+系统支持从FLASH地址区域（0x3000_0000~0x3fff_ffff）和memory地址区域（0x8000_0000~0xffff_ffff）读取指令并执行。
 
 除CLINT所管理的Timer属于核内外设实现之外，其余UART16550/SPI控制器均属于外部实现。
 
@@ -152,7 +162,7 @@ ECNURVCORE是由本团队设计的一个支持RV64I指令集的三级流水线�
 
 ~~由于AXI总线在取指时实际上需要至少两个系统时钟(ar通道握手，r通道握手)才能返回指令，因此，本设计中的分支预测逻辑在大部分情况下不需要进行工作~~
 
-> 由与系统总线访存周期过长，导致流水线长期无法被填满，BTB（分支预测逻辑）实际已无必要，在当前总线下，无法起到性能提升的作用，因而在终版中进行了删减
+> 由于系统总线访存周期过长，导致流水线长期无法被填满，BTB（分支预测逻辑）实际已无必要，在当前总线下，无法起到性能提升的作用，因而在终版中进行了删减。
 
 ---
 
