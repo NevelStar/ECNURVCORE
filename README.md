@@ -94,7 +94,7 @@ ECNURVCORE是由本团队设计的一个支持RV64I指令集的三级流水线�
 
 ### （一）核内数据流图
 
-<img src="system_view.png" alt="图片1" style="zoom:150%;" />
+<img src="DOC/system_view.png" alt="图片1" style="zoom:150%;" />
 
 ### （二）流水线层次
 
@@ -263,8 +263,8 @@ ECNURVCORE是由本团队设计的一个支持RV64I指令集的三级流水线�
 
 ### （一）RT-thread系统运行成功截图
 
-![图像2](rt-thread_success.png)
+![图像2](DOC/rt-thread_success.png)
 
 ### （二）回归测试
 
-![图像3](difftest_success.png)
+![图像3](DOC/difftest_success.png)
