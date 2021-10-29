@@ -4,6 +4,7 @@
 > 开发语言：Verilog
 > 开源地址：[GITHUB仓库](https://github.com/NevelStar/ECNURVCORE)
 > 开发前所阅读过的设计：[tinyriscv](https://gitee.com/liangkangnan/tinyriscv) （开发中未使用其代码片段）
+> 
 > 心得体会：
 > - RTL写起来容易，但debug较为困难，整个项目大量时间用于debug，要更多注意RTL的协作规范和顶层设计。不同队员的设计意图有所差别，需要更多的协调。集思广益更能出成果。
 > - 希望开源的测试平台尽可能完善可靠，文档详实清晰，比如difftest总线行为与预先设计的axi总线行为存在着一些不同，引发了很多问题。开源工具应该考虑给用户更平滑的学习曲线。
